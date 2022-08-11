@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties("tech.codingless.rds")
+@ConfigurationProperties("tech.codingless.mybaties.rds")
 public class DataBaseConf {
 	private String url;
 	private String username;

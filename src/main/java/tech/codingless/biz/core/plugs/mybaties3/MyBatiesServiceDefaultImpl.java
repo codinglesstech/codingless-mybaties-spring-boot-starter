@@ -18,9 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -39,7 +39,7 @@ import tech.codingless.biz.core.util.StringUtil;
  * 
  */
 @Service
-public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationListener<ContextRefreshedEvent> {
+public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationListener<ApplicationStartedEvent> {
 	private static final Logger LOG = LoggerFactory.getLogger(GenericUpdateDAOImpl.class);
 
 	private SqlSessionTemplate noShardingSession;
@@ -157,30 +157,30 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 			DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
 			session = null;
 			dataSourceTransactionManager.setDataSource(dataSource);
-  
+
 			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-			Resource[] xDefSqlMapper = sqlmapLoaderFactory != null ? sqlmapLoaderFactory.sqlMapperResource() : null; 
+			Resource[] xDefSqlMapper = sqlmapLoaderFactory != null ? sqlmapLoaderFactory.sqlMapperResource() : null;
 			List<Resource> mergeSqlMappers = new ArrayList<>();
-			//Resource[] resourcesList = resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml"); 
-			//mergeSqlMappers.addAll(Arrays.asList(resourcesList));
-			
-			if(StringUtil.isNotEmpty(conf.getClasspathMapper())) {
-				List.of(conf.getClasspathMapper().split(",")).stream().filter(item->StringUtil.isNotEmpty(item)).forEach(item->{
+			// Resource[] resourcesList =
+			// resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
+			// mergeSqlMappers.addAll(Arrays.asList(resourcesList));
+
+			if (StringUtil.isNotEmpty(conf.getClasspathMapper())) {
+				List.of(conf.getClasspathMapper().split(",")).stream().filter(item -> StringUtil.isNotEmpty(item)).forEach(item -> {
 					try {
-						mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:"+item)));
-					}catch(Exception e) {
-						LOG.error("load mapper fail ",e);
+						mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:" + item)));
+					} catch (Exception e) {
+						LOG.error("load mapper fail ", e);
 					}
 				});
 			}
-			
+
 			if (xDefSqlMapper != null) {
 				mergeSqlMappers.addAll(Arrays.asList(xDefSqlMapper));
 
 			}
- 
 
-			Resource[] mergedResourceList = mergeSqlMappers.toArray(new Resource[0]); 
+			Resource[] mergedResourceList = mergeSqlMappers.toArray(new Resource[0]);
 			SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 			sqlSessionFactoryBean.setDataSource(dataSource);
 			sqlSessionFactoryBean.setMapperLocations(mergedResourceList);
@@ -246,21 +246,20 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 			Resource[] xDefSqlMapper = sqlmapLoaderFactory != null ? sqlmapLoaderFactory.sqlMapperResource() : null;
 
 			List<Resource> mergeSqlMappers = new ArrayList<>();
-			//Resource[] resourcesList = resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
-			//mergeSqlMappers.addAll(Arrays.asList(resourcesList));
-			
-			
-			if(StringUtil.isNotEmpty(conf.getClasspathMapper())) {
-				List.of(conf.getClasspathMapper().split(",")).stream().filter(item->StringUtil.isNotEmpty(item)).forEach(item->{
+			// Resource[] resourcesList =
+			// resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
+			// mergeSqlMappers.addAll(Arrays.asList(resourcesList));
+
+			if (StringUtil.isNotEmpty(conf.getClasspathMapper())) {
+				List.of(conf.getClasspathMapper().split(",")).stream().filter(item -> StringUtil.isNotEmpty(item)).forEach(item -> {
 					try {
-						mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:"+item)));
-					}catch(Exception e) {
-						LOG.error("load mapper fail ",e);
+						mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:" + item)));
+					} catch (Exception e) {
+						LOG.error("load mapper fail ", e);
 					}
 				});
 			}
-			
-			
+
 			if (xDefSqlMapper != null) {
 				mergeSqlMappers.addAll(Arrays.asList(xDefSqlMapper));
 
@@ -283,7 +282,7 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 	}
 
 	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event) {
+	public void onApplicationEvent(ApplicationStartedEvent event) {
 		LOG.info("尝试初始化数据库连接");
 		if (event.getSource() == null) {
 			return;
