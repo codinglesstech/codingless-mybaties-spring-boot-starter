@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser.ColumnProp;
+import tech.codingless.biz.core.plugs.mybaties3.util.AssertUtil;
 
 public class CommonSQLHelper {
 	private static final String BLOCK = " ";

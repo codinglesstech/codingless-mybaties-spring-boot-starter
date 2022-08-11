@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 import java.util.HashMap;
 import java.util.Map;

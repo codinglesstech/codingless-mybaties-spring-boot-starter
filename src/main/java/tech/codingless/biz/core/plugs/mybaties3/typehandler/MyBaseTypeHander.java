@@ -9,7 +9,7 @@ import java.sql.Types;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
-import tech.codingless.biz.core.plugs.mybaties3.AssertUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.AssertUtil;
  
  
  

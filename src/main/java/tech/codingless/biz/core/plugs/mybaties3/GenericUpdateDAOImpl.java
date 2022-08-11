@@ -31,6 +31,7 @@ import tech.codingless.biz.core.plugs.mybaties3.helper.AutoUpdateHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.UpdateSkipNullBatchAppendHelper;
+import tech.codingless.biz.core.plugs.mybaties3.util.SessionUtil;
  
 
 @Component

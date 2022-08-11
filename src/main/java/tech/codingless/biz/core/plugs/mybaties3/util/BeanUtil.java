@@ -1,8 +1,10 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
+import tech.codingless.biz.core.plugs.mybaties3.BaseDO;
 
 public class BeanUtil {
 	private static final String GET = "get";

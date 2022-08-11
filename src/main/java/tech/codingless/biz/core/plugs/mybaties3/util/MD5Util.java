@@ -1,7 +1,9 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import tech.codingless.biz.core.plugs.mybaties3.HexUtil;
 
 /**
  * Static functions to simplifiy common {@link java.security.MessageDigest}

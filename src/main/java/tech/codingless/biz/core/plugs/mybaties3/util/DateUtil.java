@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 import java.sql.Time;
 import java.text.ParseException;
@@ -14,6 +14,8 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 
 public class DateUtil {
 	private static SimpleDateFormat defaultFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

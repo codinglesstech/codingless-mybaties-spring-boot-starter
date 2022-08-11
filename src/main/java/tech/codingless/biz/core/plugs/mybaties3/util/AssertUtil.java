@@ -1,8 +1,11 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 import java.util.Collection;
 
 import org.springframework.util.CollectionUtils;
+
+import tech.codingless.biz.core.plugs.mybaties3.MyException;
+import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 
 public class AssertUtil {
 
