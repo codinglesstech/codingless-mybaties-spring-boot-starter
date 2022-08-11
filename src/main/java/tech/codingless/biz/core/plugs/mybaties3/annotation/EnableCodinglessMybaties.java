@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -9,6 +9,12 @@ import java.lang.annotation.Target;
 
 import org.springframework.context.annotation.Import;
 
+import tech.codingless.biz.core.plugs.mybaties3.CommScriptGeneter;
+import tech.codingless.biz.core.plugs.mybaties3.DBInitSpringListener;
+import tech.codingless.biz.core.plugs.mybaties3.GenericUpdateDAOImpl;
+import tech.codingless.biz.core.plugs.mybaties3.MyBatiesServiceDefaultImpl;
+import tech.codingless.biz.core.plugs.mybaties3.MybatiesImportSelector;
+import tech.codingless.biz.core.plugs.mybaties3.TableAutoCreateServiceMysqlImpl;
 import tech.codingless.biz.core.plugs.mybaties3.conf.DataBaseConf;
 
 /**

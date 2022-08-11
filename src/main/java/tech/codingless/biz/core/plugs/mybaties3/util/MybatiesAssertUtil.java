@@ -4,18 +4,18 @@ import java.util.Collection;
 
 import org.springframework.util.CollectionUtils;
 
-import tech.codingless.biz.core.plugs.mybaties3.MyException;
+import tech.codingless.biz.core.plugs.mybaties3.MybatiesException;
 
 public class MybatiesAssertUtil {
 
 	public static void assertTrue(boolean bool) {
 		if (!bool) {
-			throw new MyException("期待true 但是实际为false");
+			throw new MybatiesException("期待true 但是实际为false");
 		}
 	}
 
 	public static void assertFail(String code) {
-		throw new MyException(code);
+		throw new MybatiesException(code);
 	}
 
 	public static void assertNotNull(Object obj) {
@@ -41,13 +41,13 @@ public class MybatiesAssertUtil {
 
 	public static void assertTrue(boolean bool, String code) {
 		if (!bool) {
-			throw new MyException(code);
+			throw new MybatiesException(code);
 		}
 	}
 
 	public static void assertFalse(boolean bool, String code) {
 		if (bool) {
-			throw new MyException(code);
+			throw new MybatiesException(code);
 		}
 
 	}
@@ -61,7 +61,7 @@ public class MybatiesAssertUtil {
 
 	public static void assertNotEmpty(Collection collection, String code) {
 		if (CollectionUtils.isEmpty(collection)) {
-			throw new MyException(code);
+			throw new MybatiesException(code);
 		}
 	}
 

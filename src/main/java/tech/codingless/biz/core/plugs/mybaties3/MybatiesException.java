@@ -1,9 +1,9 @@
 package tech.codingless.biz.core.plugs.mybaties3;
 
-public class MyException extends RuntimeException {
+public class MybatiesException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public MyException(String code) {
+	public MybatiesException(String code) {
 		super(code);
 	}
 

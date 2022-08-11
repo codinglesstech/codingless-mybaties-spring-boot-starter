@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 public class XmlMapperUtil {
 	private static final String REGEX_SPLIT_ID_1 = "[iI]{1}[dD]{1}[ ]*=[ ]*[\"\']{1}";
