@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tech.codingless.biz.core.plugs.mybaties3.BaseDO;
-import tech.codingless.biz.core.reflect.SerializableFunction;
+import tech.codingless.biz.core.plugs.mybaties3.SerializableFunction;
 
 public class ColumnSelector<T extends BaseDO> {
 

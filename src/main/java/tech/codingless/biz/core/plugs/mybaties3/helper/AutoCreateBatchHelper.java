@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import tech.codingless.biz.core.plugs.mybaties3.CommonSQLHelper;
 import tech.codingless.biz.core.plugs.mybaties3.MyColumn;
-import tech.codingless.biz.core.util.StringUtil;
+import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 
  
 

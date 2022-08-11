@@ -55,9 +55,6 @@ import tech.codingless.biz.core.plugs.mybaties3.helper.AutoSelectByConditionSqlH
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.PrepareParameterHelper;
-import tech.codingless.biz.core.reflect.ReflectionUtil;
-import tech.codingless.biz.core.reflect.SerializableFunction;
-import tech.codingless.biz.core.util.StringUtil;
 
 @Component
 public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T> {

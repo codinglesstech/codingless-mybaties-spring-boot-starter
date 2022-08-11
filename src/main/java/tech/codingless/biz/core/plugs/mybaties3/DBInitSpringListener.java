@@ -18,7 +18,6 @@ import tech.codingless.biz.core.plugs.mybaties3.helper.AutoFindByIdHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.AutoGetHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.AutoUpdateHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
-import tech.codingless.biz.core.util.StringUtil;
 
 //优先级最高，最先执行
 @Order(0)

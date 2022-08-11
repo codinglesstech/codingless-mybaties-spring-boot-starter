@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-import tech.codingless.biz.core.util.StringUtil;
-
 public class LockerUtil {
 
 	private static final ConcurrentHashMap<String, Locker> LOCKER_MAP = new ConcurrentHashMap<>();

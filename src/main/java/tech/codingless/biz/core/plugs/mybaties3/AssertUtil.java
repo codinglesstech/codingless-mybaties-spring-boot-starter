@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.util;
+package tech.codingless.biz.core.plugs.mybaties3;
 
 import java.util.Collection;
 

@@ -16,7 +16,7 @@ import org.apache.ibatis.session.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import tech.codingless.biz.core.plugs.mybaties3.CommonSQLHelper;
 import tech.codingless.biz.core.plugs.mybaties3.MyColumn;
-import tech.codingless.biz.core.util.StringUtil;
+import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 
 @Slf4j
 public class AutoGetHelper {

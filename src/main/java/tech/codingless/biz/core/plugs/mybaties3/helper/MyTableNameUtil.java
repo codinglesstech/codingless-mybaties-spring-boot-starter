@@ -2,7 +2,7 @@ package tech.codingless.biz.core.plugs.mybaties3.helper;
 
 import tech.codingless.biz.core.plugs.mybaties3.BaseDO;
 import tech.codingless.biz.core.plugs.mybaties3.MyTable;
-import tech.codingless.biz.core.util.StringUtil;
+import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 
 /**
  * 

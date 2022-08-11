@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import tech.codingless.biz.core.plugs.mybaties3.typehandler.MyBaseColumn;
-import tech.codingless.biz.core.util.StringUtil;
 
 @Service
 public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {

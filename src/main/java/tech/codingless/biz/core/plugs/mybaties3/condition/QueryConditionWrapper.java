@@ -10,9 +10,9 @@ import java.util.Map;
 import org.springframework.util.CollectionUtils;
 
 import tech.codingless.biz.core.plugs.mybaties3.BaseDO;
+import tech.codingless.biz.core.plugs.mybaties3.ReflectionUtil;
+import tech.codingless.biz.core.plugs.mybaties3.SerializableFunction;
 import tech.codingless.biz.core.plugs.mybaties3.TableAutoCreateServiceMysqlImpl;
-import tech.codingless.biz.core.reflect.ReflectionUtil;
-import tech.codingless.biz.core.reflect.SerializableFunction;
 
 public class QueryConditionWrapper<T extends BaseDO> implements BaseQueryWrapper {
 	private boolean skipWithNull = true;

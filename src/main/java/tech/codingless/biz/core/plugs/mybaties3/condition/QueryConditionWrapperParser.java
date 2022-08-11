@@ -2,10 +2,10 @@ package tech.codingless.biz.core.plugs.mybaties3.condition;
 
 import java.lang.reflect.Field;
 
+import tech.codingless.biz.core.plugs.mybaties3.ReflectionUtil;
+import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 import tech.codingless.biz.core.plugs.mybaties3.TableAutoCreateServiceMysqlImpl;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser;
-import tech.codingless.biz.core.reflect.ReflectionUtil;
-import tech.codingless.biz.core.util.StringUtil;
 
 public class QueryConditionWrapperParser {
  

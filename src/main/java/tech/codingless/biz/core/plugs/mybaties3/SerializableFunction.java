@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.reflect;
+package tech.codingless.biz.core.plugs.mybaties3;
 
 import java.io.Serializable;
 import java.util.function.Function;

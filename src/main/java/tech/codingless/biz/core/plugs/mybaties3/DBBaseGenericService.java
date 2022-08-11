@@ -7,7 +7,6 @@ import java.util.Map;
 import tech.codingless.biz.core.plugs.mybaties3.condition.ColumnSelector;
 import tech.codingless.biz.core.plugs.mybaties3.condition.QueryConditionWrapper;
 import tech.codingless.biz.core.plugs.mybaties3.data.UpdateObject;
-import tech.codingless.biz.core.reflect.SerializableFunction;
 
 /**
  * common CRUD method for all sql entity service

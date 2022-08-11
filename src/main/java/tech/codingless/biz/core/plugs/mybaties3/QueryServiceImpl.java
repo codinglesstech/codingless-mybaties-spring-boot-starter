@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import tech.codingless.biz.core.util.StringUtil;
-
 @Service
 public class QueryServiceImpl implements QueryService {
 	private final static Logger LOG = LoggerFactory.getLogger(TableAutoCreateServiceMysqlImpl.class); 

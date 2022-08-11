@@ -1,7 +1,5 @@
 package tech.codingless.biz.core.plugs.mybaties3;
 
-import tech.codingless.biz.core.util.SessionUtil;
-
 public class DataEnvUtil {
 	/**
 	 * 1:生产环境，2：测试环境

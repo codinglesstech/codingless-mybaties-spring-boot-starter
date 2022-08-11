@@ -11,8 +11,8 @@ import org.apache.ibatis.session.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 import tech.codingless.biz.core.plugs.mybaties3.XmlMapperUtil;
-import tech.codingless.biz.core.util.StringUtil;
 
  
 
