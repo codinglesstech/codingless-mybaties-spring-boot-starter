@@ -3,6 +3,7 @@ package tech.codingless.biz.core.plugs.mybaties3;
 import java.util.Collection;
 import java.util.List;
 
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO;
 import tech.codingless.biz.core.plugs.mybaties3.data.UpdateObject;
 
 /**

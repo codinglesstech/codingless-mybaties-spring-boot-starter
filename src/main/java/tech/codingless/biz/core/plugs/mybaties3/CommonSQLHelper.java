@@ -13,6 +13,7 @@ import lombok.Setter;
 import tech.codingless.biz.core.plugs.mybaties3.annotation.MyColumn;
 import tech.codingless.biz.core.plugs.mybaties3.annotation.MyTable;
 import tech.codingless.biz.core.plugs.mybaties3.annotation.OrderTypeEnum;
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser.ColumnProp;
 import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesAssertUtil;

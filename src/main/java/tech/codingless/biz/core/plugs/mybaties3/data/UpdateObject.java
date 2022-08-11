@@ -1,7 +1,6 @@
 package tech.codingless.biz.core.plugs.mybaties3.data;
 
 import lombok.Data;
-import tech.codingless.biz.core.plugs.mybaties3.BaseDO;
 
 @Data
 public class UpdateObject { 

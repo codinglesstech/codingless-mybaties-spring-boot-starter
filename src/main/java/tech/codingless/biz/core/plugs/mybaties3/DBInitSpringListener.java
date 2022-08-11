@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 import tech.codingless.biz.core.plugs.mybaties3.conf.DataBaseConf;
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO;
 import tech.codingless.biz.core.plugs.mybaties3.helper.AutoFindByIdHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.AutoGetHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.AutoUpdateHelper;

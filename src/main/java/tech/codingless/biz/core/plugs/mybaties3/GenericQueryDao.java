@@ -8,6 +8,8 @@ import tech.codingless.biz.core.plugs.mybaties3.annotation.OrderTypeEnum;
 import tech.codingless.biz.core.plugs.mybaties3.condition.ColumnSelector;
 import tech.codingless.biz.core.plugs.mybaties3.condition.QueryCondition;
 import tech.codingless.biz.core.plugs.mybaties3.condition.QueryConditionWrapper;
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO;
+import tech.codingless.biz.core.plugs.mybaties3.data.PageRollResult;
 
 public interface GenericQueryDao<T extends BaseDO> {
 

@@ -3,8 +3,8 @@ package tech.codingless.biz.core.plugs.mybaties3.condition;
 import java.util.ArrayList;
 import java.util.List;
 
-import tech.codingless.biz.core.plugs.mybaties3.BaseDO;
 import tech.codingless.biz.core.plugs.mybaties3.SerializableFunction;
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO;
 
 public class ColumnSelector<T extends BaseDO> {
 

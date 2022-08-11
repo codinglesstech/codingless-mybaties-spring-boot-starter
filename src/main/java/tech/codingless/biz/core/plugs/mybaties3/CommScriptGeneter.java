@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO;
+
 @Component
 public class CommScriptGeneter {
 

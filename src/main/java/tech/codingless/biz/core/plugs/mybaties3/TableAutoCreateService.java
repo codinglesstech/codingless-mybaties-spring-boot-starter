@@ -1,6 +1,8 @@
 package tech.codingless.biz.core.plugs.mybaties3;
 
-import java.util.Collection; 
+import java.util.Collection;
+
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO; 
 public interface TableAutoCreateService {
 
 	boolean create();

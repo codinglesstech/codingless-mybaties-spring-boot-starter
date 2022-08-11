@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 
 import tech.codingless.biz.core.plugs.mybaties3.conf.ColumnNameConstant;
 import tech.codingless.biz.core.plugs.mybaties3.conf.DataBaseConf;
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO;
 import tech.codingless.biz.core.plugs.mybaties3.data.UpdateObject;
 import tech.codingless.biz.core.plugs.mybaties3.delete.DeleteBatchHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.AutoCreateBatchHelper;

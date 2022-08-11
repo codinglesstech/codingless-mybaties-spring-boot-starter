@@ -7,6 +7,8 @@ import java.util.Map;
 import tech.codingless.biz.core.plugs.mybaties3.annotation.OrderTypeEnum;
 import tech.codingless.biz.core.plugs.mybaties3.condition.ColumnSelector;
 import tech.codingless.biz.core.plugs.mybaties3.condition.QueryConditionWrapper;
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO;
+import tech.codingless.biz.core.plugs.mybaties3.data.PageRollResult;
 import tech.codingless.biz.core.plugs.mybaties3.data.UpdateObject;
 
 /**

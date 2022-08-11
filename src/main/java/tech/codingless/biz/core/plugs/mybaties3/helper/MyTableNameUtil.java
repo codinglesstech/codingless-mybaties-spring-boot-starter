@@ -1,7 +1,7 @@
 package tech.codingless.biz.core.plugs.mybaties3.helper;
 
-import tech.codingless.biz.core.plugs.mybaties3.BaseDO;
 import tech.codingless.biz.core.plugs.mybaties3.annotation.MyTable;
+import tech.codingless.biz.core.plugs.mybaties3.data.BaseDO;
 import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 /**
