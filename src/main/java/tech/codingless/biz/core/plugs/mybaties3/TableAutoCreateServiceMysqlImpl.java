@@ -1,7 +1,6 @@
 package tech.codingless.biz.core.plugs.mybaties3;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -23,8 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import tech.codingless.biz.core.plugs.mybaties3.typehandler.MyBaseColumn;
 
 @Service
 public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
@@ -188,31 +185,9 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 	}
 
 	private void parserObject(Object obj) {
-		
-		/**
-		List.of(obj.getClass().getMethods()).forEach(method -> {
-			String methodName = method.getName();
-			if (methodName.equals("getClass")) {
-				return;
-			}
-			if (!methodName.startsWith("get") && !methodName.startsWith("is")) {
-				return;
-			}
-			String columnName = new String();
-			if (methodName.startsWith("get")) {
-				columnName = methodName.substring(3);
-			}
-			if (methodName.startsWith("is")) {
-				columnName = methodName.substring(2);
-			}
+		 
 
-			columnName = change2dbFormat(columnName.toString());
-			//createColumn(obj, method, columnName.toLowerCase());
-
-		});*/
-
-		// 如果父类，非Object,非BaseDO的情况下，拿父类的属性
-
+		// 如果父类，非Object,非BaseDO的情况下，拿父类的属性 
 		Class<?> parentClazz = obj.getClass().getSuperclass();
 		if (!parentClazz.equals(Object.class) && !parentClazz.equals(BaseDO.class)) {
 			createColumn(obj, parentClazz.getDeclaredFields());
@@ -374,118 +349,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		}
 		return sb.toString();
 	}
-
-	/**
-	 * 该方法不用了。过一段时间删除
-	 * @param obj
-	 * @param method
-	 * @param columnName
-	 */
-	@Deprecated
-	private void createColumn(Object obj, Method method, String columnName) {
-		// 创建字段
-		String tableName = getTableName(obj);
-		boolean isPrimaryKey = false;
-		String typeDef = null;
-		Class<?> typeClazz = method.getReturnType();
-		String typeName = typeClazz.getName();
-		String propertyName = null;
-		String defaultValue = "";
-		String comment = "";
-		if (method.getName().startsWith("get")) {
-			propertyName = method.getName().substring(3);
-		} else if (method.getName().startsWith("is")) {
-			propertyName = method.getName().substring(2);
-		}
-		propertyName = propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1);
-		boolean autoIncrement = false;
-		boolean createIndex = false;
-		try {
-
-			Field field = obj.getClass().getDeclaredField(propertyName);
-			MyColumn myColumn = field.getAnnotation(MyColumn.class);
-			MyComment myComment = field.getAnnotation(MyComment.class);
-			comment = myComment != null ? myComment.value() : null;
-			if (myColumn != null) {
-				columnName = StringUtil.isNotEmpty(myColumn.name()) ? myColumn.name() : columnName;
-				typeDef = StringUtil.isNotEmpty(myColumn.type()) ? myColumn.type() : typeDef;
-				// isPrimaryKey = myColumn.key();
-				defaultValue = myColumn.defaultValue();
-				autoIncrement = myColumn.autoIncrement();
-				createIndex = myColumn.createIndex();
-			}
-		} catch (Exception e) {
-			// 对于获得父类的属性会报错，这里忽略这个错误
-		}
-		if (columnExist(tableName, columnName)) {
-			return;
-		}
-		EXIST_COLUMN_NAME.containsKey(tableName.toLowerCase() + "/" + columnName.toLowerCase());
-		isPrimaryKey = "id".equals(columnName);
-		if (StringUtil.isEmpty(typeDef)) {
-			if ("int".equals(typeName) || "java.lang.Integer".equals(typeName)) {
-				typeDef = "INTEGER";
-			} else if ("long".equals(typeName) || "java.lang.Long".equals(typeName)) {
-				typeDef = "numeric(32,0)";
-			} else if ("double".equals(typeName) || "java.lang.Double".equals(typeName)) {
-				typeDef = "double";
-			} else if ("float".equals(typeName) || "java.lang.Float".equals(typeName)) {
-				typeDef = "float4";
-			} else if ("boolean".equals(typeName) || "java.lang.Boolean".equals(typeName)) {
-				typeDef = "bool";
-			} else if ("java.lang.String".equals(typeName)) {
-				if (columnName.endsWith("id")) {
-					typeDef = "VARCHAR(64)";
-				} else {
-					typeDef = "VARCHAR(256)";
-				}
-			} else if ("java.util.Date".equals(typeName)) {
-				typeDef = "DATETIME";
-			} else if ("java.math.BigDecimal".equals(typeName)) {
-				typeDef = "numeric(32,2)";
-			} else {
-				try {
-					if (typeClazz.getDeclaredConstructor().newInstance() instanceof MyBaseColumn) {
-						LOG.info("发现自定义数据类型: {}", typeClazz);
-						typeDef = "VARCHAR(1024)";
-					} else {
-						LOG.info("found unknow column :{}", typeName);
-						return;
-					}
-				} catch (Exception e) {
-					LOG.error("", e);
-				}
-
-			}
-		}
-		if (typeDef == null) {
-			return;
-		}
-		if (isPrimaryKey) {
-			typeDef += " PRIMARY KEY";
-		}
-		// 自增
-		String autoIncrementSql = "";
-		if (autoIncrement) {
-			autoIncrementSql = "not null auto_increment ";
-		}
-		if (createIndex || autoIncrement) {
-			autoIncrementSql += ", add  key(" + columnName + ")";
-		}
-
-		// 备注
-		String commentSql = "";
-		if (StringUtil.isNotEmpty(comment)) {
-			comment = comment.replaceAll("'", "");
-			commentSql = "  COMMENT '" + comment + "'";
-
-		}
-
-		String ddl = String.format("ALTER table %s ADD COLUMN %s %s %s %s %s", tableName, columnName, typeDef, (StringUtil.isNotEmpty(defaultValue) ? ("default " + defaultValue) : ""), commentSql,
-				autoIncrementSql);
-		executeDDL(ddl);
-
-	}
+ 
 
 	private boolean columnExist(String tableName, String columnName) {
 		// ID为主键，创建表的时候就生成了，所以不需要单独创建ID字段
