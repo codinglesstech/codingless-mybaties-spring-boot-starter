@@ -43,13 +43,14 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 	
 	protected BasicDataSource basicDataSource;
 	
+	@Autowired(required = false)
+	private DataBaseConf conf;
+	
 	@Autowired
 	protected void setMyBatiesService(MyBatiesService myBatiesService) {
 		LOG.info("Jnjection Data Access Service: {}" , myBatiesService);
-		this.myBatiesService = myBatiesService; 
-		
-		DataBaseConf.Conf conf= DataBaseConf.get(); 
-		if(StringUtil.isNotEmpty(conf.getUrl(),conf.getUsername(),conf.getPassword())) { 
+		this.myBatiesService = myBatiesService;  
+		if(conf!=null&&StringUtil.isNotEmpty(conf.getUrl(),conf.getUsername(),conf.getPassword())) { 
 			basicDataSource = new BasicDataSource();
 			basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 			basicDataSource.setUrl(conf.getUrl());

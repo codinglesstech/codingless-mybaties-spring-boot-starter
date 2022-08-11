@@ -57,6 +57,9 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 	@Autowired(required = false)
 	SqlmapLoaderFactory sqlmapLoaderFactory;
 
+	@Autowired(required = false)
+	private DataBaseConf conf;
+
 	public MyBatiesServiceDefaultImpl() {
 
 	}
@@ -123,9 +126,8 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 			}
 			if (dataSource == null) {
 
-				//加载用户安装目录下数据库配置信息 
-				DataBaseConf.Conf conf= DataBaseConf.get(); 
-				if(StringUtil.isNotEmpty(conf.getUrl(),conf.getUsername(),conf.getPassword())) {
+				// 加载用户安装目录下数据库配置信息
+				if (conf != null && StringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
 					BasicDataSource basicDataSource = new BasicDataSource();
 					basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 					basicDataSource.setUrl(conf.getUrl());
@@ -138,7 +140,7 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 					basicDataSource.setInitialSize(3);
 					basicDataSource.setRemoveAbandonedOnBorrow(true);
 					basicDataSource.setRemoveAbandonedTimeout(180);
-					dataSource = basicDataSource; 
+					dataSource = basicDataSource;
 					LOG.info("创建数据源：" + dataSource);
 				}
 
@@ -155,30 +157,30 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 			DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
 			session = null;
 			dataSourceTransactionManager.setDataSource(dataSource);
-
-//			Resource testMapper = new FileSystemResource(
-//					"/opt/work/myframework/src/main/java/com/unimall/myframework/test/test-Mapper.xml");
-
+  
 			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-			Resource[] resourcesList = resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
-
-			Resource[] xDefSqlMapper = sqlmapLoaderFactory != null ? sqlmapLoaderFactory.sqlMapperResource() : null;
-
+			Resource[] xDefSqlMapper = sqlmapLoaderFactory != null ? sqlmapLoaderFactory.sqlMapperResource() : null; 
 			List<Resource> mergeSqlMappers = new ArrayList<>();
-			mergeSqlMappers.addAll(Arrays.asList(resourcesList));
+			//Resource[] resourcesList = resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml"); 
+			//mergeSqlMappers.addAll(Arrays.asList(resourcesList));
+			
+			if(StringUtil.isNotEmpty(conf.getClasspathMapper())) {
+				List.of(conf.getClasspathMapper().split(",")).stream().filter(item->StringUtil.isNotEmpty(item)).forEach(item->{
+					try {
+						mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:"+item)));
+					}catch(Exception e) {
+						LOG.error("load mapper fail ",e);
+					}
+				});
+			}
+			
 			if (xDefSqlMapper != null) {
 				mergeSqlMappers.addAll(Arrays.asList(xDefSqlMapper));
 
 			}
+ 
 
-			/*
-			 * mergeSqlMappers.forEach(sql -> { try { LOG.info("加载SQL Mapper:" +
-			 * sql.getFile().getAbsolutePath()); } catch (IOException e) {
-			 * LOG.error("加载sqlmapper出错", e); } });
-			 */
-
-			Resource[] mergedResourceList = mergeSqlMappers.toArray(new Resource[0]);
-
+			Resource[] mergedResourceList = mergeSqlMappers.toArray(new Resource[0]); 
 			SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 			sqlSessionFactoryBean.setDataSource(dataSource);
 			sqlSessionFactoryBean.setMapperLocations(mergedResourceList);
@@ -198,8 +200,8 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 				noShardingSession = new SqlSessionTemplate(noShardingBean.getObject());
 				LOG.info("初始化 No-Sharding Session:" + noShardingSession);
 			}
-			
-			LOG.info("事务管理器:"+dataSourceTransactionManager);
+
+			LOG.info("事务管理器:" + dataSourceTransactionManager);
 			return dataSourceTransactionManager;
 		} catch (Exception e) {
 			LOG.error("创建事务", e);
@@ -241,11 +243,24 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 //			Resource testMapper = new FileSystemResource(
 //					"/opt/work/myframework/src/main/java/com/unimall/myframework/test/test-Mapper.xml");
 			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-			Resource[] resourcesList = resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
 			Resource[] xDefSqlMapper = sqlmapLoaderFactory != null ? sqlmapLoaderFactory.sqlMapperResource() : null;
 
 			List<Resource> mergeSqlMappers = new ArrayList<>();
-			mergeSqlMappers.addAll(Arrays.asList(resourcesList));
+			//Resource[] resourcesList = resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
+			//mergeSqlMappers.addAll(Arrays.asList(resourcesList));
+			
+			
+			if(StringUtil.isNotEmpty(conf.getClasspathMapper())) {
+				List.of(conf.getClasspathMapper().split(",")).stream().filter(item->StringUtil.isNotEmpty(item)).forEach(item->{
+					try {
+						mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:"+item)));
+					}catch(Exception e) {
+						LOG.error("load mapper fail ",e);
+					}
+				});
+			}
+			
+			
 			if (xDefSqlMapper != null) {
 				mergeSqlMappers.addAll(Arrays.asList(xDefSqlMapper));
 
@@ -282,8 +297,8 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 	@Override
 	public int executeUpdateSql(String sql, List<Object> param) {
 		try {
-			PreparedStatement ps = session.getConnection().prepareStatement(sql); 
-			PrepareParameterHelper.bindParam(ps, param);  
+			PreparedStatement ps = session.getConnection().prepareStatement(sql);
+			PrepareParameterHelper.bindParam(ps, param);
 			return ps.executeUpdate();
 		} catch (SQLException e) {
 			LOG.error("执行SQL出错", e);

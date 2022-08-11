@@ -68,12 +68,16 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 	protected MyBatiesService myBatiesService;
 	protected BasicDataSource basicDataSource;
  
+	
+
+	@Autowired(required = false)
+	private DataBaseConf conf;
+	
 	@Autowired
 	protected void setMyBatiesService(MyBatiesService myBatiesService) {
 		LOG.info("注入数据访问服务:" + myBatiesService);
-		this.myBatiesService = myBatiesService;
-		DataBaseConf.Conf conf = DataBaseConf.get();
-		if (StringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
+		this.myBatiesService = myBatiesService; 
+		if (conf!=null&&StringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
 			basicDataSource = new BasicDataSource();
 			basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 			basicDataSource.setUrl(conf.getUrl());

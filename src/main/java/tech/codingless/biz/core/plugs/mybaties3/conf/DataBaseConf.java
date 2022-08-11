@@ -1,31 +1,46 @@
 package tech.codingless.biz.core.plugs.mybaties3.conf;
 
-import java.util.Map;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-import lombok.Data;
-
+@Configuration
+@ConfigurationProperties("tech.codingless.rds")
 public class DataBaseConf {
-	@Data
-	public static class Conf{
-		private String url;
-		private String username;
-		private String password;
-	}
+	private String url;
+	private String username;
+	private String password; 
+	private String classpathMapper;
 
-	public static Conf get() {
-		String urlKey="biz.core.plugs.mybaties3.db.url";
-		String usernameKey="biz.core.plugs.mybaties3.db.username";
-		String passwordKey="biz.core.plugs.mybaties3.db.password";
-		Map<String, String>  prop = null;
-		
-		String url=prop.get(urlKey);
-		String username=prop.get(usernameKey);
-		String password=prop.get(passwordKey);
-		Conf conf = new Conf();
-		conf.setUrl(url);
-		conf.setUsername(username);
-		conf.setPassword(password);
-		return conf;
+	public String getClasspathMapper() {
+		return classpathMapper;
+	}
+	public void setClasspathMapper(String classpathMapper) {
+		this.classpathMapper = classpathMapper;
 	}
 	
+ 
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 }

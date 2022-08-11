@@ -40,6 +40,10 @@ public class DBInitSpringListener implements ApplicationListener<ApplicationStar
 
 	private boolean isCreate;
 
+	@Autowired(required = false)
+	private DataBaseConf conf;
+	
+	
 	@Value("${tech.codingless.biz.core.createtable:1}")
 	private String isautocreate;
 
@@ -56,8 +60,7 @@ public class DBInitSpringListener implements ApplicationListener<ApplicationStar
 		}
 		if (!isCreate && "1".equals(isautocreate)) {
 			isCreate = true;
-			LOG.info("自动同步表结构"); 
-			DataBaseConf.Conf conf = 	DataBaseConf.get();
+			LOG.info("自动同步表结构");  
 			if(conf==null||StringUtil.isEmpty(conf.getUrl(),conf.getUsername(),conf.getPassword())) {
 				LOG.info("Not Config Mysql Conn, Skip Create Table!"); 
 				return;
