@@ -29,7 +29,8 @@ import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 import tech.codingless.biz.core.plugs.mybaties3.conf.DataBaseConf;
 import tech.codingless.biz.core.plugs.mybaties3.helper.PrepareParameterHelper;
-import tech.codingless.biz.core.plugs.mybaties3.util.AssertUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesAssertUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 /**
  * 对 @SqlSessionTemplate 进行了一层封装
@@ -126,7 +127,7 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 			if (dataSource == null) {
 
 				// 加载用户安装目录下数据库配置信息
-				if (conf != null && StringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
+				if (conf != null && MybatiesStringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
 					BasicDataSource basicDataSource = new BasicDataSource();
 					basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 					basicDataSource.setUrl(conf.getUrl());
@@ -164,8 +165,8 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 			// resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
 			// mergeSqlMappers.addAll(Arrays.asList(resourcesList));
 
-			if (StringUtil.isNotEmpty(conf.getClasspathMapper())) {
-				List.of(conf.getClasspathMapper().split(",")).stream().filter(item -> StringUtil.isNotEmpty(item)).forEach(item -> {
+			if (MybatiesStringUtil.isNotEmpty(conf.getClasspathMapper())) {
+				List.of(conf.getClasspathMapper().split(",")).stream().filter(item -> MybatiesStringUtil.isNotEmpty(item)).forEach(item -> {
 					try {
 						mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:" + item)));
 					} catch (Exception e) {
@@ -249,8 +250,8 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 			// resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
 			// mergeSqlMappers.addAll(Arrays.asList(resourcesList));
 
-			if (StringUtil.isNotEmpty(conf.getClasspathMapper())) {
-				List.of(conf.getClasspathMapper().split(",")).stream().filter(item -> StringUtil.isNotEmpty(item)).forEach(item -> {
+			if (MybatiesStringUtil.isNotEmpty(conf.getClasspathMapper())) {
+				List.of(conf.getClasspathMapper().split(",")).stream().filter(item -> MybatiesStringUtil.isNotEmpty(item)).forEach(item -> {
 					try {
 						mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:" + item)));
 					} catch (Exception e) {
@@ -313,7 +314,7 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService, ApplicationL
 
 	@Override
 	public <E> List<E> selectListNoSharding(String statement, Object parameter) {
-		AssertUtil.assertNotNull(noShardingSession, "NO-SHARDING-SESSION-NOT-EXIST:未分片数据源不存在");
+		MybatiesAssertUtil.assertNotNull(noShardingSession, "NO-SHARDING-SESSION-NOT-EXIST:未分片数据源不存在");
 		return noShardingSession.selectList(statement, parameter);
 	}
 

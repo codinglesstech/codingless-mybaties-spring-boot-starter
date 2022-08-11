@@ -18,6 +18,7 @@ import tech.codingless.biz.core.plugs.mybaties3.helper.AutoFindByIdHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.AutoGetHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.AutoUpdateHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 //优先级最高，最先执行
 @Order(0)
@@ -60,7 +61,7 @@ public class DBInitSpringListener implements ApplicationListener<ApplicationStar
 		if (!isCreate && "1".equals(isautocreate)) {
 			isCreate = true;
 			LOG.info("自动同步表结构");  
-			if(conf==null||StringUtil.isEmpty(conf.getUrl(),conf.getUsername(),conf.getPassword())) {
+			if(conf==null||MybatiesStringUtil.isEmpty(conf.getUrl(),conf.getUsername(),conf.getPassword())) {
 				LOG.info("Not Config Mysql Conn, Skip Create Table!"); 
 				return;
 			}

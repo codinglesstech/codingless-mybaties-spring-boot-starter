@@ -9,7 +9,7 @@ import java.sql.Types;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
-import tech.codingless.biz.core.plugs.mybaties3.util.AssertUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesAssertUtil;
  
  
  
@@ -22,7 +22,7 @@ public  class MyBaseTypeHander<T>  extends BaseTypeHandler<T>{
 			ps.setNull(i, jdbcType.TYPE_CODE);
 			return;
 		} 
-		AssertUtil.assertTrue(parameter instanceof MyBaseColumn, "PARAM_NOT_INSTANCEOF_MYBASECOLUMN"); 
+		MybatiesAssertUtil.assertTrue(parameter instanceof MyBaseColumn, "PARAM_NOT_INSTANCEOF_MYBASECOLUMN"); 
 		Object dbObj = ((MyBaseColumn)parameter).toSerialize();
 		if(dbObj==null) {
 			ps.setNull(i, jdbcType.TYPE_CODE);
@@ -33,7 +33,7 @@ public  class MyBaseTypeHander<T>  extends BaseTypeHandler<T>{
 		}else if(dbObj instanceof String&&jdbcType.TYPE_CODE==Types.VARCHAR) {
 			ps.setString(i, (String)dbObj); 
 		}else {
-			AssertUtil.assertFail("JAVA_TYPE_JDBC_TYPE_NOT_MATCH");
+			MybatiesAssertUtil.assertFail("JAVA_TYPE_JDBC_TYPE_NOT_MATCH");
 		}
 		
 	}

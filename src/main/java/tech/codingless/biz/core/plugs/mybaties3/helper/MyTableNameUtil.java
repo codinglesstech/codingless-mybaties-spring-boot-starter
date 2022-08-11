@@ -1,8 +1,8 @@
 package tech.codingless.biz.core.plugs.mybaties3.helper;
 
 import tech.codingless.biz.core.plugs.mybaties3.BaseDO;
-import tech.codingless.biz.core.plugs.mybaties3.MyTable;
-import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyTable;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 /**
  * 
@@ -17,7 +17,7 @@ public class MyTableNameUtil {
 
 	public static String getTableName(BaseDO obj) {
 		MyTable myTable = obj.getClass().getAnnotation(MyTable.class);
-		String tableName = StringUtil.isEmpty(myTable.prefix()) ? TABLE_NAME : myTable.prefix().trim() + "_" + change2dbFormat(obj.getClass().getSimpleName());
+		String tableName = MybatiesStringUtil.isEmpty(myTable.prefix()) ? TABLE_NAME : myTable.prefix().trim() + "_" + change2dbFormat(obj.getClass().getSimpleName());
 		tableName = tableName.replace("_D_O", "").toLowerCase();
 		return tableName;
 	}

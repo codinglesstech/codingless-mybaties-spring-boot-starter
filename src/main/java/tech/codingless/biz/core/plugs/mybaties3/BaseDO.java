@@ -4,6 +4,9 @@ import java.util.Date;
 
 import org.bson.types.ObjectId;
 
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyColumn;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyComment;
+
  
 public class BaseDO {
  

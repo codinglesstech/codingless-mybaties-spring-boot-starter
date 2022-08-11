@@ -11,8 +11,8 @@ import org.apache.ibatis.session.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 import tech.codingless.biz.core.plugs.mybaties3.XmlMapperUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
  
 
@@ -48,11 +48,11 @@ public class AutoRollPageSelectSqlHelper {
 		selectXml.append("<mapper namespace=\"").append(namespance.substring(0, namespance.length() - 1)).append("\">");
 		selectXml.append("<select id=\"").append(selectKey).append(QUOTATION).append(" parameterType=\"map\" ");
 		String resultMap = selectNode.getStringAttribute("resultMap");
-		if (StringUtil.isNotEmpty(resultMap)) {
+		if (MybatiesStringUtil.isNotEmpty(resultMap)) {
 			selectXml.append(" resultMap=").append(QUOTATION).append(resultMap).append(QUOTATION);
 		}
 		String resultType = selectNode.getStringAttribute("resultType");
-		if (StringUtil.isNotEmpty(resultType)) {
+		if (MybatiesStringUtil.isNotEmpty(resultType)) {
 			selectXml.append(" resultType=").append(QUOTATION).append(resultType).append(QUOTATION);
 		}
 		selectXml.append(" >");

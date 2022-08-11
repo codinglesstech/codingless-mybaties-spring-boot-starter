@@ -7,12 +7,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 public class ConditionHelper {
 
 	public static List<QueryCondition> parse(String conditionDoc) {
-		if (StringUtil.isEmpty(conditionDoc)) {
+		if (MybatiesStringUtil.isEmpty(conditionDoc)) {
 			return new ArrayList<>(2);
 		}
 
@@ -22,7 +22,7 @@ public class ConditionHelper {
 			JSONObject oneColumnCondition = json.getJSONObject(column);
 			for (String op : oneColumnCondition.keySet()) {
 				Object val = oneColumnCondition.get(op);
-				if (val == null || (val instanceof String && StringUtil.isEmpty((String) val))) {
+				if (val == null || (val instanceof String && MybatiesStringUtil.isEmpty((String) val))) {
 					continue;
 				}
 

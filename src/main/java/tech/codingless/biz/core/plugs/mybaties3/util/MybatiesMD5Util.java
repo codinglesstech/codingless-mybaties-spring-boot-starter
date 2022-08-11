@@ -3,8 +3,6 @@ package tech.codingless.biz.core.plugs.mybaties3.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import tech.codingless.biz.core.plugs.mybaties3.HexUtil;
-
 /**
  * Static functions to simplifiy common {@link java.security.MessageDigest}
  * tasks. This class is thread safe.
@@ -12,9 +10,9 @@ import tech.codingless.biz.core.plugs.mybaties3.HexUtil;
  * @author 99bill
  * 
  */
-public class MD5Util {
+public class MybatiesMD5Util {
 
-	private MD5Util() {
+	private MybatiesMD5Util() {
 	}
 
 	/**

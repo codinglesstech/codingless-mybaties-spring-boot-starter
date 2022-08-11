@@ -42,6 +42,8 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
 
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyColumn;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.OrderTypeEnum;
 import tech.codingless.biz.core.plugs.mybaties3.condition.ColumnSelector;
 import tech.codingless.biz.core.plugs.mybaties3.condition.QueryCondition;
 import tech.codingless.biz.core.plugs.mybaties3.condition.QueryConditionWrapper;
@@ -55,7 +57,10 @@ import tech.codingless.biz.core.plugs.mybaties3.helper.AutoSelectByConditionSqlH
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.PrepareParameterHelper;
-import tech.codingless.biz.core.plugs.mybaties3.util.MD5Util;
+import tech.codingless.biz.core.plugs.mybaties3.util.DataEnvUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesMD5Util;
+import tech.codingless.biz.core.plugs.mybaties3.util.ReflectionUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 @Component
 public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T> {
@@ -74,7 +79,7 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 	protected void setMyBatiesService(MyBatiesService myBatiesService) {
 		LOG.info("注入数据访问服务:" + myBatiesService);
 		this.myBatiesService = myBatiesService; 
-		if (conf!=null&&StringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
+		if (conf!=null&&MybatiesStringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
 			basicDataSource = new BasicDataSource();
 			basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 			basicDataSource.setUrl(conf.getUrl());
@@ -295,13 +300,13 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 			try {
 				Field filed = clazz.getDeclaredField(attrName);
 				MyColumn myColumn = filed.getAnnotation(MyColumn.class);
-				if (myColumn != null && StringUtil.isNotEmpty(myColumn.name())) {
+				if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.name())) {
 					columnName = myColumn.name();
 				}
 			} catch (Exception e1) {
 
 			}
-			if (StringUtil.isEmpty(columnName)) {
+			if (MybatiesStringUtil.isEmpty(columnName)) {
 				columnName = CommonSQLHelper.change2dbFormat(attrName);
 			}
 			ResultMapping.Builder mappingBuilder = new ResultMapping.Builder(myBatiesService.getConfiguration(), attrName);
@@ -367,13 +372,13 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 			try {
 				Field filed = clazz.getDeclaredField(attrName);
 				MyColumn myColumn = filed.getAnnotation(MyColumn.class);
-				if (myColumn != null && StringUtil.isNotEmpty(myColumn.name())) {
+				if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.name())) {
 					columnName = myColumn.name();
 				}
 			} catch (Exception e1) {
 
 			}
-			if (StringUtil.isEmpty(columnName)) {
+			if (MybatiesStringUtil.isEmpty(columnName)) {
 				columnName = CommonSQLHelper.change2dbFormat(attrName);
 			}
 			ResultMapping.Builder mappingBuilder = new ResultMapping.Builder(myBatiesService.getConfiguration(), attrName);
@@ -410,12 +415,12 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 			try {
 				Field filed = clazz.getDeclaredField(attrName);
 				MyColumn myColumn = filed.getAnnotation(MyColumn.class);
-				if (myColumn != null && StringUtil.isNotEmpty(myColumn.name())) {
+				if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.name())) {
 					columnName = myColumn.name();
 				}
 			} catch (Exception e1) {
 			}
-			if (StringUtil.isEmpty(columnName)) {
+			if (MybatiesStringUtil.isEmpty(columnName)) {
 				columnName = CommonSQLHelper.change2dbFormat(attrName);
 			}
 			ResultMapping.Builder mappingBuilder = new ResultMapping.Builder(myBatiesService.getConfiguration(), attrName);
@@ -451,9 +456,9 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 		queryParam.put("sortType", orderType != null ? orderType.getCode() : null);
 		try {
 			selectSql = CommonSQLHelper.genSelectSqlSkipNullProperties(companyId, base, orderColumn, orderType, limit, offset);
-			selectSqlKey = "AUTOSQL.rollpage_list_" + base.getClass().getName() + "_" + MD5Util.md5Hex(selectSql.getSql());
+			selectSqlKey = "AUTOSQL.rollpage_list_" + base.getClass().getName() + "_" + MybatiesMD5Util.md5Hex(selectSql.getSql());
 			countSql = CommonSQLHelper.genCountSqlSkipNullProperties(companyId, base);
-			countSqlKey = "AUTOSQL.rollpage_count_" + base.getClass().getName() + "_" + MD5Util.md5Hex(selectSql.getSql());
+			countSqlKey = "AUTOSQL.rollpage_count_" + base.getClass().getName() + "_" + MybatiesMD5Util.md5Hex(selectSql.getSql());
 
 			result.setList(myBatiesService.selectList(selectSqlKey, queryParam));
 			RowCount rowCount = myBatiesService.selectOne(countSqlKey, queryParam);
@@ -630,12 +635,12 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 
 						for (SqlLoader sqlLoader : sqlLoaders) {
 							xml = sqlLoader.load(namespace, id);
-							if (StringUtil.isNotEmpty(xml)) {
+							if (MybatiesStringUtil.isNotEmpty(xml)) {
 								LOG.info("found sql by loader:{}, selectId:{}, sql->{}", sqlLoader.name(), selectId, xml);
 								continue;
 							}
 						}
-						if (StringUtil.isEmpty(xml)) {
+						if (MybatiesStringUtil.isEmpty(xml)) {
 							return Collections.emptyList();
 						}
 						// has found sql,and regist to mybaties
@@ -690,12 +695,12 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 						String sql = null; 
 						for (SqlLoader sqlLoader : sqlLoaders) {
 							sql = sqlLoader.load(namespace, id);
-							if (StringUtil.isNotEmpty(sql)) {
+							if (MybatiesStringUtil.isNotEmpty(sql)) {
 								LOG.info("found sql by loader:{}, selectId:{}, sql->{}", sqlLoader.name(), selectId, sql);
 								continue;
 							}
 						}
-						if (StringUtil.isEmpty(sql)) {
+						if (MybatiesStringUtil.isEmpty(sql)) {
 							return Collections.emptyList();
 						}
 						// has found sql,and regist to mybaties
@@ -729,7 +734,7 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 		}
 		
 		sql +=" limit #{_limit_} offset #{_offset_} ";
-		String sqlId = "select_"+entityClass.getSimpleName()+"_"+StringUtil.md5(sql);
+		String sqlId = "select_"+entityClass.getSimpleName()+"_"+MybatiesStringUtil.md5(sql);
 		String sqlKey= NAMESPACE.concat(".").concat(sqlId);
 	  
 		wrapper.getContext().put("_limit_", limit);
@@ -763,7 +768,7 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 	public long count(Class<T> entityClass, QueryConditionWrapper<T> wrapper) {
 		String sql = QueryConditionWrapperParser.parseCount(entityClass, wrapper) ;
 		 
-		String sqlKey = "count_"+entityClass.getSimpleName()+"_"+StringUtil.md5(sql);
+		String sqlKey = "count_"+entityClass.getSimpleName()+"_"+MybatiesStringUtil.md5(sql);
 		String namespace="AUTOSQL";
 		String namespace2="AUTOSQL."; 
  

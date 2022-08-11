@@ -23,6 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyColumn;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyComment;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyTable;
+import tech.codingless.biz.core.plugs.mybaties3.enums.DbNameConstant;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
+
 @Service
 public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 	private final static Logger LOG = LoggerFactory.getLogger(TableAutoCreateServiceMysqlImpl.class);
@@ -179,7 +185,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 	
 	public static String getTableName(Class<?> clazz) {
 		MyTable myTable = clazz.getAnnotation(MyTable.class);
-		String tableName = StringUtil.isEmpty(myTable.prefix()) ? TABLE_NAME : myTable.prefix().trim() + "_" + change2dbFormat(clazz.getSimpleName());
+		String tableName = MybatiesStringUtil.isEmpty(myTable.prefix()) ? TABLE_NAME : myTable.prefix().trim() + "_" + change2dbFormat(clazz.getSimpleName());
 		tableName = tableName.replace("_D_O", "").toLowerCase();
 		return tableName;
 	}
@@ -221,7 +227,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 			MyColumn myColumn = field.getAnnotation(MyColumn.class);
 			MyComment myComment = field.getAnnotation(MyComment.class); 
 			String typeDef = detectedColumnTypeByClassType(typeClazz, columnName); 
-			if(myColumn!=null&&StringUtil.isNotEmpty(myColumn.type())) {
+			if(myColumn!=null&&MybatiesStringUtil.isNotEmpty(myColumn.type())) {
 				typeDef = myColumn.type();
 			}
 			
@@ -229,7 +235,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 			String defaultValue = myColumn!=null?myColumn.defaultValue():"";
 			
 			String commentSql = "";
-			if (myComment!=null&& StringUtil.isNotEmpty(myComment.value())) { 
+			if (myComment!=null&& MybatiesStringUtil.isNotEmpty(myComment.value())) { 
 				commentSql = "  COMMENT '" + myComment.value().replaceAll("'", "") + "'";
 
 			} 
@@ -247,7 +253,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 				}
 			} 
 			
-			String ddl = String.format("ALTER table %s ADD COLUMN %s %s %s %s %s", tableName, columnName, typeDef, (StringUtil.isNotEmpty(defaultValue) ? ("default " + defaultValue) : ""), commentSql,
+			String ddl = String.format("ALTER table %s ADD COLUMN %s %s %s %s %s", tableName, columnName, typeDef, (MybatiesStringUtil.isNotEmpty(defaultValue) ? ("default " + defaultValue) : ""), commentSql,
 					autoIncrementSql);
 			LOG.info(ddl);
 			ddls.append(ddl).append(";");

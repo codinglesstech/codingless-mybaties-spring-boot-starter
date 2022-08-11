@@ -15,8 +15,8 @@ import org.apache.ibatis.session.Configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import tech.codingless.biz.core.plugs.mybaties3.CommonSQLHelper;
-import tech.codingless.biz.core.plugs.mybaties3.MyColumn;
-import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyColumn;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 @Slf4j
 public class AutoGetHelper {
@@ -58,13 +58,13 @@ public class AutoGetHelper {
 			try {
 				Field filed = clazz.getDeclaredField(attrName);
 				MyColumn myColumn = filed.getAnnotation(MyColumn.class);
-				if (myColumn != null && StringUtil.isNotEmpty(myColumn.name())) {
+				if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.name())) {
 					columnName = myColumn.name();
 				}
 			} catch (Exception e1) {
 
 			}
-			if (StringUtil.isEmpty(columnName)) {
+			if (MybatiesStringUtil.isEmpty(columnName)) {
 				columnName = CommonSQLHelper.change2dbFormat(attrName);
 			}
 			ResultMapping.Builder mappingBuilder = new ResultMapping.Builder(configuration, attrName);

@@ -5,9 +5,8 @@ import java.util.Collection;
 import org.springframework.util.CollectionUtils;
 
 import tech.codingless.biz.core.plugs.mybaties3.MyException;
-import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 
-public class AssertUtil {
+public class MybatiesAssertUtil {
 
 	public static void assertTrue(boolean bool) {
 		if (!bool) {
@@ -34,7 +33,7 @@ public class AssertUtil {
 	}
 
 	public static void assertNotEmpty(String obj, String code) {
-		if (StringUtil.isEmpty(obj)) {
+		if (MybatiesStringUtil.isEmpty(obj)) {
 			assertFail(code);
 		}
 

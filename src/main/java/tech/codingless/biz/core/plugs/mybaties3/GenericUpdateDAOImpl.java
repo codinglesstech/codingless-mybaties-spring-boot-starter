@@ -32,6 +32,7 @@ import tech.codingless.biz.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.UpdateSkipNullBatchAppendHelper;
 import tech.codingless.biz.core.plugs.mybaties3.util.DataSessionEnv;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
  
 
 @Component
@@ -49,7 +50,7 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 	protected void setMyBatiesService(MyBatiesService myBatiesService) {
 		LOG.info("Jnjection Data Access Service: {}" , myBatiesService);
 		this.myBatiesService = myBatiesService;  
-		if(conf!=null&&StringUtil.isNotEmpty(conf.getUrl(),conf.getUsername(),conf.getPassword())) { 
+		if(conf!=null&&MybatiesStringUtil.isNotEmpty(conf.getUrl(),conf.getUsername(),conf.getPassword())) { 
 			basicDataSource = new BasicDataSource();
 			basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 			basicDataSource.setUrl(conf.getUrl());

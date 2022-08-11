@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import tech.codingless.biz.core.plugs.mybaties3.CommonSQLHelper;
-import tech.codingless.biz.core.plugs.mybaties3.MyColumn;
-import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyColumn;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
  
 
@@ -46,12 +46,12 @@ public class AutoCreateBatchHelper {
 				if(myColumn!=null&&myColumn.virtual()) {
 					continue;
 				}
-				if (myColumn != null && StringUtil.isNotEmpty(myColumn.name())) {
+				if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.name())) {
 					columnName = myColumn.name();
 				}
 			} catch (Exception e1) {
 			}
-			if (StringUtil.isEmpty(columnName)) {
+			if (MybatiesStringUtil.isEmpty(columnName)) {
 				columnName = CommonSQLHelper.change2dbFormat(attrName);
 			}
 			columnBuilder.append(columnName).append(",");

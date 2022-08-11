@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
+
+import tech.codingless.biz.core.plugs.mybaties3.SerializableFunction;
 
 public class ReflectionUtil {
 	private static Map<SerializableFunction<?, ?>, Field> cache = new ConcurrentHashMap<>();

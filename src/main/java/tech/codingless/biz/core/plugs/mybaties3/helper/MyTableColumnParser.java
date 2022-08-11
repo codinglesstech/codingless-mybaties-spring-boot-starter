@@ -12,9 +12,9 @@ import org.apache.ibatis.type.StringTypeHandler;
 
 import lombok.Data;
 import tech.codingless.biz.core.plugs.mybaties3.CommonSQLHelper;
-import tech.codingless.biz.core.plugs.mybaties3.MyColumn;
-import tech.codingless.biz.core.plugs.mybaties3.MyComment;
-import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyColumn;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyComment;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 public class MyTableColumnParser {
 
@@ -86,7 +86,7 @@ public class MyTableColumnParser {
 				if(myColumn!=null&&myColumn.virtual()) {
 					continue;
 				} 
-				if (myColumn != null && StringUtil.isNotEmpty(myColumn.name())) {
+				if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.name())) {
 					columnName = myColumn.name();
 				}
 				if(myColumn!=null) {
@@ -109,7 +109,7 @@ public class MyTableColumnParser {
 			} catch (Exception e1) {
 
 			}
-			if (StringUtil.isEmpty(columnName)) {
+			if (MybatiesStringUtil.isEmpty(columnName)) {
 				columnName = CommonSQLHelper.change2dbFormat(attrName);
 			}
 			columnProp.setColumn(columnName);
@@ -172,14 +172,14 @@ public class MyTableColumnParser {
 						//只读字段不允许修改
 						continue;
 					} 
-					columnName = StringUtil.isNotEmpty(myColumn.name()) ? myColumn.name() : columnName;
+					columnName = MybatiesStringUtil.isNotEmpty(myColumn.name()) ? myColumn.name() : columnName;
 				}
 			} catch (Exception e) {
 
 			}
 			
 			ColumnProp columnProp = new ColumnProp();
-			if (StringUtil.isEmpty(columnName)) {
+			if (MybatiesStringUtil.isEmpty(columnName)) {
 				columnName = CommonSQLHelper.change2dbFormat(attrName);
 			}
 			columnProp.setColumn(columnName);

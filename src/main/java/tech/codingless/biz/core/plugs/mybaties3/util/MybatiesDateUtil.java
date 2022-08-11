@@ -15,9 +15,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
-
-public class DateUtil {
+public class MybatiesDateUtil {
 	private static SimpleDateFormat defaultFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static SimpleDateFormat formater1 = new SimpleDateFormat("yyyy/MM/dd");
 	private static SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyyMMdd");
@@ -89,7 +87,7 @@ public class DateUtil {
 	 */
 	public static Date parse(String source) {
 		try {
-			if (StringUtil.isEmpty(source) || !source.matches(DATETIME_REGEX)) {
+			if (MybatiesStringUtil.isEmpty(source) || !source.matches(DATETIME_REGEX)) {
 				return null;
 			}
 			return defaultFormater.parse(source);
@@ -136,7 +134,7 @@ public class DateUtil {
 	 */
 	public static Date parseDate(String dateValue, String formatPattern) {
 		try {
-			if (StringUtil.isEmpty(dateValue) || !dateValue.matches(DATETIME_REGEX)) {
+			if (MybatiesStringUtil.isEmpty(dateValue) || !dateValue.matches(DATETIME_REGEX)) {
 				return null;
 			}
 			SimpleDateFormat formater = new SimpleDateFormat(formatPattern);
@@ -159,8 +157,8 @@ public class DateUtil {
 	 *
 	 */
 	public static Date utcToDate(String utcTimeStr) {
-		if (StringUtil.isEmpty(utcTimeStr)) {
-			AssertUtil.assertNotEmpty(utcTimeStr, "UTC_TIME_STR_EMPTY");
+		if (MybatiesStringUtil.isEmpty(utcTimeStr)) {
+			MybatiesAssertUtil.assertNotEmpty(utcTimeStr, "UTC_TIME_STR_EMPTY");
 		}
 		if (utcTimeStr.endsWith("Z") || utcTimeStr.length() == 19) {
 			return new Date(LocalDateTime.parse(utcTimeStr.substring(0, 19)).toInstant(ZoneOffset.of("Z")).toEpochMilli());

@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 /**
  * This class provides convenient functions to convert hex string to byte array

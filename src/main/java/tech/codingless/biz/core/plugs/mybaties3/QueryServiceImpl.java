@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
+
 @Service
 public class QueryServiceImpl implements QueryService {
 	private final static Logger LOG = LoggerFactory.getLogger(TableAutoCreateServiceMysqlImpl.class); 
@@ -32,7 +34,7 @@ public class QueryServiceImpl implements QueryService {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Override
 	public List<Map<String, Object>> list(Parameter parameter) {
-		if (StringUtil.isEmpty(parameter.getSqlId())) {
+		if (MybatiesStringUtil.isEmpty(parameter.getSqlId())) {
 			return null;
 		}
 		if (!SAFE_SQLID_MAP.containsKey(parameter.getSqlId())) {
@@ -59,7 +61,7 @@ public class QueryServiceImpl implements QueryService {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Override
 	public int count(Parameter parameter) {
-		if (StringUtil.isEmpty(parameter.getSqlId())) {
+		if (MybatiesStringUtil.isEmpty(parameter.getSqlId())) {
 			return 0;
 		}
 		if (!SAFE_SQLID_MAP.containsKey(parameter.getSqlId())) {
@@ -94,9 +96,9 @@ public class QueryServiceImpl implements QueryService {
 		String pageStr = request.getParameter("page");
 		String sort = request.getParameter("sort");
 		String order = request.getParameter("order");
-		Integer page = StringUtil.isNotEmpty(pageStr) ? Integer.parseInt(pageStr) : 1;
+		Integer page = MybatiesStringUtil.isNotEmpty(pageStr) ? Integer.parseInt(pageStr) : 1;
 		String rowsStr = request.getParameter("rows");
-		Integer rows = StringUtil.isNotEmpty(rowsStr) ? Integer.parseInt(rowsStr) : 1;
+		Integer rows = MybatiesStringUtil.isNotEmpty(rowsStr) ? Integer.parseInt(rowsStr) : 1;
 		if (totalRows == null && !"true".equalsIgnoreCase(noCount)) {
 			QueryService.Parameter parameter = new QueryService.Parameter();
 			parameter.setMap(p);

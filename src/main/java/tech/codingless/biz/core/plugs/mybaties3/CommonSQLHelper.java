@@ -10,9 +10,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Getter;
 import lombok.Setter;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyColumn;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.MyTable;
+import tech.codingless.biz.core.plugs.mybaties3.annotation.OrderTypeEnum;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser.ColumnProp;
-import tech.codingless.biz.core.plugs.mybaties3.util.AssertUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesAssertUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 public class CommonSQLHelper {
 	private static final String BLOCK = " ";
@@ -42,7 +46,7 @@ public class CommonSQLHelper {
 		try {
 
 			myTable = entity.getDeclaredConstructor().newInstance().getClass().getAnnotation(MyTable.class);
-			tableName = StringUtil.isEmpty(myTable.prefix()) ? "uni" : myTable.prefix().trim() + "_" + change2dbFormat(entity.getSimpleName());
+			tableName = MybatiesStringUtil.isEmpty(myTable.prefix()) ? "uni" : myTable.prefix().trim() + "_" + change2dbFormat(entity.getSimpleName());
 			tableName = tableName.replace("_D_O", "").toUpperCase(); 
 			TABLE_NAME_CACHE.put(entity, tableName);
 			return tableName;
@@ -134,13 +138,13 @@ public class CommonSQLHelper {
 				Field filed = clazz.getDeclaredField(pName);
 				MyColumn myColumn = filed.getAnnotation(MyColumn.class);
 				if (myColumn != null) {
-					columnName = StringUtil.isNotEmpty(myColumn.name()) ? myColumn.name() : columnName;
+					columnName = MybatiesStringUtil.isNotEmpty(myColumn.name()) ? myColumn.name() : columnName;
 				}
 			} catch (Exception e) {
 
 			}
 
-			if (StringUtil.isEmpty(columnName)) {
+			if (MybatiesStringUtil.isEmpty(columnName)) {
 				columnName = change2dbFormat(pName);
 			}
 			map.put(columnName, pName);
@@ -165,13 +169,13 @@ public class CommonSQLHelper {
 
 	public static String getDeleteSQL(Class<?> clazz) {
 		PrimaryKey primaryKey = getPrimaryKey(clazz); 
-		AssertUtil.assertNotNull(primaryKey, clazz + " 缺少主键!"); 
+		MybatiesAssertUtil.assertNotNull(primaryKey, clazz + " 缺少主键!"); 
 		return String.format("delete from %s where %s = #{entityId}", getTableName(clazz), primaryKey.getColumn());
 	}
 
 	public static String getDeleteWithCompanyIdSQL(Class<?> clazz) {
 		PrimaryKey primaryKey = getPrimaryKey(clazz);
-		AssertUtil.assertNotNull(primaryKey, clazz + " 缺少主键!");  
+		MybatiesAssertUtil.assertNotNull(primaryKey, clazz + " 缺少主键!");  
 		return String.format("delete from %s where %s = #{entityId} and company_id=#{company_id}", getTableName(clazz), primaryKey.getColumn());
 	}
 
@@ -198,8 +202,8 @@ public class CommonSQLHelper {
 	private static String gentUpdateSQLWithCompanyId(Class<?> clazz, boolean companyIdCondition) {
 		Map<String, String> columns = getColumnAndProperties(clazz);
 		PrimaryKey key = getPrimaryKey(clazz);
-		AssertUtil.assertNotNull(key, clazz + " 缺少主键!");  
-		AssertUtil.assertNotNull(columns, clazz + " 获取不到字段关系!");  
+		MybatiesAssertUtil.assertNotNull(key, clazz + " 缺少主键!");  
+		MybatiesAssertUtil.assertNotNull(columns, clazz + " 获取不到字段关系!");  
 		
 		StringBuffer setContent = new StringBuffer();
 		for (String column : columns.keySet()) {
@@ -236,19 +240,19 @@ public class CommonSQLHelper {
 
 	public static String getGetSQLByCompanyId(Class<?> clazz) {
 		PrimaryKey key = getPrimaryKey(clazz);
-		AssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
+		MybatiesAssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
 		return String.format("select * from %s where %s = #{%s}  and  company_id =#{companyId} and not del", getTableName(clazz), key.getColumn(), key.getAttrName());
 	}
 
 	public static String getListSQL(Class<?> clazz) {
 		PrimaryKey key = getPrimaryKey(clazz);
-		AssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
+		MybatiesAssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
 		return String.format("select * from %s order by  gmt_create asc", getTableName(clazz));
 	}
 
 	public static String getListByCompanySQL(Class<?> clazz) {
 		PrimaryKey key = getPrimaryKey(clazz);
-		AssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
+		MybatiesAssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
 		return String.format("select * from %s  where  company_id = #{companyId} and not del order by  gmt_create asc", getTableName(clazz));
 	}
 
@@ -263,7 +267,7 @@ public class CommonSQLHelper {
 	public static ExecuteSql genSelectSqlSkipNullProperties(String companyId, BaseDO entity, String orderColumn, OrderTypeEnum orderType, Integer limit, Integer offset) throws Exception {
 		Class<?> clazz = entity.getClass();
 		PrimaryKey key = getPrimaryKey(clazz);
-		AssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
+		MybatiesAssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
 
 		ExecuteSql sql = new ExecuteSql();
 		sql.setParam(new ArrayList<>());
@@ -272,7 +276,7 @@ public class CommonSQLHelper {
 
 		// 添加companyId条件
 		boolean needWhereKeyword = true;
-		if (StringUtil.isNotEmpty(companyId)) {
+		if (MybatiesStringUtil.isNotEmpty(companyId)) {
 			selectSql.append(WHERE);
 			needWhereKeyword = false;
 			selectSql.append(BLOCK).append("company_id=").append("#{companyId} and not del");
@@ -293,7 +297,7 @@ public class CommonSQLHelper {
 		}
 
 		// 添加排序与分页参数
-		if (StringUtil.isNotEmpty(orderColumn) && orderType != null) {
+		if (MybatiesStringUtil.isNotEmpty(orderColumn) && orderType != null) {
 			selectSql.append(" order by ").append(orderColumn).append(" ").append(orderType.getCode());
 			//selectSql.append(" order by #{sortColumn}  #{sortType}");// .append("#{orderColumn}");
 			//sql.getParam().add(orderColumn);
@@ -310,7 +314,7 @@ public class CommonSQLHelper {
 	public static ExecuteSql genCountSqlSkipNullProperties(String companyId, BaseDO entity) throws Exception {
 		Class<?> clazz = entity.getClass();
 		PrimaryKey key = getPrimaryKey(clazz);
-		AssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
+		MybatiesAssertUtil.assertNotNull(key, clazz + " 缺少主键!");   
 
 		ExecuteSql sql = new ExecuteSql();
 		sql.setParam(new ArrayList<>());
@@ -319,7 +323,7 @@ public class CommonSQLHelper {
 		selectSql.append("select count(1) as total_Count  from  ").append(getTableName(clazz));
 
 		// 添加companyId条件
-		if (StringUtil.isNotEmpty(companyId)) {
+		if (MybatiesStringUtil.isNotEmpty(companyId)) {
 			selectSql.append(WHERE);
 			needWhereKeyword = false;
 			selectSql.append(BLOCK).append("company_id=").append("#{companyId} and not del");
@@ -345,7 +349,7 @@ public class CommonSQLHelper {
 
 	public static String getDeleteLogicalWithCompanyIdSQL(Class<?> clazz) {
 		PrimaryKey primaryKey = getPrimaryKey(clazz);
-		AssertUtil.assertNotNull(primaryKey, clazz + " 缺少主键!");   
+		MybatiesAssertUtil.assertNotNull(primaryKey, clazz + " 缺少主键!");   
 		return String.format("update %s set del=true where %s = #{entityId} and company_id=#{company_id}", getTableName(clazz), primaryKey.getColumn());
 	}
 

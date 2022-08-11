@@ -1,6 +1,4 @@
-package tech.codingless.biz.core.plugs.mybaties3;
-
-import tech.codingless.biz.core.plugs.mybaties3.util.DataSessionEnv;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 public class DataEnvUtil {
 	/**

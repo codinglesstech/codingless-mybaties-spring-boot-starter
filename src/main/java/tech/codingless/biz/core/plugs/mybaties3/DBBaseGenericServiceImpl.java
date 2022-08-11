@@ -13,12 +13,15 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
 
+import tech.codingless.biz.core.plugs.mybaties3.annotation.OrderTypeEnum;
 import tech.codingless.biz.core.plugs.mybaties3.condition.ColumnSelector;
 import tech.codingless.biz.core.plugs.mybaties3.condition.QueryConditionWrapper;
 import tech.codingless.biz.core.plugs.mybaties3.data.UpdateObject;
 import tech.codingless.biz.core.plugs.mybaties3.helper.ColumnHelper;
-import tech.codingless.biz.core.plugs.mybaties3.util.AssertUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesAssertUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.DataEnvUtil;
 import tech.codingless.biz.core.plugs.mybaties3.util.DataSessionEnv;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
   
  
 public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGenericService<T> {
@@ -59,17 +62,17 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 		 
 		data.setDel(false);
 		data.setEnv(DataEnvUtil.getEvn());
-		if (StringUtil.isEmpty(data.getId())) {
+		if (MybatiesStringUtil.isEmpty(data.getId())) {
 			data.generatorKey();
 		}
-		if(StringUtil.isEmpty(data.getCreateUid())) {
+		if(MybatiesStringUtil.isEmpty(data.getCreateUid())) {
 			data.setCreateUid(DataSessionEnv.CURRENT_USER_ID.get());
 		} 
-		if(StringUtil.isEmpty(data.getOwnerId())) {
+		if(MybatiesStringUtil.isEmpty(data.getOwnerId())) {
 			data.setOwnerId(DataSessionEnv.CURRENT_USER_ID.get()); 
 		}
-		data.setWriteUid(StringUtil.isNotEmpty(data.getWriteUid()) ? data.getWriteUid() : DataSessionEnv.CURRENT_USER_ID.get());
-		data.setCompanyId(StringUtil.isNotEmpty(data.getCompanyId()) ? data.getCompanyId() : DataSessionEnv.CURRENT_COMPANY_ID.get()); 
+		data.setWriteUid(MybatiesStringUtil.isNotEmpty(data.getWriteUid()) ? data.getWriteUid() : DataSessionEnv.CURRENT_USER_ID.get());
+		data.setCompanyId(MybatiesStringUtil.isNotEmpty(data.getCompanyId()) ? data.getCompanyId() : DataSessionEnv.CURRENT_COMPANY_ID.get()); 
 		data.setVer(data.getVer() != null ? data.getVer() : 1L); 
 		return updateDao.createEntity(data) == 1;
 	}
@@ -77,7 +80,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Transactional
 	@Override
 	public boolean create(String companyId, T obj) {
-		AssertUtil.assertNotEmpty(companyId, "COMPANY_ID_NOT_EXIST");
+		MybatiesAssertUtil.assertNotEmpty(companyId, "COMPANY_ID_NOT_EXIST");
 		BaseDO entiry = obj;
 		entiry.setCompanyId(companyId);
 		return create(obj);
@@ -100,7 +103,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Transactional
 	@Override
 	public boolean updateNotNull(String companyId, T data, Long ver) {  
-		AssertUtil.assertNotEmpty(companyId, "COMPANY_ID_EMPTY");
+		MybatiesAssertUtil.assertNotEmpty(companyId, "COMPANY_ID_EMPTY");
 		data.setCompanyId(companyId); 
 		return this.updateSkipNull(data, ver);
 	}
@@ -114,7 +117,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 			entity = (T)ScriptObjectMirrorUtil.to(entity,clazz);
 		} 
 		*/
-		AssertUtil.assertNotEmpty(companyId, "COMPANY_ID_EMPTY");
+		MybatiesAssertUtil.assertNotEmpty(companyId, "COMPANY_ID_EMPTY");
 		data.setCompanyId(companyId); 
 		return this.updateSkipNull(data, ver);
 	}
@@ -122,7 +125,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Transactional
 	@Override
 	public boolean updateSkipNull(T data, Long ver) {
-		AssertUtil.assertTrue(updateDao.updateNotNull(data, ver) == 1, "UPDATE_NOT_NULL_FAIL"); 
+		MybatiesAssertUtil.assertTrue(updateDao.updateNotNull(data, ver) == 1, "UPDATE_NOT_NULL_FAIL"); 
 		return false;
 	}
 	
@@ -183,7 +186,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 
 	@Override
 	public T get(Class<T> clazz, String entityId) {
-		if (StringUtil.isNotEmpty(DataSessionEnv.CURRENT_COMPANY_ID.get())) {
+		if (MybatiesStringUtil.isNotEmpty(DataSessionEnv.CURRENT_COMPANY_ID.get())) {
 			return queryDao.getEntity(clazz, entityId);
 		}
 		return queryDao.getEntity(clazz, entityId);
@@ -210,7 +213,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 		
 		//检查列字段的合法性
 		if(!CollectionUtils.isEmpty(columns)) { 
-			AssertUtil.assertTrue(columns.stream().filter(column->ColumnHelper.isIncorrectColumn(column)).count()==0, "HAS_INCORRECT_COLUMN"); 
+			MybatiesAssertUtil.assertTrue(columns.stream().filter(column->ColumnHelper.isIncorrectColumn(column)).count()==0, "HAS_INCORRECT_COLUMN"); 
 		}
 		
 		return queryDao.findEntityList(clazz, companyId, idList,columns);
@@ -220,14 +223,14 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Override
 	public boolean create(List<T> list) {
 		list.forEach(item -> { 
-			if (StringUtil.isEmpty(item.getId())) {
+			if (MybatiesStringUtil.isEmpty(item.getId())) {
 				item.generatorKey();
 			}
 			item.setCreateUid(DataSessionEnv.CURRENT_USER_ID.get());
 			item.setOwnerId(DataSessionEnv.CURRENT_USER_ID.get());
 			item.setWriteUid(DataSessionEnv.CURRENT_USER_ID.get());
 			item.setDel(false);
-			if (StringUtil.isEmpty(item.getCompanyId())) {
+			if (MybatiesStringUtil.isEmpty(item.getCompanyId())) {
 				item.setCompanyId(DataSessionEnv.CURRENT_COMPANY_ID.get());
 			}
 			if (item.getVer() == null) {
@@ -267,7 +270,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Override
 	public T findOneByExample(Class<T> clazz, String companyId, T example) {
 		List<T> list = this.findByExample(clazz, companyId, example, 2);
-		AssertUtil.assertTrue(list == null || list.size() <= 1, "RESULT_MORE_THEN_ONE");
+		MybatiesAssertUtil.assertTrue(list == null || list.size() <= 1, "RESULT_MORE_THEN_ONE");
 		if (CollectionUtils.isEmpty(list)) {
 			return null;
 		}
@@ -379,7 +382,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, ?>> select(String selectId, String param, int offset, int limit) { 
-		return queryGenericDao.select(selectId, StringUtil.isEmpty(param)?new HashMap<String,Object>():JSON.parseObject(param), offset, limit); 
+		return queryGenericDao.select(selectId, MybatiesStringUtil.isEmpty(param)?new HashMap<String,Object>():JSON.parseObject(param), offset, limit); 
 	}
 	
 	 

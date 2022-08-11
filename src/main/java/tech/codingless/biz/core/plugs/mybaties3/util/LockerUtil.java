@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +18,7 @@ public class LockerUtil {
 		List<String> list = new ArrayList<>();
 
 		for(String key:keys){
-			if(StringUtil.isNotEmpty(key)){
+			if(MybatiesStringUtil.isNotEmpty(key)){
 				list.add(key);
 			}
 		}

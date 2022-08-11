@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import tech.codingless.biz.core.plugs.mybaties3.annotation.OrderTypeEnum;
 import tech.codingless.biz.core.plugs.mybaties3.condition.ColumnSelector;
 import tech.codingless.biz.core.plugs.mybaties3.condition.QueryCondition;
 import tech.codingless.biz.core.plugs.mybaties3.condition.QueryConditionWrapper;

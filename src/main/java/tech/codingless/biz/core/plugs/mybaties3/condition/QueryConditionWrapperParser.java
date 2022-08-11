@@ -2,10 +2,10 @@ package tech.codingless.biz.core.plugs.mybaties3.condition;
 
 import java.lang.reflect.Field;
 
-import tech.codingless.biz.core.plugs.mybaties3.ReflectionUtil;
-import tech.codingless.biz.core.plugs.mybaties3.StringUtil;
 import tech.codingless.biz.core.plugs.mybaties3.TableAutoCreateServiceMysqlImpl;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTableColumnParser;
+import tech.codingless.biz.core.plugs.mybaties3.util.ReflectionUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 public class QueryConditionWrapperParser {
  
@@ -50,7 +50,7 @@ public class QueryConditionWrapperParser {
 	
 	public static String toXml(Class<?> clazz,String namespace,ColumnSelector<?> columns,String id,String sql) {
 		
-		String mapId = "selectByCondition" + clazz.getSimpleName()+StringUtil.md5(id);
+		String mapId = "selectByCondition" + clazz.getSimpleName()+MybatiesStringUtil.md5(id);
 		StringBuffer rs = new StringBuffer();
 		rs.append("<resultMap type=\"").append(clazz.getTypeName()).append("\"");
 		rs.append(" id=\"" + mapId + "\" >");

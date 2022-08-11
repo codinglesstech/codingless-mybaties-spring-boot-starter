@@ -1,4 +1,4 @@
-package tech.codingless.biz.core.plugs.mybaties3;
+package tech.codingless.biz.core.plugs.mybaties3.util;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * @author 王鸿雁
  * @version  2021年9月29日
  */
-public class StringUtil {
+public class MybatiesStringUtil {
 	public static final String EMPTY_STR = "";
 	public static final String SYMBOL_COMMA = ",";
 	public static final String STR_SUCCESS = "SUCCESS";
@@ -134,35 +134,7 @@ public class StringUtil {
 	public static String format(String tmp, Object... value) {
 		return String.format(tmp, value);
 	}
-
-	/**
-	 * sha1加密
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static String sha1(String str) {
-		try {
-			MessageDigest digest = java.security.MessageDigest.getInstance("SHA-1");
-			digest.update(str.getBytes());
-			byte messageDigest[] = digest.digest();
-			// Create Hex String
-			StringBuffer hexString = new StringBuffer();
-			// 字节数组转换为 十六进制 数
-			for (int i = 0; i < messageDigest.length; i++) {
-				String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
-				if (shaHex.length() < 2) {
-					hexString.append(0);
-				}
-				hexString.append(shaHex);
-			}
-			return hexString.toString();
-
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		return EMPTY_STR;
-	}
+ 
 
 	public static String sha(String decript) {
 		try {
@@ -369,7 +341,7 @@ public class StringUtil {
 		if (param == null) {
 			return str;
 		}
-		if (StringUtil.isEmpty(str)) {
+		if (MybatiesStringUtil.isEmpty(str)) {
 			return str;
 		}
 		for (String key : param.keySet()) {
@@ -444,12 +416,12 @@ public class StringUtil {
 	 *
 	 */
 	public static List<String> toArray(String strs) {
-		if (StringUtil.isEmpty(strs)) {
+		if (MybatiesStringUtil.isEmpty(strs)) {
 			return Collections.emptyList();
 		}
 		List<String> list = new ArrayList<>();
 		for (String str : strs.split(",")) {
-			if (StringUtil.isEmpty(str)) {
+			if (MybatiesStringUtil.isEmpty(str)) {
 				continue;
 			}
 			list.add(str.trim());
