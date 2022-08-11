@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+
+	<property name="LOG_PATTERN"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS} [C:%X{CURRENT_COMPANY_ID}] [U:%X{CURRENT_USER_ID}] [R:%X{RID}] [BC:%X{BIZ_CODE}] %-5level [%thread] [%logger] %L - %msg%n" />
+
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender"> 
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>${LOG_PATTERN}</pattern>
+		</layout>
+	</appender>
+
+ 
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+    	<file>${user.home}/logs/biz/biz.log</file> 
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> 
+            <FileNamePattern>${user.home}/logs/biz/biz.%d{yyyyMMdd}.%i.log</FileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <append>true</append>
+        
+        <!--设置格式-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [C:%X{CURRENT_COMPANY_ID}] [U:%X{CURRENT_USER_ID}] [R:%X{RID}] [BC:%X{BIZ_CODE}] [%thread] %-5level %logger{50}:%L - %msg%n</pattern> 
+            <charset>utf8</charset>
+        </encoder>
+ 
+    </appender>
+
+	<logger name="org.springframework" level="INFO" />
+	<logger name="org.apache.zookeeper" level="INFO" /> 
+	<logger name="AUTOSQL" level="DEBUG" /> 
+	<logger name="com.erp.finance.pojo" level="DEBUG" /> 
+	
+ 
+ 
+
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+
+</configuration>

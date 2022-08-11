@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="BASE">
+
+	<resultMap type="tech.codingless.biz.core.plugs.mybaties3.BaseDO" id="map">
+		<result column="id" property="id" />
+		<result column="gmt_Create" property="gmtCreate" />
+		<result column="gmt_Write" property="gmtWrite" />
+		<result column="create_Uid" property="createUid" />
+		<result column="write_Uid" property="writeUid" />
+		<result column="owner_Id" property="ownerId" />
+		<result column="company_Id" property="companyId" />
+		<result column="del" property="del" />
+	</resultMap>
+</mapper> 
