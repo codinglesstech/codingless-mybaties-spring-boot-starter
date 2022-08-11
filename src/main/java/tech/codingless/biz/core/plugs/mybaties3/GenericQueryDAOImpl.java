@@ -57,7 +57,6 @@ import tech.codingless.biz.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.biz.core.reflect.ReflectionUtil;
 import tech.codingless.biz.core.reflect.SerializableFunction;
-import tech.codingless.biz.core.util.MD5Util;
 import tech.codingless.biz.core.util.StringUtil;
 
 @Component
