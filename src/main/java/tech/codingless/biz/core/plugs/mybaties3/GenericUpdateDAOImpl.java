@@ -31,7 +31,7 @@ import tech.codingless.biz.core.plugs.mybaties3.helper.AutoUpdateHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.biz.core.plugs.mybaties3.helper.UpdateSkipNullBatchAppendHelper;
-import tech.codingless.biz.core.plugs.mybaties3.util.SessionUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.DataSessionEnv;
  
 
 @Component
@@ -147,7 +147,7 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		String sqlKey = "AUTOSQL.DELETE_" + CommonSQLHelper.getTableName(clazz);
 		Map p = new HashMap();
 		p.put("entityId", entityId);
-		p.put("del_user", SessionUtil.CURRENT_USER_ID.get());
+		p.put("del_user", DataSessionEnv.CURRENT_USER_ID.get());
 		// 测试的时候将权限默认为root
 		// p.put("del_user", "root");
 		try {

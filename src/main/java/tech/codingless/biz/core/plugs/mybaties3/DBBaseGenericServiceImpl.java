@@ -18,7 +18,7 @@ import tech.codingless.biz.core.plugs.mybaties3.condition.QueryConditionWrapper;
 import tech.codingless.biz.core.plugs.mybaties3.data.UpdateObject;
 import tech.codingless.biz.core.plugs.mybaties3.helper.ColumnHelper;
 import tech.codingless.biz.core.plugs.mybaties3.util.AssertUtil;
-import tech.codingless.biz.core.plugs.mybaties3.util.SessionUtil;
+import tech.codingless.biz.core.plugs.mybaties3.util.DataSessionEnv;
   
  
 public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGenericService<T> {
@@ -63,13 +63,13 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 			data.generatorKey();
 		}
 		if(StringUtil.isEmpty(data.getCreateUid())) {
-			data.setCreateUid(SessionUtil.CURRENT_USER_ID.get());
+			data.setCreateUid(DataSessionEnv.CURRENT_USER_ID.get());
 		} 
 		if(StringUtil.isEmpty(data.getOwnerId())) {
-			data.setOwnerId(SessionUtil.CURRENT_USER_ID.get()); 
+			data.setOwnerId(DataSessionEnv.CURRENT_USER_ID.get()); 
 		}
-		data.setWriteUid(StringUtil.isNotEmpty(data.getWriteUid()) ? data.getWriteUid() : SessionUtil.CURRENT_USER_ID.get());
-		data.setCompanyId(StringUtil.isNotEmpty(data.getCompanyId()) ? data.getCompanyId() : SessionUtil.CURRENT_COMPANY_ID.get()); 
+		data.setWriteUid(StringUtil.isNotEmpty(data.getWriteUid()) ? data.getWriteUid() : DataSessionEnv.CURRENT_USER_ID.get());
+		data.setCompanyId(StringUtil.isNotEmpty(data.getCompanyId()) ? data.getCompanyId() : DataSessionEnv.CURRENT_COMPANY_ID.get()); 
 		data.setVer(data.getVer() != null ? data.getVer() : 1L); 
 		return updateDao.createEntity(data) == 1;
 	}
@@ -86,10 +86,10 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Transactional
 	@Override
 	public boolean update(T data) { 
-		if (SessionUtil.CURRENT_USER_ID.get() == null || !SessionUtil.CURRENT_USER_ID.get().equals(data.getOwnerId())) {
+		if (DataSessionEnv.CURRENT_USER_ID.get() == null || !DataSessionEnv.CURRENT_USER_ID.get().equals(data.getOwnerId())) {
 			return false;
 		}
-		data.setWriteUid(SessionUtil.CURRENT_USER_ID.get());
+		data.setWriteUid(DataSessionEnv.CURRENT_USER_ID.get());
 		boolean success = updateDao.updateEntity(data) == 1;
 		return success;
 
@@ -146,14 +146,14 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Transactional
 	@Override
 	public boolean update(T data, String companyId) { 
-		data.setWriteUid(SessionUtil.CURRENT_USER_ID.get());
+		data.setWriteUid(DataSessionEnv.CURRENT_USER_ID.get());
 		return updateDao.updateEntityWithCompanyId(data, companyId) == 1;
 	}
 
 	@Transactional
 	@Override
 	public boolean updateSkipCheckOwner(T data) { 
-		data.setWriteUid(SessionUtil.CURRENT_USER_ID.get());
+		data.setWriteUid(DataSessionEnv.CURRENT_USER_ID.get());
 		return updateDao.updateEntity(data) == 1;
 	}
 
@@ -183,7 +183,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 
 	@Override
 	public T get(Class<T> clazz, String entityId) {
-		if (StringUtil.isNotEmpty(SessionUtil.CURRENT_COMPANY_ID.get())) {
+		if (StringUtil.isNotEmpty(DataSessionEnv.CURRENT_COMPANY_ID.get())) {
 			return queryDao.getEntity(clazz, entityId);
 		}
 		return queryDao.getEntity(clazz, entityId);
@@ -223,12 +223,12 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 			if (StringUtil.isEmpty(item.getId())) {
 				item.generatorKey();
 			}
-			item.setCreateUid(SessionUtil.CURRENT_USER_ID.get());
-			item.setOwnerId(SessionUtil.CURRENT_USER_ID.get());
-			item.setWriteUid(SessionUtil.CURRENT_USER_ID.get());
+			item.setCreateUid(DataSessionEnv.CURRENT_USER_ID.get());
+			item.setOwnerId(DataSessionEnv.CURRENT_USER_ID.get());
+			item.setWriteUid(DataSessionEnv.CURRENT_USER_ID.get());
 			item.setDel(false);
 			if (StringUtil.isEmpty(item.getCompanyId())) {
-				item.setCompanyId(SessionUtil.CURRENT_COMPANY_ID.get());
+				item.setCompanyId(DataSessionEnv.CURRENT_COMPANY_ID.get());
 			}
 			if (item.getVer() == null) {
 				item.setVer(1L);
