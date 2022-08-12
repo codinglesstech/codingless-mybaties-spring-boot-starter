@@ -11,9 +11,9 @@
 	</parent>
 	<groupId>tech.codingless</groupId>
 	<artifactId>codingless-mybaties-spring-boot-starter</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.7</version>
 	<name>codingless-mybaties-spring-boot-starter</name>
-	<packaging>jar</packaging>
+	<!-- <packaging>jar</packaging> -->
 	<description>CodingLess For Mybaties</description>
 	<properties>
 		<!-- spring boot 与 spring cloud 与有严格的对应关系，参考官网 https://start.spring.io/actuator/info -->
@@ -22,19 +22,11 @@
 		<spring.cloud.alibaba.version>2.2.6.RELEASE</spring.cloud.alibaba.version>
 	</properties>
 	<dependencies> 
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-		</dependency>
-
+	  
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>  
+		</dependency> 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -80,109 +72,20 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.0.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka-clients</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/redis.clients/jedis/3.7.0 -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-		</dependency>
-
+		  
 		<!-- log4j2 漏洞修复 -->
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.15.0</version><!--$NO-MVN-MAN-VER$ -->
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.15.0</version><!--$NO-MVN-MAN-VER$ -->
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-			<version>2.0.6</version>
-		</dependency>
-
-
-		<!-- 引入Spring MongoTemplate -->
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver-sync</artifactId>
-		</dependency>
- 
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-		</dependency>
-
+		
+	  
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver-core</artifactId>
 		</dependency>
-		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-lang3</artifactId> 
-		</dependency>
-		<dependency>
-			<groupId>com.drewnoakes</groupId>
-			<artifactId>metadata-extractor</artifactId>
-			<version>2.15.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>net.coobird</groupId>
-		    <artifactId>thumbnailator</artifactId>
-		    <version>0.4.16</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.drewnoakes</groupId>
-		    <artifactId>metadata-extractor</artifactId>
-		    <version>2.16.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.google.appengine</groupId>
-		    <artifactId>mediautil</artifactId>
-		    <version>0.2</version>
-		</dependency>
-		<dependency>
-		     <groupId>org.apache.commons</groupId>
-		     <artifactId>commons-imaging</artifactId>
-		     <version>1.0-alpha1</version>
-		 </dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
 		 
-		<dependency>
-		    <groupId>org.apache.httpcomponents</groupId>
-		    <artifactId>httpclient</artifactId>
-		</dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-        </dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
-		<dependency>
-		    <groupId>org.apache.httpcomponents</groupId>
-		    <artifactId>httpcore</artifactId> 
-		</dependency>
 
  
-		<dependency>
-		    <groupId>com.lowagie</groupId>
-		    <artifactId>itext</artifactId>
-		    <version>2.0.8</version>
-		</dependency> 
+
+  
  
  
 
@@ -192,7 +95,7 @@
  
 	</repositories>
 	
-	
+	<!--  
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -206,14 +109,19 @@
 
 
 	</dependencyManagement>
+	-->
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 		<resources>
+		<!--  
 			<resource>
 				<directory>src/main/java</directory>
 				<filtering>false</filtering>
@@ -228,7 +136,9 @@
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
+			-->
 		</resources>
+		
 	</build>
 
 </project>

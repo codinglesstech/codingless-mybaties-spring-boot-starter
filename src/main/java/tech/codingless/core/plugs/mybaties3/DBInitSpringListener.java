@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
-import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 import tech.codingless.core.plugs.mybaties3.data.BaseDO;
@@ -29,9 +29,9 @@ public class DBInitSpringListener implements ApplicationListener<ApplicationStar
 
 	@Autowired
 	private CommScriptGeneter commScriptGeneter;
-
+  
 	@Autowired
-	ConfigurableWebApplicationContext context;
+	ApplicationContext context;
 	@Autowired
 	private MyBatiesService myBatiesService;
 

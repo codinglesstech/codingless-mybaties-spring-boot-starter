@@ -13,7 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.alibaba.csp.sentinel.util.StringUtil;
+import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil; 
+ 
 
 @Service
 public class SqlMapperServiceImpl implements SqlMapperService {
@@ -47,7 +48,7 @@ public class SqlMapperServiceImpl implements SqlMapperService {
 
 	@Override
 	public void unloadByXml(String xml) {
-		if (StringUtil.isEmpty(xml)) {
+		if (MybatiesStringUtil.isEmpty(xml)) {
 			return;
 		}
 

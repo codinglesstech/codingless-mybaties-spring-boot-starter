@@ -3,8 +3,7 @@ package tech.codingless.core.plugs.mybaties3;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
+ 
 
 public interface QueryService {
 
@@ -93,7 +92,6 @@ public interface QueryService {
 	List<Map<String, Object>> list(Parameter parameter);
 
 	int count(Parameter parameter);
-
-	Map list(String listId, String countId, HttpServletRequest request);
+ 
 
 }

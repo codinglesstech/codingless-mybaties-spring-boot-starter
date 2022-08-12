@@ -1,12 +1,8 @@
 package tech.codingless.core.plugs.mybaties3;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.ibatis.mapping.MappedStatement;
 import org.slf4j.Logger;
@@ -80,46 +76,7 @@ public class QueryServiceImpl implements QueryService {
 		return (int) this.queryDao.selectOneRow(parameter.getSqlId(), parameter.getMap());
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public Map list(String listId, String countId, HttpServletRequest request) {
-		Map map = new HashMap();
-
-		Map p = new HashMap();
-		Iterator it = request.getParameterMap().keySet().iterator();
-		while (it.hasNext()) {
-			String key = (String) it.next();
-			p.put(key, request.getParameter(key));
-		}
-		String totalRows = request.getParameter("totalRows");
-		String noCount = request.getParameter("noCount");
-		String pageStr = request.getParameter("page");
-		String sort = request.getParameter("sort");
-		String order = request.getParameter("order");
-		Integer page = MybatiesStringUtil.isNotEmpty(pageStr) ? Integer.parseInt(pageStr) : 1;
-		String rowsStr = request.getParameter("rows");
-		Integer rows = MybatiesStringUtil.isNotEmpty(rowsStr) ? Integer.parseInt(rowsStr) : 1;
-		if (totalRows == null && !"true".equalsIgnoreCase(noCount)) {
-			QueryService.Parameter parameter = new QueryService.Parameter();
-			parameter.setMap(p);
-			parameter.setSqlId(countId);
-			int count = count(parameter);
-			map.put("total", count);
-		}
-
-		QueryService.Parameter parameter = new QueryService.Parameter();
-		parameter.setMap(p);
-		parameter.setSqlId(listId);
-		parameter.setPageNumber(page != null && page > 1 ? page : 1);
-		parameter.setPageSize(rows != null && rows > 0 ? rows : 10);
-		parameter.setSort(sort);
-		parameter.setOrder(order);
-		parameter.addAttribute("sort", sort);
-		parameter.addAttribute("order", order);
-		List<Map<String, Object>> list = list(parameter);
-		map.put("rows", list);
-		return map;
-	}
+ 
 
 	@SuppressWarnings("rawtypes")
 	public String getString(Map map, String key, String defaultStr) {

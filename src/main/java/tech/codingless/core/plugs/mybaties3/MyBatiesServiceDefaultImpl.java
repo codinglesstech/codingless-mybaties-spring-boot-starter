@@ -18,13 +18,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
@@ -46,7 +46,7 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService {
 
 	private SqlSessionTemplate session;
 	@Autowired
-	ConfigurableWebApplicationContext context;
+	ApplicationContext context;
 
 	@Autowired(required = false)
 	DataSourceFactory dataSourceFactory;
