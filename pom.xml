@@ -13,7 +13,8 @@
 	<artifactId>codingless-mybaties-spring-boot-starter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>codingless-mybaties-spring-boot-starter</name>
-	<description>各领域模型</description>
+	<packaging>jar</packaging>
+	<description>CodingLess For Mybaties</description>
 	<properties>
 		<!-- spring boot 与 spring cloud 与有严格的对应关系，参考官网 https://start.spring.io/actuator/info -->
 		<java.version>14</java.version>

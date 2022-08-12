@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
@@ -21,9 +19,7 @@ import tech.codingless.core.plugs.mybaties3.helper.AutoUpdateHelper;
 import tech.codingless.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 
-//优先级最高，最先执行
-@Order(0)
-@Component
+//优先级最高，最先执行 
 public class DBInitSpringListener implements ApplicationListener<ApplicationStartedEvent> {
 	private static final Logger LOG = LoggerFactory.getLogger(GenericUpdateDAOImpl.class);
 	@Autowired
