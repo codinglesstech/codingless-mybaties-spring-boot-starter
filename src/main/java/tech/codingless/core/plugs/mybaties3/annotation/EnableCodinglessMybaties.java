@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Import;
 
 import tech.codingless.core.plugs.mybaties3.CommScriptGeneter;
 import tech.codingless.core.plugs.mybaties3.DBInitSpringListener;
+import tech.codingless.core.plugs.mybaties3.GenericQueryDAOImpl;
 import tech.codingless.core.plugs.mybaties3.GenericUpdateDAOImpl;
 import tech.codingless.core.plugs.mybaties3.MyBatiesServiceDefaultImpl;
 import tech.codingless.core.plugs.mybaties3.MybatiesImportSelector;
@@ -32,7 +33,8 @@ import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 	CommScriptGeneter.class,
 	GenericUpdateDAOImpl.class,
 	MyBatiesServiceDefaultImpl.class,
-	DataBaseConf.class}) 
+	DataBaseConf.class,
+	GenericQueryDAOImpl.class}) 
 public @interface EnableCodinglessMybaties {
 
 }
