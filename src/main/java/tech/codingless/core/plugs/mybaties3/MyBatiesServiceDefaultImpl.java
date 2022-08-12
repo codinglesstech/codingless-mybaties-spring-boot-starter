@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -38,7 +37,7 @@ import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
  * 
  */
 @Order(1)
-@Service
+@Service 
 public class MyBatiesServiceDefaultImpl implements MyBatiesService {
 	private static final Logger LOG = LoggerFactory.getLogger(GenericUpdateDAOImpl.class);
 
@@ -111,20 +110,12 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService {
 	}
 
 	@Override
-	public String init() {
-		LOG.info("初始化数据访问服务[MyBatiesServiceDefaultImpl]");
-		initSession();
+	public String init() { 
 		return "ok";
 	}
 
-	/**
-	 * 将这事务管理器添加到Spring上下文中
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("resource")
-	@Bean(name = "MyTransactionManager")
-	public Object addTransactionManagerToSpringContext() {
+ 
+	public Object initSessionAndTransaction() {
 
 		try {
 			LOG.info("尝试创建事务管理器!");
@@ -316,77 +307,7 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService {
 	}
 	
 	
-	public String initMaster() {
-		LOG.info("初始化Master");
-		try {
-
-			String url = "";
-			String username = "";
-			String password = "";
-
-			session = null;
-			BasicDataSource dataSource = new BasicDataSource();
-			dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-			dataSource.setUrl(url);
-			dataSource.setUsername(username);
-			dataSource.setPassword(password);
-			dataSource.setMaxIdle(20);
-			dataSource.setMinIdle(3);
-			dataSource.setMaxTotal(20);
-			dataSource.setMaxWaitMillis(10);
-			dataSource.setInitialSize(3);
-			dataSource.setRemoveAbandonedOnBorrow(true);
-			dataSource.setRemoveAbandonedTimeout(180);
-			System.out.println(dataSource.getMaxTotal());
-
-			DataSourceTransactionManager dataSourceTransactionManager = this.context.getBean(DataSourceTransactionManager.class);
-			if (dataSourceTransactionManager == null) {
-				LOG.warn("事务管理器没有添加到Spring中!");
-				dataSourceTransactionManager = new DataSourceTransactionManager();
-			}
-			dataSourceTransactionManager.setDataSource(dataSource);
-
-			LOG.warn("将数据源:" + dataSource + ",添加到事务管理器中:" + dataSourceTransactionManager);
-//			Resource testMapper = new FileSystemResource(
-//					"/opt/work/myframework/src/main/java/com/unimall/myframework/test/test-Mapper.xml");
-			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-			Resource[] xDefSqlMapper = sqlmapLoaderFactory != null ? sqlmapLoaderFactory.sqlMapperResource() : null;
-
-			List<Resource> mergeSqlMappers = new ArrayList<>();
-			// Resource[] resourcesList =
-			// resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
-			// mergeSqlMappers.addAll(Arrays.asList(resourcesList));
-
-			if (MybatiesStringUtil.isNotEmpty(conf.getClasspathMapper())) {
-				List.of(conf.getClasspathMapper().split(",")).stream().filter(item -> MybatiesStringUtil.isNotEmpty(item)).forEach(item -> {
-					try {
-						mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:" + item)));
-					} catch (Exception e) {
-						LOG.error("load mapper fail ", e);
-					}
-				});
-			}
-
-			if (xDefSqlMapper != null) {
-				mergeSqlMappers.addAll(Arrays.asList(xDefSqlMapper));
-
-			}
-
-			Resource[] mergedResourceList = mergeSqlMappers.toArray(new Resource[0]);
-			SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-			sqlSessionFactoryBean.setDataSource(dataSource);
-			sqlSessionFactoryBean.setMapperLocations(mergedResourceList);
-			sqlSessionFactoryBean.setTransactionFactory(new SpringManagedTransactionFactory());
-
-			FactoryBean<SqlSessionFactory> factoryBean = sqlSessionFactoryBean;
-			session = new SqlSessionTemplate(factoryBean.getObject());
-			LOG.info("SqlSessionTemplate 初始化完成: " + session);
-			return "ok";
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+ 
 
 	@Override
 	public int executeUpdateSql(String sql, List<Object> param) {
