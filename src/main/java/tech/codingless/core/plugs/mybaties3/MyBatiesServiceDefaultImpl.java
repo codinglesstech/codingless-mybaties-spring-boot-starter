@@ -48,7 +48,7 @@ public class MyBatiesServiceDefaultImpl implements MyBatiesService {
 	ApplicationContext context;
 
 	@Autowired(required = false)
-	DataSourceFactory dataSourceFactory;
+	DataSourceCreator dataSourceFactory;
 
 	@Autowired(required = false)
 	MybatiesDataSourceFactory mybatiesDataSourceFactory;

@@ -14,7 +14,7 @@ public class MyEmptyDataSourceTransactionManager extends AbstractPlatformTransac
 	private static final Logger LOG = LoggerFactory.getLogger(MyEmptyDataSourceTransactionManager.class);
 
 	public MyEmptyDataSourceTransactionManager() {
-		LOG.error("您启动了一个假的事管理器！");
+		LOG.error("Start A Mock Transaction Manager");
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class MyEmptyDataSourceTransactionManager extends AbstractPlatformTransac
 
 	@Override
 	protected void doRollback(DefaultTransactionStatus status) throws TransactionException {
-		LOG.error("哈哈〜 您加载了一个假的事管理器,没有执行回滚动作!");
+		LOG.error("Hei ,You has Start Mock Transaction,Skip!");
 
 	}
 

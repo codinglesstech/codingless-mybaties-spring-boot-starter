@@ -3,12 +3,11 @@ package tech.codingless.core.plugs.mybaties3;
 import javax.sql.DataSource;
 
 /**
- * 数据源生成器
  * 
  * @author 王鸿雁
  *
  */
-public interface DataSourceFactory {
+public interface DataSourceCreator {
 
 	public DataSource make();
 }

@@ -44,7 +44,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 	private static ConcurrentHashMap<String, Boolean> EXIST_COLUMN_NAME = new ConcurrentHashMap<>();
 
 	@Autowired(required = false)
-	DataSourceFactory dataSourceFactory;
+	DataSourceCreator dataSourceFactory;
 
 	private List<BaseDO> doList;
 
