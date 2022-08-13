@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 
 import tech.codingless.core.plugs.mybaties3.annotation.OrderTypeEnum;
 import tech.codingless.core.plugs.mybaties3.condition.ColumnSelector;
