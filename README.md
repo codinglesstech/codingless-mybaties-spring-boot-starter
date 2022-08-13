@@ -1,7 +1,7 @@
 # Codingless For Mybaties 
 
 
-- Step 1: POM.xml
+- Step 1: pom.xml
 
 ```
 
