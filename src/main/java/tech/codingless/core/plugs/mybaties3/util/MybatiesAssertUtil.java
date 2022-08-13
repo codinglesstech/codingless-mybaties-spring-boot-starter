@@ -1,9 +1,5 @@
 package tech.codingless.core.plugs.mybaties3.util;
 
-import java.util.Collection;
-
-import org.springframework.util.CollectionUtils;
-
 import tech.codingless.core.plugs.mybaties3.MybatiesException;
 
 public class MybatiesAssertUtil {
@@ -57,12 +53,6 @@ public class MybatiesAssertUtil {
 			throw e;
 		}
 
-	}
-
-	public static void assertNotEmpty(Collection collection, String code) {
-		if (CollectionUtils.isEmpty(collection)) {
-			throw new MybatiesException(code);
-		}
 	}
 
 }
