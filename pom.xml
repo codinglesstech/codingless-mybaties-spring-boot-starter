@@ -10,6 +10,7 @@
 	<artifactId>codingless-mybaties-spring-boot-starter</artifactId>
 	<version>0.0.16</version>
 	<name>codingless-mybaties</name>
+	<url>https://github.com/codinglesstech/codingless-mybaties-spring-boot-starter</url>
 
 	<description>CodingLess For Mybaties</description>
 	<properties>
@@ -32,7 +33,7 @@
 
 	<scm>
 		<connection>scm:git:git@github.com:codinglesstech/codingless-mybaties-spring-boot-starter.git</connection>
-		<developerConnection>scm:git:https://github.com/codinglesstech/codingless-mybaties-spring-boot-starter</developerConnection>
+		<developerConnection>scm:git:git@github.com:codinglesstech/codingless-mybaties-spring-boot-starter.git</developerConnection>
 		<url>https://github.com/codinglesstech/codingless-mybaties-spring-boot-starter</url>
 	</scm>
 
@@ -163,7 +164,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>3.4.0</version>
 				<configuration>
 					<aggregate>true</aggregate>
 					<charset>UTF-8</charset>
