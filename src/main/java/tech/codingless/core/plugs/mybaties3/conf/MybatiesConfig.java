@@ -1,10 +1,16 @@
-package tech.codingless.core.plugs.mybaties3;
+package tech.codingless.core.plugs.mybaties3.conf;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
+import tech.codingless.core.plugs.mybaties3.CommScriptGeneter;
+import tech.codingless.core.plugs.mybaties3.DBInitSpringListener;
+import tech.codingless.core.plugs.mybaties3.GenericQueryDAOImpl;
+import tech.codingless.core.plugs.mybaties3.GenericUpdateDAOImpl;
+import tech.codingless.core.plugs.mybaties3.MyBatiesServiceDefaultImpl;
+import tech.codingless.core.plugs.mybaties3.MybatiesImportSelector;
+import tech.codingless.core.plugs.mybaties3.TableAutoCreateServiceMysqlImpl;
 
  
 @Configuration
