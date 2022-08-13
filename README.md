@@ -1,4 +1,4 @@
-# Setting Codingless For Mybaties 
+# Setting codingless-mybaties 
 
 
 - Step 1: pom.xml
