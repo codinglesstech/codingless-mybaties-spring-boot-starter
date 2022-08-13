@@ -39,7 +39,7 @@ import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
  */
 @Order(1)
 @Service
-public class MyBatiesServiceDefaultImpl implements MyBatiesService {
+public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 	private static final Logger LOG = LoggerFactory.getLogger(GenericUpdateDAOImpl.class);
 
 	private SqlSessionTemplate noShardingSession;

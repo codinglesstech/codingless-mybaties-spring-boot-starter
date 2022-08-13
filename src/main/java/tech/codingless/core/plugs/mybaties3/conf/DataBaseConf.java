@@ -8,17 +8,30 @@ import org.springframework.context.annotation.Configuration;
 public class DataBaseConf {
 	private String url;
 	private String username;
-	private String password; 
+	private String password;
 	private String classpathMapper;
+	private String autoCreateTable;
+
+	public String getAutoCreateTable() {
+		return autoCreateTable == null ? "" : autoCreateTable.trim();
+	}
+
+	public void setAutoCreateTable(String autoCreateTable) {
+		this.autoCreateTable = autoCreateTable;
+	}
+
+	public boolean needAutoCreateTable() {
+		return "true".equalsIgnoreCase(this.getAutoCreateTable()) || "1".equals(this.getAutoCreateTable());
+	}
 
 	public String getClasspathMapper() {
 		return classpathMapper;
 	}
+
 	public void setClasspathMapper(String classpathMapper) {
 		this.classpathMapper = classpathMapper;
 	}
-	
- 
+
 	public String getUrl() {
 		return url;
 	}
