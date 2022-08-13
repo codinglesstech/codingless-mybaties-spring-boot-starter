@@ -16,6 +16,6 @@ public interface IdCreator {
 	 * @param data
 	 * @return
 	 */
-	String generateId(Class<? extends BaseDO> clazz, BaseDO data);
+	String generateId(BaseDO data);
 
 }

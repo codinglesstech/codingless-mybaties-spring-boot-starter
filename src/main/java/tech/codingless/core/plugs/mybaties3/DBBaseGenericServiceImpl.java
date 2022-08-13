@@ -43,7 +43,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	private void generateId(T data) {
 		if (idcreator != null) {
 			//允许用户实现自己的主键生成策略
-			String newId = idcreator.generateId(data.getClass(), data);
+			String newId = idcreator.generateId(data);
 			data.setId(newId);
 			return;
 		}
