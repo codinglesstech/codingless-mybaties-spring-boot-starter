@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.util.CollectionUtils;
 
-import tech.codingless.core.plugs.mybaties3.CommonSQLHelper;
 import tech.codingless.core.plugs.mybaties3.MyBatiesService;
 import tech.codingless.core.plugs.mybaties3.data.BaseDO;
 import tech.codingless.core.plugs.mybaties3.data.UpdateObject;

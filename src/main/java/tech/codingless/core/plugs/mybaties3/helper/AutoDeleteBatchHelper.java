@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.mybatis.spring.MyBatisSystemException;
 
-import tech.codingless.core.plugs.mybaties3.CommonSQLHelper;
 import tech.codingless.core.plugs.mybaties3.MyBatiesService;
 
 public class AutoDeleteBatchHelper {

@@ -9,8 +9,6 @@ import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.session.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import tech.codingless.core.plugs.mybaties3.CommonSQLHelper;
  
 
 public class AutoFindByIdBatchHelper {

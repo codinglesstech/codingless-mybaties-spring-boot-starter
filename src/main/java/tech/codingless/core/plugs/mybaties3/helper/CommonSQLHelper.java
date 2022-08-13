@@ -1,4 +1,4 @@
-package tech.codingless.core.plugs.mybaties3;
+package tech.codingless.core.plugs.mybaties3.helper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -14,7 +14,6 @@ import tech.codingless.core.plugs.mybaties3.annotation.MyColumn;
 import tech.codingless.core.plugs.mybaties3.annotation.MyTable;
 import tech.codingless.core.plugs.mybaties3.annotation.OrderTypeEnum;
 import tech.codingless.core.plugs.mybaties3.data.BaseDO;
-import tech.codingless.core.plugs.mybaties3.helper.MyTableColumnParser;
 import tech.codingless.core.plugs.mybaties3.helper.MyTableColumnParser.ColumnProp;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesAssertUtil;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;

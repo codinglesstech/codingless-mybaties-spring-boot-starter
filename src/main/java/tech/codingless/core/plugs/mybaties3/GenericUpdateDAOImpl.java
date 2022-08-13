@@ -29,6 +29,7 @@ import tech.codingless.core.plugs.mybaties3.data.UpdateObject;
 import tech.codingless.core.plugs.mybaties3.helper.AutoCreateBatchHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoDeleteBatchHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoUpdateHelper;
+import tech.codingless.core.plugs.mybaties3.helper.CommonSQLHelper;
 import tech.codingless.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.core.plugs.mybaties3.helper.UpdateSkipNullBatchAppendHelper;

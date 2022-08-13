@@ -11,7 +11,6 @@ import org.apache.ibatis.session.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tech.codingless.core.plugs.mybaties3.CommonSQLHelper;
 import tech.codingless.core.plugs.mybaties3.annotation.MyColumn;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 

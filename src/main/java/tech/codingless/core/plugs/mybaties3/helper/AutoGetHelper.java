@@ -14,7 +14,6 @@ import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.session.Configuration;
 
 import lombok.extern.slf4j.Slf4j;
-import tech.codingless.core.plugs.mybaties3.CommonSQLHelper;
 import tech.codingless.core.plugs.mybaties3.annotation.MyColumn;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 

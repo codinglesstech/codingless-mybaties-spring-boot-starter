@@ -11,7 +11,6 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.StringTypeHandler;
 
 import lombok.Data;
-import tech.codingless.core.plugs.mybaties3.CommonSQLHelper;
 import tech.codingless.core.plugs.mybaties3.annotation.MyColumn;
 import tech.codingless.core.plugs.mybaties3.annotation.MyComment;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;

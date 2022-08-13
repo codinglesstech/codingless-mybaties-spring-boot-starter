@@ -57,6 +57,7 @@ import tech.codingless.core.plugs.mybaties3.helper.AutoFindByIdHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoGetHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoRollPageSelectSqlHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoSelectByConditionSqlHelper;
+import tech.codingless.core.plugs.mybaties3.helper.CommonSQLHelper;
 import tech.codingless.core.plugs.mybaties3.helper.MyTableColumnParser;
 import tech.codingless.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
