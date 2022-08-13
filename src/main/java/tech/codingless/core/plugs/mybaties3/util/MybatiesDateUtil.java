@@ -54,12 +54,7 @@ public class MybatiesDateUtil {
 		return (int) ((to.getTime() - from.getTime()) / HOUR);
 	}
 
-	/**
-	 * 得到一个星期的星期一
-	 * 
-	 * @param date
-	 * @return
-	 */
+ 
 	public static Date getMonday(Date date) {
 		Calendar cal = Calendar.getInstance();
 		if (date != null) {
@@ -79,12 +74,7 @@ public class MybatiesDateUtil {
 		return null;
 	}
 
-	/**
-	 * yyyy-MM-dd
-	 * 
-	 * @param source
-	 * @return
-	 */
+	 
 	public static Date parse(String source) {
 		try {
 			if (MybatiesStringUtil.isEmpty(source) || !source.matches(DATETIME_REGEX)) {
@@ -105,13 +95,7 @@ public class MybatiesDateUtil {
 		return yyyyMMdd.format(date);
 	}
 
-	/**
-	 * data转string
-	 * 
-	 * @param dateValue
-	 * @param formatPattern
-	 * @return
-	 */
+	 
 	public static String formatDate(Date dateValue, String formatPattern) {
 		try {
 			if (dateValue == null) {
@@ -125,13 +109,7 @@ public class MybatiesDateUtil {
 		return null;
 	}
 
-	/**
-	 * string转date
-	 * 
-	 * @param dateValue
-	 * @param formatPattern
-	 * @return
-	 */
+	 
 	public static Date parseDate(String dateValue, String formatPattern) {
 		try {
 			if (MybatiesStringUtil.isEmpty(dateValue) || !dateValue.matches(DATETIME_REGEX)) {
@@ -145,16 +123,7 @@ public class MybatiesDateUtil {
 		return null;
 	}
 
-	/**
-	 * <pre>
-	 * 2020-11-17T22:47:22.550Z  :UTC 0时区(Z代表)
-	 * 2020-11-18T00:00:00+8
-	 * </pre>
-	 *  
-	 * @param utcTimeStr
-	 * @return
-	 *
-	 */
+ 
 	public static Date utcToDate(String utcTimeStr) {
 		if (MybatiesStringUtil.isEmpty(utcTimeStr)) {
 			MybatiesAssertUtil.assertNotEmpty(utcTimeStr, "UTC_TIME_STR_EMPTY");
@@ -166,12 +135,7 @@ public class MybatiesDateUtil {
 		return new Date(LocalDateTime.parse(utcTimeStr.substring(0, 19)).toInstant(ZoneOffset.of(offsetStr)).toEpochMilli());
 	}
 
-	/**
-	 *  
-	 * @param date
-	 * @return
-	 *
-	 */
+ 
 	public static String toZeroUtcStr(Date date) {
 		LocalDateTime ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), ZoneId.of("Z"));
 		return ldt.toString();

@@ -16,14 +16,7 @@ public class BeanUtil {
 		NOT_MATCH_METHOD.put("getClass", "getClass");
 		NOT_MATCH_METHOD.put("getId", "getId");
 	}
-
-	/**
-	 * 比较两个实体类一般值是否一致
-	 * 
-	 * @param skuDO1
-	 * @param skuDO2
-	 * @return
-	 */
+ 
 	public static boolean compare(BaseDO skuDO1, BaseDO skuDO2) {
 		if (skuDO1 == null || skuDO2 == null) {
 			return false;

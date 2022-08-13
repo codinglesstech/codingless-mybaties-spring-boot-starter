@@ -14,54 +14,54 @@ import tech.codingless.core.plugs.mybaties3.data.UpdateObject;
 /**
  * common CRUD method for all sql entity service
  * @author 王鸿雁 
- * @param <T>
+ * @param <T> The Entity Need Extends BaseDO
  */
 public interface DBBaseGenericService<T extends BaseDO> {
 
 	/**
 	 * insert a new row, you can set your  data id, system will auto create with ObjectId if not. If the id exist in database, the method will throw Exception
-	 * @param data
-	 * @return
+	 * @param data Entity
+	 * @return success if true
 	 */
 	boolean create(T data);
 	/**
 	 * insert a new row with company id
-	 * @param companyId
-	 * @param data
-	 * @return
+	 * @param companyId companyId
+	 * @param data Entity
+	 * @return success if true
 	 */
 	boolean create(String companyId, T data);
 
 	/**
 	 * batch create
 	 * 
-	 * @param list
-	 * @return
+	 * @param list List of Entity
+	 * @return success if true
 	 */
 	boolean create(List<T> list);
 
 	/**
 	 * batch create with company id
-	 * @param companyId
-	 * @param list
-	 * @return
+	 * @param companyId companyId
+	 * @param list List of Entity
+	 * @return true if create success
 	 */
 	boolean create(String companyId, List<T> list);
 
 	/**
 	 * is deprecated ,please use updateSkipNull  
-	 * @param data
-	 * @return
+	 * @param data Entity
+	 * @return true if update success
 	 */
 	@Deprecated
 	boolean update(T data);
  
 	/**
 	 * 
-	 * @param companyId
-	 * @param data
-	 * @param ver
-	 * @return
+	 * @param companyId Company Id
+	 * @param data Entity
+	 * @param ver The version of the old data
+	 * @return true if update success
 	 */
 	boolean updateNotNull(String companyId, T data, Long ver);
 
@@ -70,42 +70,40 @@ public interface DBBaseGenericService<T extends BaseDO> {
 
 	/**
 	 * 批量更新，当缓存中达到batchSize指定的数量时，执行更新，否则只是加入缓存 
-	 * @param companyId
-	 * @param data
-	 * @param ver
-	 * @param batchSize
-	 * @return
+	 * @param companyId Company Id
+	 * @param data Entity
+	 * @param ver The version of the old data
+	 * @param batchSize The Batch Size of rows, execute quickly insert when arrive the size
+	 * @return success size
 	 */
 	int batchUpdateAppend(String companyId, T data, Long ver, int batchSize);
 	
 	/**
 	 * 立即执行所有缓存中的数据并更新
-	 * @param clazz
-	 * @return
+	 * @param clazz The class of entity
+	 * @return success size
 	 */
 	int batchUpdateExecute(Class<T> clazz);
 	
 	/**
 	 * 批量更新
-	 * @param updateList
-	 * @return
+	 * @param updateList Batch update of list
+	 * @return success size
 	 */
 	int batchUpdate(List<UpdateObject> updateList);
 	
 	/**
 	 * 修改对象，条件是主键及 companyId
-	 * @param data
-	 * @param companyId
-	 * @return
+	 * @param data Entity
+	 * @param companyId Company Id
+	 * @return success
 	 */
 	boolean update(T data, String companyId);
 
 	/**
-	 * 不管这个数据的所有者是谁,只根据ID进行修改
-	 * <h4 style="color:red">注意:调这该接口的时候场景要非常小心,请确保不会出现数据权限问题</h4>
-	 * 
-	 * @param entity
-	 * @return
+	 * 不管这个数据的所有者是谁,只根据ID进行修改  
+	 * @param entity Entity
+	 * @return success
 	 */
 	@Deprecated
 	boolean updateSkipCheckOwner(T entity);
@@ -113,9 +111,9 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	/**
 	 * 根据ID获取一条数据
 	 * 
-	 * @param clazz
-	 * @param id
-	 * @return
+	 * @param clazz clazz
+	 * @param id The Id of Data
+	 * @return data
 	 */
 	T get(Class<T> clazz, String id);
 	T get(String id);
@@ -123,25 +121,17 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	/**
 	 * 根据companyId, id 过滤对像
 	 * 
-	 * @param clazz
-	 * @param id
-	 * @param companyId
-	 * @return
+	 * @param clazz clazz
+	 * @param id The Id of Data
+	 * @param companyId Id of company
+	 * @return data
 	 */
 	T get(Class<T> clazz, String id, String companyId);
 	T get(String id, String companyId);
 
 	List<T> get(Class<T> clazz, String companyId, Collection<String> idList);
 	List<T> get(String companyId, Collection<String> idList);
-	/**
-	 * 指定返回的列 
-	 * @param clazz
-	 * @param companyId
-	 * @param idList
-	 * @param columns
-	 * @return
-	 *
-	 */
+ 
 	List<T> get(Class<T> clazz, String companyId, Collection<String> idList, Collection<String> columns);
 	List<T> get(String companyId, Collection<String> idList, Collection<String> columns);
 
@@ -151,10 +141,10 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	/**
 	 * 物理删除，小时使用。推荐大多数场合下从产品上不设置删除功能，如果设置了删除功能应使用逻辑删除
 	 *  
-	 * @param clazz
-	 * @param id
-	 * @param companyId
-	 * @return
+	 * @param clazz clazz
+	 * @param id id of data
+	 * @param companyId Id Of company
+	 * @return true if delete success
 	 *
 	 */
 	boolean deletePhysical(Class<T> clazz, String id, String companyId);
@@ -162,19 +152,19 @@ public interface DBBaseGenericService<T extends BaseDO> {
 
 	/**
 	 * 逻辑删除 
-	 * @param clazz
-	 * @param id
-	 * @param companyId
-	 * @return
+	 * @param clazz data  class
+	 * @param id data id 
+	 * @param companyId company id
+	 * @return true if delete success
 	 */
 	boolean deleteLogical(Class<T> clazz, String id, String companyId);
 	boolean deleteLogical(String id, String companyId);
 	/**
 	 * 批量逻辑删除 
-	 * @param clazz
-	 * @param idList
-	 * @param companyId
-	 * @return
+	 * @param clazz data  class
+	 * @param idList  batch find of id 
+	 * @param companyId company id
+	 * @return true if delete success
 	 *
 	 */
 	int deleteLogical(Class<T> clazz, Collection<String> idList, String companyId);
@@ -183,8 +173,8 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	/**
 	 * 获得一张表的所有数据
 	 * 
-	 * @param clazz
-	 * @return
+	 * @param clazz data  class
+	 * @return data
 	 */
 	List<T> list(Class<T> clazz);
 	List<T> list();
@@ -192,32 +182,13 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	List<T> list(Class<T> clazz, String companyId);
 	List<T> list(String companyId);
 
-	/**
-	 * 分页
-	 *  
-	 * @param clazz
-	 * @param companyId
-	 * @param param
-	 * @param orderColumn
-	 * @param orderType
-	 * @return
-	 *
-	 */
+	 
 	PageRollResult<T> rollPage(Class<T> clazz, String companyId, T param, String orderColumn, OrderTypeEnum orderType, Integer size, Integer page);
 	PageRollResult<T> rollPage(String companyId, T param, String orderColumn, OrderTypeEnum orderType, Integer size, Integer page);
 
 	PageRollResult<?> rollPage(String selectId, Map<String, Object> param, int size, int page);
 
-	/**
-	 * 通过例子查找，最多返回指定条数
-	 *  
-	 * @param clazz
-	 * @param companyId
-	 * @param example
-	 * @param size
-	 * @return
-	 *
-	 */
+ 
 	List<T> findByExample(Class<T> clazz, String companyId, T example, Integer size); 
 	List<T> findByExample(String companyId, T example, Integer size); 
 	List<T> findByExample(Class<T> clazz, T example, Integer size); 
@@ -226,48 +197,47 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	/**
 	 * 通过例子查找一个，多于一个结果会报错
 	 *  
-	 * @param clazz
-	 * @param companyId
-	 * @param example
-	 * @return
+	 * @param clazz class
+	 * @param companyId id of company 
+	 * @param example condition template
+	 * @return data
 	 *
 	 */
 	T findOneByExample(Class<T> clazz, String companyId, T example);
 	T findOneByExample(String companyId, T example);
 
+ 
 	/**
-	 * 
 	 * 跳过 Sharding Jdbc执行原始的查询
-	 *
+	 * @param <E> type
+	 * @param statement  statement
+	 * @param parameter parameter
+	 * @return data
 	 */
 	<E> List<E> noShardingList(String statement, Object parameter);
-	/**
-	 * 获得实体类的全名 
-	 * @return
-	 *
-	 */
+ 
 	String getEntityClassName();
 	
 	/**
 	 * 查询
-	 * @param selectId
-	 * @param param
-	 * @param offset
-	 * @param limit
-	 * @return
+	 * @param selectId the sql id in sqlmap
+	 * @param param the param
+	 * @param offset from 0
+	 * @param limit return size
+	 * @return data
 	 */
 	List<Map<String,?>> select(String selectId,Map<String,?> param,int offset,int limit);
 	List<Map<String,?>> select(String selectId,String param,int offset,int limit);
 	
 	/**
 	 * 多条件，指定返回列，可排序的单表查询
-	 * @param columns
-	 * @param wrapper
-	 * @param sortColumn
-	 * @param orderType
-	 * @param offset
-	 * @param limit
-	 * @return
+	 * @param columns the columns you want to return
+	 * @param wrapper condition wrapper
+	 * @param sortColumn sort column
+	 * @param orderType order type
+	 * @param offset from 0
+	 * @param limit max of return size
+	 * @return data
 	 */
 	List<T> select(ColumnSelector<T > columns, QueryConditionWrapper<T> wrapper, SerializableFunction<T, Object> sortColumn, OrderTypeEnum orderType,  int offset, int limit);
 	

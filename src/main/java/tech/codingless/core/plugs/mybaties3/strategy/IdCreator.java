@@ -12,8 +12,8 @@ public interface IdCreator {
 	
 	/** 
 	 * 生成一个新的主键ID 
-	 * @param data
-	 * @return
+	 * @param data 即将保存的数据
+	 * @return 主键ID 
 	 */
 	String generateId(BaseDO data);
 

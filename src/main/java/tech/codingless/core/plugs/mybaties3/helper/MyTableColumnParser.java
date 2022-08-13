@@ -43,14 +43,7 @@ public class MyTableColumnParser {
 		private boolean virturl;
 		private boolean readonly;
 	}
-
-	/**
-	 * 解析出字段与属性的对应关系
-	 *  
-	 * @param clazz
-	 * @return
-	 *
-	 */
+ 
 	public static List<ColumnProp> parse(Class<?> clazz) {
 		List<ColumnProp> list = new ArrayList<>();
 		for (Method method : clazz.getMethods()) {
@@ -121,8 +114,8 @@ public class MyTableColumnParser {
 
 	/**
 	 * 是否默认支持的类型
-	 * @param clazz
-	 * @return
+	 * @param clazz clazz
+	 * @return true 支持
 	 *
 	 */
 	public static boolean isDefaultSupportType(Class<?> clazz) {
@@ -135,15 +128,7 @@ public class MyTableColumnParser {
 		return false;
 	}
 
-	/**
-	 * 解析字段，跳过空值属性，虚拟属性,只读属性
-	 * @param clazz
-	 * @return
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws Exception 
-	 *
-	 */
+	//解析字段，跳过空值属性，虚拟属性,只读属性
 	public static List<ColumnProp> parseSkipNull(Class<?> clazz,Object entity) throws Exception {
 		List<ColumnProp> list = new ArrayList<>();
 		for (Method method : clazz.getMethods()) {

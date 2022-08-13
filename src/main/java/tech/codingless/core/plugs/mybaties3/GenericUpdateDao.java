@@ -40,18 +40,10 @@ public interface GenericUpdateDao<T> {
 	int deleteLogicalWithCompanyId(Class<T> clazz, String id, String companyId);
 	int deleteLogicalWithCompanyId(Class<T> clazz, Collection<String> idList, String companyId);
 
-	/**
-	 * 
-	 * 原重SQLinsert
-	 *
-	 */
+ 
 	int insertNative(String prepareSql, List<Object> params);
 
-	/**
-	 * 
-	 * 原生SQL更新 
-	 *
-	 */
+	 
 	int updateNative(String prepareSql, List<Object> params);
 
 	int updateSkipNullBatchExecute(List<UpdateObject> updateList);

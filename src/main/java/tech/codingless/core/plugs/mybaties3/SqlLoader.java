@@ -7,14 +7,15 @@ package tech.codingless.core.plugs.mybaties3;
  */
 public interface SqlLoader { 
 	/**
-	 * 根据sqlId，查找SQL语句
-	 * @param sqlId
-	 * @return
+	 * 根据sqlId，查找SQL语句 
+	 * @param namespace namespace
+	 * @param sqlId sqlid
+	 * @return sql
 	 */
 	public String load(String namespace,String sqlId);
 	/**
 	 * 优先级，最小优先级越低
-	 * @return
+	 * @return priority
 	 */
 	int priority();
 	String name();

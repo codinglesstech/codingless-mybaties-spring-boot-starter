@@ -14,8 +14,8 @@ public class ColumnSelector<T extends BaseDO> {
 		return columns;
 	}
 	/** 
-	 * @param column
-	 * @return
+	 * @param column 包函的字段
+	 * @return 选择器本身
 	 */
 	public ColumnSelector<T> include(SerializableFunction<T, Object> column) {  
 		this.columns.add(column);
@@ -24,7 +24,7 @@ public class ColumnSelector<T extends BaseDO> {
 	
 	/**
 	 * 包括ID,及VER版本
-	 * @return
+	 * @return 选择器本身 
 	 */
 	public ColumnSelector<T> includeId() {  
 		this.include(BaseDO::getId);

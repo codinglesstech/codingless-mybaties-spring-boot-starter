@@ -16,10 +16,8 @@ import org.springframework.stereotype.Component;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MyTable {
 
-	/**
-	 * 字段类型
-	 * 
-	 * @return
+	/** 
+	 * @return 表前缀
 	 */
 	String prefix() default "uni";
 }

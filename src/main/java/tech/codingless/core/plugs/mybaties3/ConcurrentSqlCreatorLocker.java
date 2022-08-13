@@ -12,12 +12,7 @@ public class ConcurrentSqlCreatorLocker {
 	private static final Object LOCKER = new Object();
 
 	 
-	/**
-	 * 这个SQL是否存在
-	 * 
-	 * @param key
-	 * @return
-	 */
+ 
 	public static boolean isTheSqlExist(String key) {
 		return SQL_GEN_SUCCESS.containsKey(key);
 	}
@@ -33,8 +28,8 @@ public class ConcurrentSqlCreatorLocker {
 	/**
 	 * 获得一把锁
 	 * 
-	 * @param key
-	 * @return
+	 * @param key the locker
+	 * @return locked object
 	 */
 	public static Object getLocker(String key) { 
 		if (LOCKER_MAP.containsKey(key)) {

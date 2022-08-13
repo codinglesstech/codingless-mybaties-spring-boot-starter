@@ -11,13 +11,7 @@ import org.springframework.util.CollectionUtils;
 
 public class PrepareParameterHelper {
 
-	/**
-	 * 绑定参数 
-	 * @param pstmt
-	 * @param params
-	 * @throws SQLException
-	 *
-	 */
+	 
 	public static void bindParam(PreparedStatement pstmt, List<Object> params) throws SQLException {
 		if(!CollectionUtils.isEmpty(params)) { 
 			for(int i=0;i<params.size();i++) {

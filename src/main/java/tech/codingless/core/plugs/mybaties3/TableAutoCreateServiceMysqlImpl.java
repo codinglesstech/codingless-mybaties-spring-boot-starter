@@ -204,12 +204,11 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		createColumn(obj, obj.getClass().getDeclaredFields());
 
 	}
-
+ 
 	/**
 	 * 通过属性创建字段
-	 * 
-	 * @param obj
-	 * @param fields
+	 * @param obj 实体类
+	 * @param fields 字段
 	 */
 	private void createColumn(Object obj, Field[] fields) {
 		if (fields == null) {
@@ -267,13 +266,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		}
 
 	}
-
-	/**
-	 * 通过属性类型，来确定字段类型及长度
-	 * 
-	 * @param typeClazz
-	 * @return
-	 */
+ 
 	private String detectedColumnTypeByClassType(Class<?> typeClazz, String columnName) {
 		String typeName = typeClazz.getName();
 		String typeDef = null;
@@ -337,13 +330,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		return typeDef;
 	}
 
-	/**
-	 * 将属性转成数据库字段
-	 * 
-	 * @param prop
-	 * @return
-	 *
-	 */
+ 
 	public static String change2dbFormat(String prop) {
 		StringBuffer sb = new StringBuffer(prop);
 		int len = sb.length();

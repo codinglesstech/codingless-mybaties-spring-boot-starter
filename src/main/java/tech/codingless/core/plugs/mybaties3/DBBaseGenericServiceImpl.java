@@ -55,9 +55,9 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	}
 
 	/**
-	 * 获得对应Mapper的Name Spance
 	 * 
-	 * @return
+	 * 
+	 * @return  获得对应Mapper的Name Spance
 	 */
 	protected String namespace() {
 		if (namespace != null) {

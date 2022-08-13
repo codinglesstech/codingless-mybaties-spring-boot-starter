@@ -17,14 +17,7 @@ public class MyTypeHanderRegistHelper {
 	private static final Logger LOG = LoggerFactory.getLogger(MyTypeHanderRegistHelper.class);
 	private static ConcurrentHashMap<Class<?>, Boolean> CACHE = new ConcurrentHashMap<>();
 
-	/**
-	 * 
-	 * 注册自定义TypeHander
-	 * 
-	 * @param configuration
-	 * @param clazz
-	 *
-	 */
+ 
 	public static void regist(Configuration configuration, Class<?> clazz) {
 		if (CACHE.containsKey(clazz)) {
 			return;

@@ -6,10 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MyComment {
 
-	/**
-	 * 注释
-	 * 
-	 * @return
+	/** 
+	 * @return 字段注释
 	 */
 	String value();
 }

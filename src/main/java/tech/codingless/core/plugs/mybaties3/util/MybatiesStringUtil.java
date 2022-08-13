@@ -102,12 +102,7 @@ public class MybatiesStringUtil {
 
 	private static final String MOBILE_REGEX = "(1[0-9]{10})|([\\+]?[0-9]{11,15})";
 
-	/**
-	 * 手机号码?
-	 * 
-	 * @param mobile
-	 * @return
-	 */
+ 
 	public static boolean isMobileNumber(String mobile) {
 		if (isEmpty(mobile)) {
 			return false;
@@ -117,12 +112,7 @@ public class MybatiesStringUtil {
 
 	private static Random random = new Random();
 
-	/**
-	 * 随机的数字字符串
-	 * 
-	 * @param len
-	 * @return
-	 */
+ 
 	public static String randomNumber(int len) {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < len; i++) {
@@ -227,12 +217,7 @@ public class MybatiesStringUtil {
 		return false;
 	}
 
-	/**
-	 * 字符串转成数字,如果为空则返回0
-	 * 
-	 * @param str
-	 * @return
-	 */
+	 
 	public static int toInt(String str) {
 		if (!isNumber(str)) {
 			return 0;
@@ -251,12 +236,7 @@ public class MybatiesStringUtil {
 		return sb.toString();
 	}
 
-	/**
-	 * 试试运行
-	 * 
-	 * @param luckStr
-	 * @return
-	 */
+	 
 	public static char tryLuck(String luckStr) {
 		return luckStr.charAt(new Random().nextInt(luckStr.length()));
 	}
@@ -276,11 +256,7 @@ public class MybatiesStringUtil {
 		return rs;
 	}
 
-	/**
-	 * 获得本机的MAC地址
-	 * 
-	 * @return
-	 */
+	 
 	public static String getMacAddress() {
 		try {
 			byte[] mac = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress();
@@ -343,17 +319,7 @@ public class MybatiesStringUtil {
 		return str;
 	}
 
-	/**
-	 * <pre>
-	 * StringUtil.coalesceEmpty(null)                = ""
-	 * StringUtil.coalesceEmpty("")                  = "" 
-	 * StringUtil.coalesceEmpty(" ")                 = " " 
-	 * StringUtil.coalesceEmpty(" a ")               = " a "
-	 * </pre>
-	 * 
-	 * @param str
-	 * @return
-	 */
+ 
 	public static String coalesceEmpty(String str) {
 		return str == null ? EMPTY_STR : str;
 	}
@@ -361,11 +327,7 @@ public class MybatiesStringUtil {
 	public static String[] CHARS62 = new String[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2",
 			"3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
-	/**
-	 * 生成8位数短GUID，通过32位GUID转化而来，谨慎重复,必要的时候请加前缀来减少重复机率 
-	 * 
-	 * @return
-	 */
+ 
 	public static String genShortGUID() {
 		StringBuilder stringBuilder = new StringBuilder();
 		String uuid = UUID.randomUUID().toString().replace("-", "");
@@ -376,21 +338,7 @@ public class MybatiesStringUtil {
 		return stringBuilder.toString();
 	}
 
-	/**
-	 * 截取前N个字符
-	 * 
-	 * <pre>
-	 * StringUtil.substring(null,3)	 	""
-	 * StringUtil.substring("",3)	 	""
-	 * StringUtil.substring(" ",3)	 	" "
-	 * StringUtil.substring("a",3)	 	"a"
-	 * StringUtil.substring("abcdef",3)	 	"abc"
-	 * </pre>
-	 * 
-	 * @param str
-	 * @param len
-	 * @return
-	 */
+	 
 	public static String substring(String str, int len) {
 		if (len <= 0 || str == null) {
 			return EMPTY_STR;
