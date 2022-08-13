@@ -42,10 +42,12 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 
 	private void generateId(T data) {
 		if (idcreator != null) {
-			//允许用户实现自己的主键生成策略
+			// 允许用户实现自己的主键生成策略
 			String newId = idcreator.generateId(data);
-			data.setId(newId);
-			return;
+			if (MybatiesStringUtil.isNotEmpty(newId)) {
+				data.setId(newId);
+				return;
+			}
 		}
 		ObjectId objectId = new ObjectId();
 		data.setId(objectId.toHexString());
@@ -119,7 +121,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 
 	@Transactional
 	@Override
-	public boolean updateSkipNull(String companyId, T data, Long ver) { 
+	public boolean updateSkipNull(String companyId, T data, Long ver) {
 		MybatiesAssertUtil.assertNotEmpty(companyId, "COMPANY_ID_EMPTY");
 		data.setCompanyId(companyId);
 		return this.updateSkipNull(data, ver);
