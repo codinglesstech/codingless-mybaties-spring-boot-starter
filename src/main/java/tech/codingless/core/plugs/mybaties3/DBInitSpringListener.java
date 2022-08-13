@@ -26,14 +26,16 @@ public class DBInitSpringListener implements ApplicationListener<ApplicationStar
 	private TableAutoCreateService tableAutoCreateService;
 	@Autowired
 	ApplicationEventPublisher eventPublisher;
-
-	@Autowired
-	private CommScriptGeneter commScriptGeneter;
+ 
 
 	@Autowired
 	ApplicationContext context;
 	@Autowired
 	private MyBatiesService myBatiesService;
+	
+
+	@Autowired
+	private GenericUpdateDAOImpl<?> updateScriptGen; 
 
 	@Autowired(required = false)
 	private DataBaseConf conf;
@@ -48,8 +50,7 @@ public class DBInitSpringListener implements ApplicationListener<ApplicationStar
 
 		Map<String, BaseDO> map = context.getBeansOfType(BaseDO.class);
 		if (map != null && !map.isEmpty()) {
-			tableAutoCreateService.setDOList(map.values());
-			commScriptGeneter.setDOList(map.values());
+			tableAutoCreateService.setDOList(map.values()); 
 
 		}
 		if (conf != null && conf.needAutoCreateTable() && MybatiesStringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
@@ -69,6 +70,8 @@ public class DBInitSpringListener implements ApplicationListener<ApplicationStar
 		// 系统启动即生成相应的SQL语句，这样可以减少错误
 		map.values().forEach(entity -> {
 			LOG.info("Gen Auto Sql For Entity:{}", entity);
+			updateScriptGen.genAutoSqlForCreate(entity);
+			updateScriptGen.genAutoSqlForUpdate(entity);
 			AutoGetHelper.genAutoSqlForGet(entity.getClass(), false, myBatiesService.getConfiguration());
 			AutoUpdateHelper.genUpdateSkipNullSql(myBatiesService.getConfiguration(), entity.getClass());
 			AutoFindByIdHelper.genGetSql(myBatiesService.getConfiguration(), entity.getClass());

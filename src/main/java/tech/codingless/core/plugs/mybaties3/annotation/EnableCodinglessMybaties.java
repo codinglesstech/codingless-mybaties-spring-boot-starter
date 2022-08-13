@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
 
 import org.springframework.context.annotation.Import;
 
-import tech.codingless.core.plugs.mybaties3.CommScriptGeneter;
 import tech.codingless.core.plugs.mybaties3.DBInitSpringListener;
 import tech.codingless.core.plugs.mybaties3.GenericQueryDAOImpl;
 import tech.codingless.core.plugs.mybaties3.GenericUpdateDAOImpl;
@@ -29,8 +28,7 @@ import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 @Inherited
 @Import({MybatiesImportSelector.class,
 	DBInitSpringListener.class,
-	TableAutoCreateServiceMysqlImpl.class,
-	CommScriptGeneter.class,
+	TableAutoCreateServiceMysqlImpl.class, 
 	GenericUpdateDAOImpl.class,
 	MyBatiesServiceDefaultImpl.class,
 	DataBaseConf.class,

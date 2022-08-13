@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import tech.codingless.core.plugs.mybaties3.CommScriptGeneter;
 import tech.codingless.core.plugs.mybaties3.DBInitSpringListener;
 import tech.codingless.core.plugs.mybaties3.GenericQueryDAOImpl;
 import tech.codingless.core.plugs.mybaties3.GenericUpdateDAOImpl;
@@ -47,12 +46,7 @@ public class MybatiesConfig {
 	public TableAutoCreateServiceMysqlImpl initTableAutoCreateServiceMysqlImpl() {
 		return new TableAutoCreateServiceMysqlImpl();
 	}
-
-	@Bean("tech.codingless.core.plugs.mybaties3.CommScriptGeneter")
-	public CommScriptGeneter initCommScriptGeneter() {
-		return new CommScriptGeneter();
-	}
-
+ 
 	@Bean("tech.codingless.core.plugs.mybaties3.MyBatiesServiceDefaultImpl")
 	public MyBatiesServiceDefaultImpl initMyBatiesServiceDefaultImpl() {
 		return new MyBatiesServiceDefaultImpl();
