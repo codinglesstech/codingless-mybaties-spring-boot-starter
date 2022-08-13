@@ -1,4 +1,4 @@
-package tech.codingless.core.plugs.mybaties3;
+package tech.codingless.core.plugs.mybaties3.strategy;
 
 import javax.sql.DataSource;
 

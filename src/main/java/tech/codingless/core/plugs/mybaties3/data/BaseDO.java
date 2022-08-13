@@ -2,14 +2,11 @@ package tech.codingless.core.plugs.mybaties3.data;
 
 import java.util.Date;
 
-import org.bson.types.ObjectId;
-
 import tech.codingless.core.plugs.mybaties3.annotation.MyColumn;
 import tech.codingless.core.plugs.mybaties3.annotation.MyComment;
 
- 
 public class BaseDO {
- 
+
 	@MyColumn(key = true)
 	protected String id;
 	@MyComment(value = "创建时间")
@@ -30,20 +27,19 @@ public class BaseDO {
 	@MyColumn(createIndex = true)
 	@MyComment("数据所处环境,1：生产环境，2:测试环境,DataEnvEnums")
 	protected Integer env;
-	
-	
+
 	@MyComment("逻辑删除,被逻辑删除的数据，可能随时会被清除")
 	@MyColumn(defaultValue = "false")
 	protected Boolean del;
 
-
 	public void setEnv(Integer env) {
 		this.env = env;
 	}
+
 	public Integer getEnv() {
 		return env;
 	}
-	
+
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
 	}
@@ -69,15 +65,6 @@ public class BaseDO {
 
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * 生成主键
-	 */
-	public void generatorKey() { 
-		ObjectId objectId = new ObjectId();
-		setId(objectId.toHexString()); 
-		//setId(System.currentTimeMillis()+StringUtil.genShortGUID()); 
 	}
 
 	public Date getGmtCreate() {
