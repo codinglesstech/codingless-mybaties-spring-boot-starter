@@ -13,8 +13,7 @@ import tech.codingless.core.plugs.mybaties3.data.UpdateObject;
 
 /**
  * common CRUD method for all sql entity service
- * @author 王鸿雁
- * @version 2.0.0
+ * @author 王鸿雁 
  * @param <T>
  */
 public interface DBBaseGenericService<T extends BaseDO> {
@@ -27,7 +26,7 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	boolean create(T data);
 	/**
 	 * insert a new row with company id
-	 * 
+	 * @param companyId
 	 * @param data
 	 * @return
 	 */
@@ -58,12 +57,10 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	boolean update(T data);
  
 	/**
-	 * <p>
-	 * 修改只有不为空的才会更新，
 	 * 
 	 * @param companyId
-	 * @param entity
-	 * @param ver       版本不能为空
+	 * @param data
+	 * @param ver
 	 * @return
 	 */
 	boolean updateNotNull(String companyId, T data, Long ver);
@@ -72,40 +69,32 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	boolean updateSkipNull(T data, Long ver);
 
 	/**
-	 * 批量更新，当缓存中达到batchSize指定的数量时，执行更新，否则只是加入缓存
-	 * @author 王鸿雁
+	 * 批量更新，当缓存中达到batchSize指定的数量时，执行更新，否则只是加入缓存 
 	 * @param companyId
 	 * @param data
 	 * @param ver
 	 * @param batchSize
 	 * @return
-	 *
 	 */
 	int batchUpdateAppend(String companyId, T data, Long ver, int batchSize);
+	
 	/**
 	 * 立即执行所有缓存中的数据并更新
-	 * @author 王鸿雁
-	 * @param companyId
-	 * @param data
-	 * @param ver
+	 * @param clazz
 	 * @return
-	 *
 	 */
 	int batchUpdateExecute(Class<T> clazz);
 	
 	/**
 	 * 批量更新
-	 * @author 王鸿雁
 	 * @param updateList
 	 * @return
-	 *
 	 */
 	int batchUpdate(List<UpdateObject> updateList);
 	
 	/**
 	 * 修改对象，条件是主键及 companyId
-	 * 
-	 * @param entity
+	 * @param data
 	 * @param companyId
 	 * @return
 	 */
@@ -161,8 +150,7 @@ public interface DBBaseGenericService<T extends BaseDO> {
 
 	/**
 	 * 物理删除，小时使用。推荐大多数场合下从产品上不设置删除功能，如果设置了删除功能应使用逻辑删除
-	 * 
-	 * @author 王鸿雁
+	 *  
 	 * @param clazz
 	 * @param id
 	 * @param companyId
@@ -173,20 +161,16 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	boolean deletePhysical(String id, String companyId);
 
 	/**
-	 * 逻辑删除
-	 * 
-	 * @author 王鸿雁
+	 * 逻辑删除 
 	 * @param clazz
 	 * @param id
 	 * @param companyId
 	 * @return
-	 *
 	 */
 	boolean deleteLogical(Class<T> clazz, String id, String companyId);
 	boolean deleteLogical(String id, String companyId);
 	/**
-	 * 批量逻辑删除
-	 * @author 王鸿雁
+	 * 批量逻辑删除 
 	 * @param clazz
 	 * @param idList
 	 * @param companyId
@@ -210,8 +194,7 @@ public interface DBBaseGenericService<T extends BaseDO> {
 
 	/**
 	 * 分页
-	 * 
-	 * @author 王鸿雁
+	 *  
 	 * @param clazz
 	 * @param companyId
 	 * @param param
@@ -227,8 +210,7 @@ public interface DBBaseGenericService<T extends BaseDO> {
 
 	/**
 	 * 通过例子查找，最多返回指定条数
-	 * 
-	 * @author 王鸿雁
+	 *  
 	 * @param clazz
 	 * @param companyId
 	 * @param example
@@ -243,8 +225,7 @@ public interface DBBaseGenericService<T extends BaseDO> {
 
 	/**
 	 * 通过例子查找一个，多于一个结果会报错
-	 * 
-	 * @author 王鸿雁
+	 *  
 	 * @param clazz
 	 * @param companyId
 	 * @param example

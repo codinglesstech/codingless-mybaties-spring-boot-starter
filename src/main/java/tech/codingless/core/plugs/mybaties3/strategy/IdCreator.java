@@ -10,9 +10,8 @@ import tech.codingless.core.plugs.mybaties3.data.BaseDO;
  */
 public interface IdCreator {
 	
-	/**
-	 * 生成一个新的主键ID
-	 * @param clazz
+	/** 
+	 * 生成一个新的主键ID 
 	 * @param data
 	 * @return
 	 */

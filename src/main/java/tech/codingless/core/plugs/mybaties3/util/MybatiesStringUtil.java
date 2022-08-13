@@ -328,15 +328,7 @@ public class MybatiesStringUtil {
 	private static final String REPLACE_PARAMS_REG_START_STR = "#\\{[ \t]*";
 	private static final String REPLACE_PARAMS_REG_END_STR = "[ \t]*\\}";
 
-	/**
-	 * 参数替换，如： select * from abc where id='#{id }' -> {"id":"123"} -> select * from
-	 * abc where id='123' <br>
-	 * 可以用在SQL语句参数替换，DSL参数替换等场景
-	 * 
-	 * @param str
-	 * @param param
-	 * @return
-	 */
+	 
 	public static String replaceParams(String str, Map<String, String> param) {
 		if (param == null) {
 			return str;
@@ -370,8 +362,7 @@ public class MybatiesStringUtil {
 			"3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
 	/**
-	 * 生成8位数短GUID，通过32位GUID转化而来，谨慎重复,必要的时候请加前缀来减少重复机率
-	 * <span style="color:red">请自己根据场景合理使用，小心可能会重复</span>
+	 * 生成8位数短GUID，通过32位GUID转化而来，谨慎重复,必要的时候请加前缀来减少重复机率 
 	 * 
 	 * @return
 	 */
@@ -389,11 +380,11 @@ public class MybatiesStringUtil {
 	 * 截取前N个字符
 	 * 
 	 * <pre>
-	 * StringUtil.substring(null,3)	->	""
-	 * StringUtil.substring("",3)	->	""
-	 * StringUtil.substring(" ",3)	->	" "
-	 * StringUtil.substring("a",3)	->	"a"
-	 * StringUtil.substring("abcdef",3)	->	"abc"
+	 * StringUtil.substring(null,3)	 	""
+	 * StringUtil.substring("",3)	 	""
+	 * StringUtil.substring(" ",3)	 	" "
+	 * StringUtil.substring("a",3)	 	"a"
+	 * StringUtil.substring("abcdef",3)	 	"abc"
 	 * </pre>
 	 * 
 	 * @param str
@@ -406,15 +397,7 @@ public class MybatiesStringUtil {
 		}
 		return str.length() <= len ? str : str.substring(0, len);
 	}
-
-	/**
-	 * 将 str,str,str -> [str,str,str...] 格式
-	 * 
-	 * @author 王鸿雁
-	 * @param strs
-	 * @return
-	 *
-	 */
+ 
 	public static List<String> toArray(String strs) {
 		if (MybatiesStringUtil.isEmpty(strs)) {
 			return Collections.emptyList();

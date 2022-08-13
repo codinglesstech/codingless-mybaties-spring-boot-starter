@@ -46,8 +46,7 @@ public class MyTableColumnParser {
 
 	/**
 	 * 解析出字段与属性的对应关系
-	 * 
-	 * @author 王鸿雁
+	 *  
 	 * @param clazz
 	 * @return
 	 *
@@ -138,7 +137,6 @@ public class MyTableColumnParser {
 
 	/**
 	 * 解析字段，跳过空值属性，虚拟属性,只读属性
-	 * @author 王鸿雁
 	 * @param clazz
 	 * @return
 	 * @throws InvocationTargetException 

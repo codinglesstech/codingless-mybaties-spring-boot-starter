@@ -49,24 +49,21 @@ public @interface MyColumn {
 	 * <pre>
 	 * alter table xxx_table_name  modify xxx_column_name int(11) not null auto_increment, add   key(xxx_column_name);
 	 * </pre>
-	 * 
-	 * @author 王鸿雁
+	 *  
 	 * @return
 	 *
 	 */
 	boolean autoIncrement() default false;
 	/**
 	 * 是否创建索引
-	 * ALTER TABLE `table_name` ADD INDEX index_name ( `column` )
-	 * @author 王鸿雁
+	 * ALTER TABLE `table_name` ADD INDEX index_name ( `column` ) 
 	 * @return
 	 *
 	 */
 	boolean createIndex() default false;
 	
 	/**
-	 * 充许自定义Handler
-	 * @author 王鸿雁
+	 * 充许自定义Handler 
 	 * @return
 	 *
 	 */

@@ -150,8 +150,7 @@ public class MybatiesDateUtil {
 	 * 2020-11-17T22:47:22.550Z  :UTC 0时区(Z代表)
 	 * 2020-11-18T00:00:00+8
 	 * </pre>
-	 * 
-	 * @author 王鸿雁
+	 *  
 	 * @param utcTimeStr
 	 * @return
 	 *
@@ -168,8 +167,7 @@ public class MybatiesDateUtil {
 	}
 
 	/**
-	 * 
-	 * @author 王鸿雁
+	 *  
 	 * @param date
 	 * @return
 	 *
