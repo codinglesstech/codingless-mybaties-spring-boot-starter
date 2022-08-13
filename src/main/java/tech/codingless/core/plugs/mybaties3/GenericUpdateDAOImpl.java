@@ -26,8 +26,8 @@ import tech.codingless.core.plugs.mybaties3.conf.ColumnNameConstant;
 import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 import tech.codingless.core.plugs.mybaties3.data.BaseDO;
 import tech.codingless.core.plugs.mybaties3.data.UpdateObject;
-import tech.codingless.core.plugs.mybaties3.delete.DeleteBatchHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoCreateBatchHelper;
+import tech.codingless.core.plugs.mybaties3.helper.AutoDeleteBatchHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoUpdateHelper;
 import tech.codingless.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
@@ -232,7 +232,7 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 	
 	@Override
 	public int deleteLogicalWithCompanyId(Class<T> clazz, Collection<String> idList, String companyId) { 
-		return DeleteBatchHelper.deleteLogical(myBatiesService,clazz,idList,companyId);
+		return AutoDeleteBatchHelper.deleteLogical(myBatiesService,clazz,idList,companyId);
 	}
 	
 	

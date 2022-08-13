@@ -1,4 +1,4 @@
-package tech.codingless.core.plugs.mybaties3.delete;
+package tech.codingless.core.plugs.mybaties3.helper;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,9 +8,8 @@ import org.mybatis.spring.MyBatisSystemException;
 
 import tech.codingless.core.plugs.mybaties3.CommonSQLHelper;
 import tech.codingless.core.plugs.mybaties3.MyBatiesService;
-import tech.codingless.core.plugs.mybaties3.helper.AutoDeleteLogicalBatchHelper;
 
-public class DeleteBatchHelper {
+public class AutoDeleteBatchHelper {
 
 	public static int deleteLogical(MyBatiesService myBatiesService, Class<?> clazz, Collection<String> idList, String companyId) {
 
