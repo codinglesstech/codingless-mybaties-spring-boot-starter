@@ -1,18 +1,23 @@
-# codingless-mybaties-spring-boot-starter
-# 规范数据库操作，数据版本，数据环境，自动生成表等一系列常用功能
+# Codingless For Mybaties 
 
 
-- 引用框架只需一步
+- Step 1: POM.xml
 
 ```
 
-@EnableCodinglessMybaties //开启框架
-public class CodingLessHelloApplication {
+<dependency>
+  <groupId>tech.codingless</groupId>
+  <artifactId>codingless-mybaties-spring-boot-starter</artifactId>
+  <version>0.0.16</version>
+</dependency>
 
-	public static void main(String[] args) {
-		SpringApplication.run(CodingLessHelloApplication.class, args);
-	}
+```
 
-}
+- Step 2: application.properties
 
+```
+tech.codingless.mybaties.rds.url=<jdbc url>
+tech.codingless.mybaties.rds.username=<username>
+tech.codingless.mybaties.rds.password=<password>
+tech.codingless.mybaties.rds.classpath-mapper= < your classpath eg. com/xxx/xxx/**/*Mapper.xml >
 ```
