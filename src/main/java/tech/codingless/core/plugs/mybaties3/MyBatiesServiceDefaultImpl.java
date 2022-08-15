@@ -29,6 +29,7 @@ import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.core.plugs.mybaties3.strategy.DataSourceCreator;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesAssertUtil;
+import tech.codingless.core.plugs.mybaties3.util.MybatiesIntegerUtil;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 /**
@@ -130,13 +131,13 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 					basicDataSource.setUrl(conf.getUrl());
 					basicDataSource.setUsername(conf.getUsername());
 					basicDataSource.setPassword(conf.getPassword());
-					basicDataSource.setMaxIdle(20);
-					basicDataSource.setMinIdle(3);
-					basicDataSource.setMaxTotal(20);
-					basicDataSource.setMaxWaitMillis(10000);
-					basicDataSource.setInitialSize(3);
+					basicDataSource.setMaxIdle(MybatiesIntegerUtil.get(conf.getMaxIdle(),20)); 
+					basicDataSource.setMinIdle(MybatiesIntegerUtil.get(conf.getMinIdle(),3));
+					basicDataSource.setMaxTotal(MybatiesIntegerUtil.get(conf.getMaxTotal(),20));
+					basicDataSource.setMaxWaitMillis(MybatiesIntegerUtil.get(conf.getMaxWaitMillis(),10000));
+					basicDataSource.setInitialSize(MybatiesIntegerUtil.get(conf.getInitialSize(),3));
 					basicDataSource.setRemoveAbandonedOnBorrow(true);
-					basicDataSource.setRemoveAbandonedTimeout(180);
+					basicDataSource.setRemoveAbandonedTimeout(MybatiesIntegerUtil.get(conf.getRemoveAbandonedTimeout(),180));
 					dataSource = basicDataSource;
 					LOG.info("创建数据源：" + dataSource);
 				}

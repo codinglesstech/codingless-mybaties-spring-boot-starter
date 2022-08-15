@@ -11,6 +11,60 @@ public class DataBaseConf {
 	private String password;
 	private String classpathMapper;
 	private String autoCreateTable;
+	private Integer maxIdle;
+	private Integer minIdle;
+	private Integer maxTotal;
+	private Integer maxWaitMillis;
+	private Integer initialSize;
+	private Integer removeAbandonedTimeout;
+
+	public Integer getMaxIdle() {
+		return maxIdle;
+	}
+
+	public void setMaxIdle(Integer maxIdle) {
+		this.maxIdle = maxIdle;
+	}
+
+	public Integer getMinIdle() {
+		return minIdle;
+	}
+
+	public void setMinIdle(Integer minIdle) {
+		this.minIdle = minIdle;
+	}
+
+	public Integer getMaxTotal() {
+		return maxTotal;
+	}
+
+	public void setMaxTotal(Integer maxTotal) {
+		this.maxTotal = maxTotal;
+	}
+
+	public Integer getMaxWaitMillis() {
+		return maxWaitMillis;
+	}
+
+	public void setMaxWaitMillis(Integer maxWaitMillis) {
+		this.maxWaitMillis = maxWaitMillis;
+	}
+
+	public Integer getInitialSize() {
+		return initialSize;
+	}
+
+	public void setInitialSize(Integer initialSize) {
+		this.initialSize = initialSize;
+	}
+
+	public Integer getRemoveAbandonedTimeout() {
+		return removeAbandonedTimeout;
+	}
+
+	public void setRemoveAbandonedTimeout(Integer removeAbandonedTimeout) {
+		this.removeAbandonedTimeout = removeAbandonedTimeout;
+	}
 
 	public String getAutoCreateTable() {
 		return autoCreateTable == null ? "" : autoCreateTable.trim();
