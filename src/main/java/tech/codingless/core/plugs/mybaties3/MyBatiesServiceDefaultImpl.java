@@ -162,6 +162,7 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 			// resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
 			// mergeSqlMappers.addAll(Arrays.asList(resourcesList));
 
+			mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:tech/codingless/core/plugs/mybaties3/**/*Mapper.xml")));
 			if (MybatiesStringUtil.isNotEmpty(conf.getClasspathMapper())) {
 				List.of(conf.getClasspathMapper().split(",")).stream().filter(item -> MybatiesStringUtil.isNotEmpty(item)).forEach(item -> {
 					try {
