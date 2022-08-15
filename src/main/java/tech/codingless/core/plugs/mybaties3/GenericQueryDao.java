@@ -28,6 +28,7 @@ public interface GenericQueryDao<T extends BaseDO> {
 	List<T> list(Class<T> clazz, String companyId);
 
 	PageRollResult<T> rollPage(Class<T> clazz, String companyId, T param, String orderColumn, OrderTypeEnum orderType, Integer size, Integer page);
+	List<T> findByExample(Class<T> clazz, ColumnSelector<T> columns, T example, String orderColumn, OrderTypeEnum orderType, Integer size, Integer offset);
 
 	PageRollResult<?> rollPage(String namespace, String sqlId, Map<String, Object> param, Integer size, Integer page);
 
@@ -47,6 +48,7 @@ public interface GenericQueryDao<T extends BaseDO> {
 	List<T> select(Class<T> entityClass,ColumnSelector<T> columns, QueryConditionWrapper<T> wrapper, SerializableFunction<T, Object> sortColumn, OrderTypeEnum orderType, int offset, int limit);
 
 	long count(Class<T> entityClass, QueryConditionWrapper<T> wrapper);
+	
  
  
 

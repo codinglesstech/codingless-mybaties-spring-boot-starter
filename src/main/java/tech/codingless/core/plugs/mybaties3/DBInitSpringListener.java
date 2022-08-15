@@ -15,6 +15,7 @@ import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 import tech.codingless.core.plugs.mybaties3.data.BaseDO;
 import tech.codingless.core.plugs.mybaties3.helper.AutoFindByIdHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoGetHelper;
+import tech.codingless.core.plugs.mybaties3.helper.AutoRollpageV2Helper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoUpdateHelper;
 import tech.codingless.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
@@ -73,7 +74,9 @@ public class DBInitSpringListener implements ApplicationListener<ApplicationStar
 			updateScriptGen.genAutoSqlForUpdate(entity);
 			AutoGetHelper.genAutoSqlForGet(entity.getClass(), false, myBatiesService.getConfiguration());
 			AutoUpdateHelper.genUpdateSkipNullSql(myBatiesService.getConfiguration(), entity.getClass());
-			AutoFindByIdHelper.genGetSql(myBatiesService.getConfiguration(), entity.getClass());
+			AutoFindByIdHelper.genGetSql(myBatiesService.getConfiguration(), entity.getClass()); 
+			AutoRollpageV2Helper.genSql(myBatiesService.getConfiguration(), entity.getClass());
+			
 		});
 
 	}

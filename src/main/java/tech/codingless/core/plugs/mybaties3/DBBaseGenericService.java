@@ -181,12 +181,9 @@ public interface DBBaseGenericService<T extends BaseDO> {
 
 	List<T> list(Class<T> clazz, String companyId);
 	List<T> list(String companyId);
-
-	 
-	PageRollResult<T> rollPage(Class<T> clazz, String companyId, T param, String orderColumn, OrderTypeEnum orderType, Integer size, Integer page);
-	PageRollResult<T> rollPage(String companyId, T param, String orderColumn, OrderTypeEnum orderType, Integer size, Integer page);
-
-	PageRollResult<?> rollPage(String selectId, Map<String, Object> param, int size, int page);
+ 
+	PageRollResult<?> rollPage(String selectId, Map<String, Object> param, int size, int page); 
+	PageRollResult<T> rollPage(ColumnSelector<T > columns, QueryConditionWrapper<T> wrapper, SerializableFunction<T, Object> sortColumn, OrderTypeEnum orderType,  Integer size, Integer page);
 
  
 	List<T> findByExample(Class<T> clazz, String companyId, T example, Integer size); 

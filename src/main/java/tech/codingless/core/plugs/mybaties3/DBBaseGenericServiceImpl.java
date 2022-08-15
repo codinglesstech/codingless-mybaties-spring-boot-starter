@@ -259,15 +259,29 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 		return queryDao.list(clazz, companyId);
 	}
 
-	@Override
-	public PageRollResult<T> rollPage(Class<T> clazz, String companyId, T param, String orderColumn, OrderTypeEnum orderType, Integer size, Integer page) {
-		return queryDao.rollPage(clazz, companyId, param, orderColumn, orderType, size, page);
-	}
-
+  
 	@Override
 	public PageRollResult<?> rollPage(String selectId, Map<String, Object> param, int size, int page) {
 		return queryDao.rollPage(namespace(), selectId, param, size, page);
 	}
+	
+	@Override
+	public PageRollResult<T> rollPage(ColumnSelector<T> columns, QueryConditionWrapper<T> wrapper, SerializableFunction<T, Object> sortColumn, OrderTypeEnum orderType,Integer size, Integer page) {
+		
+		int limit = size==null?100:size;
+		int offset = page==null?0:(page-1)*size; 
+		List<T> list = select(columns, wrapper, sortColumn, orderType, offset, limit);
+		long rows = count(wrapper);
+		
+		PageRollResult<T> result = new PageRollResult<>();
+		result.setList(list);
+		result.setCurrentPage(page);
+		result.setPageSize(limit);
+		result.setTotalPage((int)Math.ceil(rows/limit));
+		result.setTotalCount((int)rows);
+		return result;
+	}
+	
 
 	@Override
 	public T findOneByExample(Class<T> clazz, String companyId, T example) {
@@ -287,9 +301,8 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	}
 
 	@Override
-	public List<T> findByExample(Class<T> clazz, T example, Integer size) {
-		PageRollResult<T> result = queryDao.rollPage(clazz, null, example, null, null, size, 1);
-		return result.getList();
+	public List<T> findByExample(Class<T> clazz, T example, Integer size) {  
+		return  queryDao.findByExample(clazz,null, example, null, null, size, 1); 
 	}
 
 	@SuppressWarnings("unchecked")
@@ -352,11 +365,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 		return list(getEntityClass(), companyId);
 	}
 
-	@Override
-	public PageRollResult<T> rollPage(String companyId, T param, String orderColumn, OrderTypeEnum orderType, Integer size, Integer page) {
-		return rollPage(getEntityClass(), companyId, param, orderColumn, orderType, size, page);
-	}
-
+  
 	@Override
 	public List<T> findByExample(String companyId, T example, Integer size) {
 		return findByExample(getEntityClass(), companyId, example, size);

@@ -510,6 +510,20 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 		return result;
 	}
 
+	
+	@Override
+	public List<T> findByExample(Class<T> clazz,ColumnSelector<T> columns, T example, String orderColumn, OrderTypeEnum orderType, Integer limit, Integer offset) { 
+		limit = limit==null?100:limit;
+		offset = offset==null?0:offset;
+		String selectKey="findByExamplev2_"+CommonSQLHelper.getTableName(clazz);
+		Map<String, Object> param= new HashMap<>();
+		param.put("condition", example);
+		param.put("_limit_", limit);
+		param.put("_offset_", offset);
+		param.put("columns", columns); 
+		return myBatiesService.selectList(NAMESPACE.concat(".").concat(selectKey), param);  
+	}
+	
 	@Override
 	public PageRollResult<?> rollPage(String namespance, String id, Map<String, Object> param, Integer size, Integer page) {
 		size = size == null ? 20 : size;
@@ -540,10 +554,10 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 				}
 				String xml = null;
 				if (xmlpath.contains("classes!")) {
-					String classpath = xmlpath.split("classes!")[1];
-					xml = IOUtils.toString(this.getClass().getResourceAsStream(classpath));
+					String classpath = xmlpath.split("classes!")[1]; 
+					xml = IOUtils.toString(this.getClass().getResourceAsStream(classpath),"utf-8");
 				} else {
-					xml = IOUtils.toString(new FileInputStream(xmlpath));
+					xml = IOUtils.toString(new FileInputStream(xmlpath),"utf-8");
 				}
 				AutoRollPageSelectSqlHelper.genSelectMapper(namespance, id, selectKey, countKey, myBatiesService.getConfiguration(), xml);
 
