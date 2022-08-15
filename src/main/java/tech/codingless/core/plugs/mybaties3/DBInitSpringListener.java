@@ -68,8 +68,7 @@ public class DBInitSpringListener implements ApplicationListener<ApplicationStar
 		});
 
 		// 系统启动即生成相应的SQL语句，这样可以减少错误
-		map.values().forEach(entity -> {
-			LOG.info("Gen Auto Sql For Entity:{}", entity);
+		map.values().forEach(entity -> { 
 			updateScriptGen.genAutoSqlForCreate(entity);
 			updateScriptGen.genAutoSqlForUpdate(entity);
 			AutoGetHelper.genAutoSqlForGet(entity.getClass(), false, myBatiesService.getConfiguration());
