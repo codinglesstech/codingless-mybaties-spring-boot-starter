@@ -2,7 +2,6 @@ package tech.codingless.core.plugs.mybaties3;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -56,7 +55,6 @@ import tech.codingless.core.plugs.mybaties3.helper.AutoGetHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoRollPageSelectSqlHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoSelectByConditionSqlHelper;
 import tech.codingless.core.plugs.mybaties3.helper.CommonSQLHelper;
-import tech.codingless.core.plugs.mybaties3.helper.MyTableColumnParser;
 import tech.codingless.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.core.plugs.mybaties3.util.DataEnvUtil;
@@ -65,22 +63,19 @@ import tech.codingless.core.plugs.mybaties3.util.ReflectionUtil;
 
 @Component
 public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T> {
-	private static final String NAMESPACE="AUTOSQL";
-	private static final Logger LOG = LoggerFactory.getLogger(GenericQueryDAOImpl.class);
-	private static Map<String, ResultMap> RESULT_MAPS = new HashMap<>();
+	private static final String NAMESPACE = "AUTOSQL";
+	private static final Logger LOG = LoggerFactory.getLogger(GenericQueryDAOImpl.class); 
 	protected MyBatiesService myBatiesService;
 	protected BasicDataSource basicDataSource;
- 
-	
 
 	@Autowired(required = false)
 	private DataBaseConf conf;
-	
+
 	@Autowired
 	protected void setMyBatiesService(MyBatiesService myBatiesService) {
 		LOG.info("注入数据访问服务:" + myBatiesService);
-		this.myBatiesService = myBatiesService; 
-		if (conf!=null&&MybatiesStringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
+		this.myBatiesService = myBatiesService;
+		if (conf != null && MybatiesStringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
 			basicDataSource = new BasicDataSource();
 			basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 			basicDataSource.setUrl(conf.getUrl());
@@ -101,8 +96,9 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 	public T selectOne(String sqlId, Object parameter) {
 		return myBatiesService.selectOne(sqlId, parameter);
 	}
+
 	@Override
-	public Object selectOneRow(String sqlId, Object param) { 
+	public Object selectOneRow(String sqlId, Object param) {
 		return myBatiesService.selectOne(sqlId, param);
 	}
 
@@ -110,14 +106,13 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 	public List<T> selectList(String sqlId, Object param) {
 		return myBatiesService.selectList(sqlId, param);
 	}
- 
 
 	@Override
 	public T getEntity(Class<T> clazz, String id) {
-		String sqlKey = "AUTOSQL.GET_" + CommonSQLHelper.getTableName(clazz);  
+		String sqlKey = "AUTOSQL.GET_" + CommonSQLHelper.getTableName(clazz);
 
 		Map<String, Object> param = new HashMap<String, Object>(6);
-		param.put("id", id); 
+		param.put("id", id);
 		param.put("env", DataEnvUtil.getEvn());
 		try {
 			return myBatiesService.selectOne(sqlKey, param);
@@ -125,8 +120,8 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 
 			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
-					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
-						AutoGetHelper.genAutoSqlForGet(clazz,false,myBatiesService.getConfiguration()); 
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+						AutoGetHelper.genAutoSqlForGet(clazz, false, myBatiesService.getConfiguration());
 						ConcurrentSqlCreatorLocker.put(sqlKey);
 					}
 				}
@@ -138,9 +133,9 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 
 	@Override
 	public T getEntity(Class<T> clazz, String id, String companyId) {
-		String namespace="AUTOSQL";
+		String namespace = "AUTOSQL";
 		String sqlKey = "GET_BYCOMPANYID_" + CommonSQLHelper.getTableName(clazz);
-		String sqlFullKey = namespace+"."+sqlKey;
+		String sqlFullKey = namespace + "." + sqlKey;
 		Map<String, Object> param = new HashMap<String, Object>(6);
 		param.put("id", id);
 		param.put("companyId", companyId);
@@ -151,8 +146,8 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 
 			if (ConcurrentSqlCreatorLocker.notExist(sqlFullKey)) {
 				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlFullKey)) {
-					if (ConcurrentSqlCreatorLocker.notExist(sqlFullKey)) { 
-						//AutoGetHelper.genAutoSqlForGet(clazz,false,myBatiesService.getConfiguration());  
+					if (ConcurrentSqlCreatorLocker.notExist(sqlFullKey)) {
+						// AutoGetHelper.genAutoSqlForGet(clazz,false,myBatiesService.getConfiguration());
 						AutoFindByIdHelper.genGetSql(myBatiesService.getConfiguration(), namespace, sqlKey, clazz);
 						ConcurrentSqlCreatorLocker.put(sqlFullKey);
 					}
@@ -395,59 +390,20 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 		myBatiesService.getConfiguration().addMappedStatement(builder.build());
 
 	}
-
-	@SuppressWarnings("rawtypes")
-	private ResultMap createResultMap(Class clazz, String key) {
-
-		MyTypeHanderRegistHelper.regist(myBatiesService.getConfiguration(), clazz);
-
-		if (RESULT_MAPS.containsKey(key)) {
-			return RESULT_MAPS.get(key);
-		}
-		// 设置返回值绑定
-		List<ResultMapping> mappingList = new ArrayList<ResultMapping>();
-		for (Method method : clazz.getMethods()) {
-			String methodName = method.getName();
-			if (MyTableColumnParser.needSkipMethodName(methodName)) {
-				continue;
-			}
-			String attrName = MyTableColumnParser.methodName2attrName(methodName);
-			String columnName = null;
-			try {
-				Field filed = clazz.getDeclaredField(attrName);
-				MyColumn myColumn = filed.getAnnotation(MyColumn.class);
-				if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.name())) {
-					columnName = myColumn.name();
-				}
-			} catch (Exception e1) {
-			}
-			if (MybatiesStringUtil.isEmpty(columnName)) {
-				columnName = CommonSQLHelper.change2dbFormat(attrName);
-			}
-			ResultMapping.Builder mappingBuilder = new ResultMapping.Builder(myBatiesService.getConfiguration(), attrName);
-			mappingBuilder.javaType(method.getReturnType());
-			mappingBuilder.column(columnName);
-			mappingList.add(mappingBuilder.build());
-		}
-		ResultMap.Builder mapBuilder = new ResultMap.Builder(myBatiesService.getConfiguration(), key, clazz, mappingList);
-		return mapBuilder.build();
-	}
-
-	  
-	
+ 
 	@Override
-	public List<T> findByExample(Class<T> clazz,ColumnSelector<T> columns, T example, String orderColumn, OrderTypeEnum orderType, Integer limit, Integer offset) { 
-		limit = limit==null?100:limit;
-		offset = offset==null?0:offset;
-		String selectKey="findByExamplev2_"+CommonSQLHelper.getTableName(clazz);
-		Map<String, Object> param= new HashMap<>();
+	public List<T> findByExample(Class<T> clazz, ColumnSelector<T> columns, T example, String orderColumn, OrderTypeEnum orderType, Integer limit, Integer offset) {
+		limit = limit == null ? 100 : limit;
+		offset = offset == null ? 0 : offset;
+		String selectKey = "findByExamplev2_" + CommonSQLHelper.getTableName(clazz);
+		Map<String, Object> param = new HashMap<>();
 		param.put("condition", example);
 		param.put("_limit_", limit);
 		param.put("_offset_", offset);
-		param.put("columns", columns); 
-		return myBatiesService.selectList(NAMESPACE.concat(".").concat(selectKey), param);  
+		param.put("columns", columns);
+		return myBatiesService.selectList(NAMESPACE.concat(".").concat(selectKey), param);
 	}
-	
+
 	@Override
 	public PageRollResult<?> rollPage(String namespance, String id, Map<String, Object> param, Integer size, Integer page) {
 		size = size == null ? 20 : size;
@@ -478,10 +434,10 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 				}
 				String xml = null;
 				if (xmlpath.contains("classes!")) {
-					String classpath = xmlpath.split("classes!")[1]; 
-					xml = IOUtils.toString(this.getClass().getResourceAsStream(classpath),"utf-8");
+					String classpath = xmlpath.split("classes!")[1];
+					xml = IOUtils.toString(this.getClass().getResourceAsStream(classpath), "utf-8");
 				} else {
-					xml = IOUtils.toString(new FileInputStream(xmlpath),"utf-8");
+					xml = IOUtils.toString(new FileInputStream(xmlpath), "utf-8");
 				}
 				AutoRollPageSelectSqlHelper.genSelectMapper(namespance, id, selectKey, countKey, myBatiesService.getConfiguration(), xml);
 
@@ -549,10 +505,10 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 
 	private List<Map<String, ?>> select2(String selectId, Map<String, Object> param, int offset, int limit) {
 		String namespace = selectId.split("[.]")[0];
-		String id = selectId.split("[.]")[1]; 
-		String sysSelectId = "external."+namespace+"." + selectId.trim().replace(".", "-");
-		String realSelectId = selectId.trim().replace(".", "-"); 
-		String realnamespace="external."+namespace;
+		String id = selectId.split("[.]")[1];
+		String sysSelectId = "external." + namespace + "." + selectId.trim().replace(".", "-");
+		String realSelectId = selectId.trim().replace(".", "-");
+		String realnamespace = "external." + namespace;
 		if (param == null) {
 			param = new HashMap<>();
 			param.put("_offset_", offset);
@@ -571,9 +527,9 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 					if (ConcurrentSqlCreatorLocker.notExist(sysSelectId)) {
 						String xml = null;
 
-						String[] selectIdSplit = new StringBuilder(selectId).reverse().toString().split("[.]", 2);
-						//String namespace = new StringBuilder(selectIdSplit[1]).reverse().toString();
-						//String id = new StringBuilder(selectIdSplit[0]).reverse().toString();
+						//String[] selectIdSplit = new StringBuilder(selectId).reverse().toString().split("[.]", 2);
+						// String namespace = new StringBuilder(selectIdSplit[1]).reverse().toString();
+						// String id = new StringBuilder(selectIdSplit[0]).reverse().toString();
 
 						for (SqlLoader sqlLoader : sqlLoaders) {
 							xml = sqlLoader.load(namespace, id);
@@ -587,6 +543,12 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 						}
 						// has found sql,and regist to mybaties
 						try {
+							/**
+							 * XMLMapperBuilder selectMapperBuilder = new XMLMapperBuilder(new
+							 * ByteArrayInputStream(sql.toString().getBytes("utf-8")),
+							 * myBatiesService.getConfiguration(), sysSelectId, new HashMap<>());
+							 * selectMapperBuilder.parse();
+							 */
 							XPathParser xpath = new XPathParser(new ByteArrayInputStream(xml.getBytes("utf-8")), true, myBatiesService.getConfiguration().getVariables(),
 									new XMLMapperEntityResolver());
 							List<XNode> selects = xpath.evalNode("/mapper").evalNodes("select");
@@ -612,130 +574,74 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 		}
 	}
 
-	private List<Map<String, ?>> select1(String selectId, Map<String, Object> param, int offset, int limit) {
-		
-
-		String namespace = selectId.split("[.]")[0];
-		String id = selectId.split("[.]")[1]; 
-		String sysSelectId = "external."+namespace+"." + selectId.trim().replace(".", "-");
-		if (param == null) {
-			param = new HashMap<>();
-			param.put("_offset_", offset);
-			param.put("_limit_", limit);
-		}
-		try {
-
-			return myBatiesService.selectList(sysSelectId, param);
-		} catch (MyBatisSystemException e) {
-			if (sqlLoaders == null) {
-				return Collections.emptyList();
-			}
-			// lookup for select id
-			if (ConcurrentSqlCreatorLocker.notExist(sysSelectId)) {
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sysSelectId)) {
-					if (ConcurrentSqlCreatorLocker.notExist(sysSelectId)) {
-						String sql = null; 
-						for (SqlLoader sqlLoader : sqlLoaders) {
-							sql = sqlLoader.load(namespace, id);
-							if (MybatiesStringUtil.isNotEmpty(sql)) {
-								LOG.info("found sql by loader:{}, selectId:{}, sql->{}", sqlLoader.name(), selectId, sql);
-								continue;
-							}
-						}
-						if (MybatiesStringUtil.isEmpty(sql)) {
-							return Collections.emptyList();
-						}
-						// has found sql,and regist to mybaties
-						try {
-							XMLMapperBuilder selectMapperBuilder = new XMLMapperBuilder(new ByteArrayInputStream(sql.toString().getBytes("utf-8")), myBatiesService.getConfiguration(), sysSelectId,
-									new HashMap<>());
-							selectMapperBuilder.parse();
-
-						} catch (UnsupportedEncodingException e1) {
-							LOG.error("select", e1);
-						}
-						ConcurrentSqlCreatorLocker.put(sysSelectId);
-					}
-				}
-
-			}
-			return myBatiesService.selectList(sysSelectId, param);
-		}
-	}
-
-	
 	@Override
-	public List<T> select(Class<T> entityClass,ColumnSelector<T> columns, QueryConditionWrapper<T> wrapper, SerializableFunction<T, Object> orderColumn, OrderTypeEnum orderType, int offset, int limit) {  
-		String sql = QueryConditionWrapperParser.parse(entityClass, columns, wrapper) ;
-		
-		if(orderColumn!=null&&orderType!=null) {
-			sql +=" order by #{_order_column_} #{_order_type_} ";
-			Field filed = ReflectionUtil.findField(orderColumn); 
+	public List<T> select(Class<T> entityClass, ColumnSelector<T> columns, QueryConditionWrapper<T> wrapper, SerializableFunction<T, Object> orderColumn, OrderTypeEnum orderType, int offset,
+			int limit) {
+		String sql = QueryConditionWrapperParser.parse(entityClass, columns, wrapper);
+
+		if (orderColumn != null && orderType != null) {
+			sql += " order by #{_order_column_} #{_order_type_} ";
+			Field filed = ReflectionUtil.findField(orderColumn);
 			wrapper.getContext().put("_order_column_", filed.getName());
 			wrapper.getContext().put("_order_type_", orderType.getCode());
 		}
-		
-		sql +=" limit #{_limit_} offset #{_offset_} ";
-		String sqlId = "select_"+entityClass.getSimpleName()+"_"+MybatiesStringUtil.md5(sql);
-		String sqlKey= NAMESPACE.concat(".").concat(sqlId);
-	  
+
+		sql += " limit #{_limit_} offset #{_offset_} ";
+		String sqlId = "select_" + entityClass.getSimpleName() + "_" + MybatiesStringUtil.md5(sql);
+		String sqlKey = NAMESPACE.concat(".").concat(sqlId);
+
 		wrapper.getContext().put("_limit_", limit);
 		wrapper.getContext().put("_offset_", offset);
- 
+
 		try {
 			return myBatiesService.selectList(sqlKey, wrapper.getContext());
-			
-		}catch( MyBatisSystemException e) {  
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+
+		} catch (MyBatisSystemException e) {
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
-						try { 
-							String xml = QueryConditionWrapperParser.toXml(entityClass,NAMESPACE,columns, sqlId,sql);
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+						try {
+							String xml = QueryConditionWrapperParser.toXml(entityClass, NAMESPACE, columns, sqlId, sql);
 							XMLMapperBuilder selectMapperBuilder = new XMLMapperBuilder(new ByteArrayInputStream(xml.toString().getBytes("utf-8")), myBatiesService.getConfiguration(), sqlKey,
 									new HashMap<>());
 							selectMapperBuilder.parse();
 							ConcurrentSqlCreatorLocker.put(sqlKey);
-						}catch(Throwable e1) {
-							LOG.error("select error",e); 
+						} catch (Throwable e1) {
+							LOG.error("select error", e);
 						}
-					} 
-				} 
-			} 
+					}
+				}
+			}
 			return myBatiesService.selectList(sqlKey, wrapper.getContext());
-		} 
-		 
+		}
+
 	}
-	
+
 	@Override
 	public long count(Class<T> entityClass, QueryConditionWrapper<T> wrapper) {
-		String sql = QueryConditionWrapperParser.parseCount(entityClass, wrapper) ;
-		 
-		String sqlKey = "count_"+entityClass.getSimpleName()+"_"+MybatiesStringUtil.md5(sql);
-		String namespace="AUTOSQL";
-		String namespace2="AUTOSQL."; 
- 
+		String sql = QueryConditionWrapperParser.parseCount(entityClass, wrapper);
+		String sqlKey = "count_" + entityClass.getSimpleName() + "_" + MybatiesStringUtil.md5(sql);
 		try {
-			return myBatiesService.selectOne(namespace2.concat(sqlKey), wrapper.getContext());
-			
-		}catch( MyBatisSystemException e) {  
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+			return myBatiesService.selectOne(NAMESPACE.concat(".").concat(sqlKey), wrapper.getContext());
+
+		} catch (MyBatisSystemException e) {
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
-						try { 
-							String xml = QueryConditionWrapperParser.toCountXml(entityClass,namespace,sqlKey,sql);
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+						try {
+							String xml = QueryConditionWrapperParser.toCountXml(entityClass, NAMESPACE, sqlKey, sql);
 							XMLMapperBuilder selectMapperBuilder = new XMLMapperBuilder(new ByteArrayInputStream(xml.toString().getBytes("utf-8")), myBatiesService.getConfiguration(), sqlKey,
 									new HashMap<>());
 							selectMapperBuilder.parse();
-							
-						}catch(Throwable e1) {
-							LOG.error("select error",e); 
+
+						} catch (Throwable e1) {
+							LOG.error("select error", e);
 						}
-					} 
-				} 
-			} 
-			return myBatiesService.selectOne(namespace2.concat(sqlKey), wrapper.getContext());
-		}  
+					}
+				}
+			}
+			return myBatiesService.selectOne(NAMESPACE.concat(".").concat(sqlKey), wrapper.getContext());
+		}
 	}
-	
-	
+
 }
