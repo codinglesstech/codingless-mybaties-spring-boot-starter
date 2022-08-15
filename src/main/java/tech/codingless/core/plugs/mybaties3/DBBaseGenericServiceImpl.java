@@ -3,6 +3,7 @@ package tech.codingless.core.plugs.mybaties3;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -295,9 +296,11 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 
 	@Override
 	public List<T> findByExample(Class<T> clazz, String companyId, T example, Integer size) {
-
-		PageRollResult<T> result = queryDao.rollPage(clazz, companyId, example, null, null, size, 1);
-		return result.getList();
+		if(MybatiesStringUtil.isEmpty(companyId)) {
+			return Collections.emptyList();
+		}
+		example.setCompanyId(companyId);
+		return this.findByExample(clazz, example, size); 
 	}
 
 	@Override

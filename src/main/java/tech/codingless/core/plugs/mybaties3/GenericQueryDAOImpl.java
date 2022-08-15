@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,7 +50,6 @@ import tech.codingless.core.plugs.mybaties3.condition.QueryConditionWrapperParse
 import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 import tech.codingless.core.plugs.mybaties3.data.BaseDO;
 import tech.codingless.core.plugs.mybaties3.data.PageRollResult;
-import tech.codingless.core.plugs.mybaties3.data.RowCount;
 import tech.codingless.core.plugs.mybaties3.helper.AutoFindByIdBatchHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoFindByIdHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoGetHelper;
@@ -62,7 +60,6 @@ import tech.codingless.core.plugs.mybaties3.helper.MyTableColumnParser;
 import tech.codingless.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.core.plugs.mybaties3.util.DataEnvUtil;
-import tech.codingless.core.plugs.mybaties3.util.MybatiesMD5Util;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 import tech.codingless.core.plugs.mybaties3.util.ReflectionUtil;
 
@@ -436,80 +433,7 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 		return mapBuilder.build();
 	}
 
-	@Override
-	public PageRollResult<T> rollPage(Class<T> clazz, String companyId, T param, String orderColumn, OrderTypeEnum orderType, Integer size, Integer page) {
-		size = size == null ? 20 : size;
-		page = page == null ? 1 : page;
-		size = size > 500 ? 500 : size < 1 ? 1 : size;
-		Integer limit = size;
-		Integer offset = (page - 1) * size;
-		CommonSQLHelper.ExecuteSql selectSql = null;
-		CommonSQLHelper.ExecuteSql countSql = null;
-		BaseDO base = param;
-		String selectSqlKey = null;
-		String countSqlKey = null;
-		PageRollResult<T> result = new PageRollResult<>();
-		Map<String, Object> queryParam = new HashMap<>();
-		
-		base.setEnv(DataEnvUtil.getEvn());
-		queryParam.put("companyId", companyId);
-		queryParam.put("obj", param);
-		queryParam.put("limit", limit);
-		queryParam.put("offset", offset);
-		queryParam.put("sortColumn", orderColumn);
-		queryParam.put("sortType", orderType != null ? orderType.getCode() : null);
-		try {
-			selectSql = CommonSQLHelper.genSelectSqlSkipNullProperties(companyId, base, orderColumn, orderType, limit, offset);
-			selectSqlKey = "AUTOSQL.rollpage_list_" + base.getClass().getName() + "_" + MybatiesMD5Util.md5Hex(selectSql.getSql());
-			countSql = CommonSQLHelper.genCountSqlSkipNullProperties(companyId, base);
-			countSqlKey = "AUTOSQL.rollpage_count_" + base.getClass().getName() + "_" + MybatiesMD5Util.md5Hex(selectSql.getSql());
-
-			result.setList(myBatiesService.selectList(selectSqlKey, queryParam));
-			RowCount rowCount = myBatiesService.selectOne(countSqlKey, queryParam);
-			result.setTotalCount(rowCount != null ? rowCount.getTotalCount() : 0);
-		} catch (Exception e) {
-
-			SqlSourceBuilder sqlSourceBuilder = new SqlSourceBuilder(myBatiesService.getConfiguration());
-
-			if (ConcurrentSqlCreatorLocker.notExist(selectSqlKey)) {
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(selectSqlKey)) {
-					if (ConcurrentSqlCreatorLocker.notExist(selectSqlKey)) {
-
-						SqlSource selectSource = sqlSourceBuilder.parse(selectSql.getSql(), queryParam.getClass(), null);
-						MappedStatement.Builder selectBuilder = new MappedStatement.Builder(myBatiesService.getConfiguration(), selectSqlKey, selectSource, SqlCommandType.SELECT);
-						myBatiesService.getConfiguration().addMappedStatement(selectBuilder.build());
-						selectBuilder.resultMaps(Arrays.asList(createResultMap(clazz, "AUTOSQL.GET_MAP_LIST_" + clazz.getSimpleName())));
-
-						ConcurrentSqlCreatorLocker.put(selectSqlKey);
-					}
-				}
-			}
-
-			if (ConcurrentSqlCreatorLocker.notExist(countSqlKey)) {
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(countSqlKey)) {
-					if (ConcurrentSqlCreatorLocker.notExist(countSqlKey)) {
-
-						SqlSource countSource = sqlSourceBuilder.parse(countSql.getSql(), queryParam.getClass(), null);
-						MappedStatement.Builder countBuilder = new MappedStatement.Builder(myBatiesService.getConfiguration(), countSqlKey, countSource, SqlCommandType.SELECT);
-						myBatiesService.getConfiguration().addMappedStatement(countBuilder.build());
-						countBuilder.resultMaps(Arrays.asList(createResultMap(RowCount.class, "AUTOSQL.rowCount")));
-
-						ConcurrentSqlCreatorLocker.put(countSqlKey);
-					}
-				}
-			}
-
-			result.setList(myBatiesService.selectList(selectSqlKey, queryParam));
-			RowCount rowCount = myBatiesService.selectOne(countSqlKey, queryParam);
-			result.setTotalCount(rowCount != null ? rowCount.getTotalCount() : 0);
-		}
-		result.setPageSize(size);
-		result.setCurrentPage(page);
-
-		result.setTotalPage(result.getTotalCount() == 0 ? 0 : (int) Math.ceil(result.getTotalCount() * 1.0 / size));
-		return result;
-	}
-
+	  
 	
 	@Override
 	public List<T> findByExample(Class<T> clazz,ColumnSelector<T> columns, T example, String orderColumn, OrderTypeEnum orderType, Integer limit, Integer offset) { 
