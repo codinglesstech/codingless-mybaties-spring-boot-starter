@@ -8,7 +8,7 @@
 <dependency>
   <groupId>tech.codingless</groupId>
   <artifactId>codingless-mybaties-spring-boot-starter</artifactId>
-  <version>0.0.16</version>
+  <version>0.0.17</version>
 </dependency>
 
 ```
