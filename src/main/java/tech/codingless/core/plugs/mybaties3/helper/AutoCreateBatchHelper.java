@@ -58,8 +58,8 @@ public class AutoCreateBatchHelper {
 		}
 		columnBuilder.append("gmt_Write").append(","); 
 		columnBuilder.append("gmt_Create");
-		valueBuilder.append("now(),");
-		valueBuilder.append("now()");
+		valueBuilder.append("UNIX_TIMESTAMP(),");
+		valueBuilder.append("UNIX_TIMESTAMP()");
 
 		batchSqlBuilder.append(XML_VERSION);
 		batchSqlBuilder.append(XML_DOCTYPE);

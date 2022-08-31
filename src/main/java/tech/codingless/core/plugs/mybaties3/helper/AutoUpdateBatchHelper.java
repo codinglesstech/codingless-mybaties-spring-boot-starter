@@ -37,7 +37,7 @@ public class AutoUpdateBatchHelper {
 			}
 			updateSqlBuffer.append("<if test=\"item.updateDO."+column.getProp()+" != null\"> "+column.getColumn()+"= #{item.updateDO."+column.getProp()+"},</if>"); 
 		}); 
-		updateSqlBuffer.append(" gmt_write=now(),ver=ver+1 ");
+		updateSqlBuffer.append(" gmt_write=UNIX_TIMESTAMP(),ver=ver+1 ");
 		updateSqlBuffer.append(" where id=#{item.id} and company_id=#{item.companyId} and ver=#{item.ver}");
 		 
 		

@@ -38,7 +38,7 @@ public class AutoUpdateHelper {
 			
 			updateSqlBuffer.append("<if test=\""+column.getProp()+" != null\"> "+column.getColumn()+"= #{"+column.getProp()+"},</if>"); 
 		}); 
-		updateSqlBuffer.append(" gmt_write=now(),ver=ver+1 ");
+		updateSqlBuffer.append(" gmt_write=UNIX_TIMESTAMP(),ver=ver+1 ");
 		updateSqlBuffer.append(" where id=#{id} and ver=#{ver} ");
 		updateSqlBuffer.append("<if test=\"companyId!=null\"> and company_id = #{companyId}</if>");
 		
