@@ -1,7 +1,5 @@
 package tech.codingless.core.plugs.mybaties3.data;
 
-import java.util.Date;
-
 import tech.codingless.core.plugs.mybaties3.annotation.MyColumn;
 import tech.codingless.core.plugs.mybaties3.annotation.MyComment;
 
@@ -9,10 +7,10 @@ public class BaseDO {
 
 	@MyColumn(key = true)
 	protected String id;
-	@MyComment(value = "创建时间")
-	protected Date gmtCreate;
-	@MyComment(value = "最近修改时间")
-	protected Date gmtWrite;
+	@MyComment(value = "创建时间,epoch second,注意(单位为秒)，为了方便UTC时区处理")
+	protected Long gmtCreate;
+	@MyComment(value = "最近修改时间 ,epoch second,注意(单位为秒)，为了方便UTC时区处理")
+	protected Long gmtWrite;
 	@MyComment("创建者ID")
 	protected String createUid;
 	@MyComment("修改者ID")
@@ -67,19 +65,19 @@ public class BaseDO {
 		return id;
 	}
 
-	public Date getGmtCreate() {
+	public Long getGmtCreate() {
 		return gmtCreate;
 	}
 
-	public void setGmtCreate(Date gmtCreate) {
-		this.gmtCreate = gmtCreate;
-	}
-
-	public Date getGmtWrite() {
+	public Long getGmtWrite() {
 		return gmtWrite;
 	}
 
-	public void setGmtWrite(Date gmtWrite) {
+	public void setGmtCreate(Long gmtCreate) {
+		this.gmtCreate = gmtCreate;
+	}
+
+	public void setGmtWrite(Long gmtWrite) {
 		this.gmtWrite = gmtWrite;
 	}
 

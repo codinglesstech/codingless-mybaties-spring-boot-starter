@@ -67,7 +67,7 @@ public class CommonSQLHelper {
 		for (String column : columns.keySet()) {
 			columnSB.append(column).append(",");
 			if ("gmtCreate".equals(columns.get(column)) || "gmtWrite".equals(columns.get(column))) {
-				propertySB.append("now(),");
+				propertySB.append("UNIX_TIMESTAMP(),");
 			} else {
 				propertySB.append("#{").append(columns.get(column)).append("},");
 			}
@@ -89,7 +89,7 @@ public class CommonSQLHelper {
 		for (String column : columns.keySet()) {
 			columnSB.append(column).append(",");
 			if ("gmtCreate".equals(columns.get(column)) || "gmtWrite".equals(columns.get(column))) {
-				propertySB.append("now(),");
+				propertySB.append("UNIX_TIMESTAMP(),");
 			} else {
 				propertySB.append("#{").append(columns.get(column)).append("},");
 			}
@@ -215,7 +215,7 @@ public class CommonSQLHelper {
 				continue;
 			}
 			if ("gmtWrite".equals(attrName)) {
-				setContent.append(column).append("=").append("now(),");
+				setContent.append(column).append("=").append("UNIX_TIMESTAMP(),");
 			} else {
 				setContent.append(column).append("=").append("#{").append(attrName).append("},");
 			}
