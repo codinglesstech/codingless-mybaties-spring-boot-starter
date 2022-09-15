@@ -581,8 +581,8 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 
 		if (orderColumn != null && orderType != null) {
 			sql += " order by ${_order_column_} ${_order_type_} ";
-			Field filed = ReflectionUtil.findField(orderColumn);
-			wrapper.getContext().put("_order_column_", filed.getName());
+			Field filed = ReflectionUtil.findField(orderColumn); 
+			wrapper.getContext().put("_order_column_", CommonSQLHelper.change2dbFormat(filed.getName()));
 			wrapper.getContext().put("_order_type_", orderType.getCode());
 		}
 
