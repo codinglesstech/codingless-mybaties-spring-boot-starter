@@ -106,7 +106,15 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		if (EXIST_TABLE_NAME.containsKey(tableName)) {
 			return;
 		}
-		String ddl = String.format("CREATE TABLE %s (id VARCHAR(64) PRIMARY KEY)", tableName);
+		
+		
+		MyTable myTable = obj.getClass().getAnnotation(MyTable.class);
+		String ddl=null;
+		if(myTable.useNumberId()) {
+			ddl = String.format("CREATE TABLE %s (id bigint PRIMARY KEY)", tableName);
+		}else {
+			ddl = String.format("CREATE TABLE %s (id VARCHAR(64) PRIMARY KEY)", tableName); 
+		}
 		executeDDL(ddl);
 
 	}

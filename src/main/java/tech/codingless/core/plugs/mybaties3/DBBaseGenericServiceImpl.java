@@ -27,6 +27,7 @@ import tech.codingless.core.plugs.mybaties3.util.DataEnvUtil;
 import tech.codingless.core.plugs.mybaties3.util.DataSessionEnv;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesAssertUtil;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
+import tech.codingless.core.plugs.mybaties3.util.SnowFlakeNumberUtil;
 
 public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGenericService<T> {
 	@Autowired
@@ -50,9 +51,12 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 				return;
 			}
 		}
-		ObjectId objectId = new ObjectId();
-		data.setId(objectId.toHexString());
+		
+		//ObjectId objectId = new ObjectId();
+		//data.setId(objectId.toHexString());
 
+		//默认采用雪花算法生成ID
+		data.setId(Long.toString(SnowFlakeNumberUtil.nextId())); 
 	}
 
 	/**
