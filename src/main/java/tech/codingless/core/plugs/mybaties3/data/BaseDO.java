@@ -26,9 +26,20 @@ public class BaseDO {
 	@MyComment("数据所处环境,1：生产环境，2:测试环境,DataEnvEnums")
 	protected Integer env;
 
+	@MyComment("数据级别,级别从高到低，100 ~ -100, 默认0")
+	protected Integer dataLevel;
+
 	@MyComment("逻辑删除,被逻辑删除的数据，可能随时会被清除")
 	@MyColumn(defaultValue = "false")
 	protected Boolean del;
+
+	public Integer getDataLevel() {
+		return dataLevel;
+	}
+
+	public void setDataLevel(Integer dataLevel) {
+		this.dataLevel = dataLevel;
+	}
 
 	public void setEnv(Integer env) {
 		this.env = env;

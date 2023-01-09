@@ -19,6 +19,7 @@ import tech.codingless.core.plugs.mybaties3.annotation.OrderTypeEnum;
 import tech.codingless.core.plugs.mybaties3.condition.ColumnSelector;
 import tech.codingless.core.plugs.mybaties3.condition.QueryConditionWrapper;
 import tech.codingless.core.plugs.mybaties3.data.BaseDO;
+import tech.codingless.core.plugs.mybaties3.data.DataEnvProperties;
 import tech.codingless.core.plugs.mybaties3.data.PageRollResult;
 import tech.codingless.core.plugs.mybaties3.data.UpdateObject;
 import tech.codingless.core.plugs.mybaties3.helper.ColumnHelper;
@@ -54,7 +55,10 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 		
 		//ObjectId objectId = new ObjectId();
 		//data.setId(objectId.toHexString());
-
+		//默认数据级别
+		if(data.getDataLevel()==null) {
+			data.setDataLevel(1);
+		}
 		//默认采用雪花算法生成ID
 		data.setId(Long.toString(SnowFlakeNumberUtil.nextId())); 
 	}
@@ -84,13 +88,14 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 			generateId(data);
 		}
 		if (MybatiesStringUtil.isEmpty(data.getCreateUid())) {
-			data.setCreateUid(DataSessionEnv.CURRENT_USER_ID.get());
+			data.setCreateUid(DataEnvProperties.getOwnerId());
 		}
 		if (MybatiesStringUtil.isEmpty(data.getOwnerId())) {
-			data.setOwnerId(DataSessionEnv.CURRENT_USER_ID.get());
+			data.setOwnerId(DataEnvProperties.getOwnerId());
 		}
-		data.setWriteUid(MybatiesStringUtil.isNotEmpty(data.getWriteUid()) ? data.getWriteUid() : DataSessionEnv.CURRENT_USER_ID.get());
-		data.setCompanyId(MybatiesStringUtil.isNotEmpty(data.getCompanyId()) ? data.getCompanyId() : DataSessionEnv.CURRENT_COMPANY_ID.get());
+		data.setGroupId(MybatiesStringUtil.isNotEmpty(data.getGroupId()) ? data.getGroupId() : DataEnvProperties.getGroupId());
+		data.setWriteUid(MybatiesStringUtil.isNotEmpty(data.getWriteUid()) ? data.getWriteUid() : DataEnvProperties.getOptUserId());
+		data.setCompanyId(MybatiesStringUtil.isNotEmpty(data.getCompanyId()) ? data.getCompanyId() : DataEnvProperties.getCompanyId());
 		data.setVer(data.getVer() != null ? data.getVer() : 1L);
 		return updateDao.createEntity(data) == 1;
 	}
@@ -107,10 +112,10 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Transactional
 	@Override
 	public boolean update(T data) {
-		if (DataSessionEnv.CURRENT_USER_ID.get() == null || !DataSessionEnv.CURRENT_USER_ID.get().equals(data.getOwnerId())) {
+		if (DataEnvProperties.getOptUserId() == null || !DataEnvProperties.getOptUserId().equals(data.getOwnerId())) {
 			return false;
 		}
-		data.setWriteUid(DataSessionEnv.CURRENT_USER_ID.get());
+		data.setWriteUid(DataEnvProperties.getOptUserId());
 		boolean success = updateDao.updateEntity(data) == 1;
 		return success;
 
@@ -193,7 +198,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 
 	@Override
 	public T get(Class<T> clazz, String entityId) {
-		if (MybatiesStringUtil.isNotEmpty(DataSessionEnv.CURRENT_COMPANY_ID.get())) {
+		if (MybatiesStringUtil.isNotEmpty(DataEnvProperties.getCompanyId())) {
 			return queryDao.getEntity(clazz, entityId);
 		}
 		return queryDao.getEntity(clazz, entityId);
@@ -233,17 +238,17 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 			if (MybatiesStringUtil.isEmpty(item.getId())) {
 				generateId(item);
 			}
-			item.setCreateUid(DataSessionEnv.CURRENT_USER_ID.get());
-			item.setOwnerId(DataSessionEnv.CURRENT_USER_ID.get());
-			item.setWriteUid(DataSessionEnv.CURRENT_USER_ID.get());
+			item.setCreateUid(DataEnvProperties.getOptUserId());
+			item.setOwnerId(DataEnvProperties.getOptUserId());
+			item.setWriteUid(DataEnvProperties.getOptUserId());
 			item.setDel(false);
 			if (MybatiesStringUtil.isEmpty(item.getCompanyId())) {
-				item.setCompanyId(DataSessionEnv.CURRENT_COMPANY_ID.get());
+				item.setCompanyId(DataEnvProperties.getCompanyId());
 			}
 			if (item.getVer() == null) {
 				item.setVer(1L);
 			}
-			item.setEnv(DataEnvUtil.getEvn());
+			item.setEnv(DataEnvProperties.getEnv());
 		});
 		return updateDao.createEntityList(list) == list.size();
 	}
@@ -253,7 +258,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	public boolean create(String companyId, List<T> list) {
 		list.forEach(item -> {
 			item.setCompanyId(companyId);
-			item.setEnv(DataEnvUtil.getEvn());
+			item.setEnv(DataEnvProperties.getEnv());
 		});
 		return create(list);
 	}
@@ -405,7 +410,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	public List<T> select(ColumnSelector<T> columns, QueryConditionWrapper<T> wrapper, SerializableFunction<T, Object> orderColumn, OrderTypeEnum orderType, int offset, int limit) {
 
 		wrapper.isFalse(BaseDO::isDel);
-		wrapper.eq(BaseDO::getEnv, DataEnvUtil.getEvn());
+		wrapper.eq(BaseDO::getEnv, DataEnvProperties.getEnv());
 		return queryGenericDao.select(getEntityClass(), columns, wrapper, orderColumn, orderType, offset, limit);
 	}
 
@@ -413,7 +418,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Override
 	public long count(QueryConditionWrapper<T> wrapper) {
 		wrapper.isFalse(BaseDO::isDel);
-		wrapper.eq(BaseDO::getEnv, DataEnvUtil.getEvn());
+		wrapper.eq(BaseDO::getEnv, DataEnvProperties.getEnv());
 		return queryGenericDao.count(getEntityClass(), wrapper);
 	}
 
