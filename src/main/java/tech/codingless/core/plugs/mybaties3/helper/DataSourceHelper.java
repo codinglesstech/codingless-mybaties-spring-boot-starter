@@ -1,5 +1,6 @@
 package tech.codingless.core.plugs.mybaties3.helper;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
@@ -174,6 +175,10 @@ public class DataSourceHelper {
 					String.format("Thread ( %s ) Can't Found DataSource With Company:%s, DataSourceId:%s", Thread.currentThread().getName(), DataEnvProperties.getCompanyId(), dataSourceId));
 		}
 		return datasource;
+	}
+
+	public static Collection<DataSource> listAllDataSource() {
+		return DATA_SOURCE_CACHE.values();
 	}
 
 }
