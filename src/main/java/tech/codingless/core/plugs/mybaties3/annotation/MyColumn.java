@@ -15,13 +15,13 @@ public @interface MyColumn {
 	 */
 	String type() default "";
 
-	/** 
+	/**
 	 * @return 字段名
 	 */
 	String name() default "";
 
 	/**
-	 *  
+	 * 
 	 * @return 是否虚拟字段，不会在数据库中创建
 	 */
 	boolean virtual() default false;
@@ -46,28 +46,43 @@ public @interface MyColumn {
 	 * <pre>
 	 * alter table xxx_table_name  modify xxx_column_name int(11) not null auto_increment, add   key(xxx_column_name);
 	 * </pre>
-	 *  
-	 * @return  是否自增
+	 * 
+	 * @return 是否自增
 	 *
 	 */
 	boolean autoIncrement() default false;
+
 	/**
+	 * 创建索引
+	 * 
 	 * <pre>
-	 * ALTER TABLE `table_name` ADD INDEX index_name ( `column` ) 
+	 * ALTER TABLE `table_name` ADD INDEX index_name ( `column` )
 	 * </pre>
-	 * @return 是否创建索引
+	 * 
+	 * @return
 	 *
 	 */
 	boolean createIndex() default false;
-	
+
+	/**
+	 * 创建唯一索引
+	 * 
+	 * <pre>
+	 * ALTER TABLE `table_name` ADD unique index_name ( `column` )
+	 * </pre>
+	 * 
+	 * @return
+	 */
+	boolean createUniqueIndex() default false;
+
 	/**
 	 * 
-	 * @return 充许自定义Handler 
+	 * @return 充许自定义Handler
 	 *
 	 */
 	Class<?> typeHandler() default StringTypeHandler.class;
-	
-	/** 
+
+	/**
 	 * @return 只读，除首次可写入外，其余更新均会忽略
 	 */
 	boolean readonly() default false;

@@ -279,6 +279,9 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 				if (myColumn.autoIncrement() || myColumn.createIndex()) {
 					autoIncrementSql += ", add  key(" + columnName + ")";
 				}
+				if (myColumn.createUniqueIndex()) {
+					autoIncrementSql += ", add  unique key(" + columnName + ")";
+				}
 			}
 
 			String ddl = String.format("ALTER table %s.%s ADD COLUMN %s %s %s %s %s", dbName, tableName, columnName, typeDef,
