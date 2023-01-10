@@ -3,6 +3,7 @@ package tech.codingless.core.plugs.mybaties3.conf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import tech.codingless.core.plugs.mybaties3.DBInitSpringListener;
 import tech.codingless.core.plugs.mybaties3.GenericQueryDAOImpl;
@@ -11,14 +12,15 @@ import tech.codingless.core.plugs.mybaties3.MyBatiesServiceDefaultImpl;
 import tech.codingless.core.plugs.mybaties3.MybatiesImportSelector;
 import tech.codingless.core.plugs.mybaties3.TableAutoCreateServiceMysqlImpl;
 
- 
+
+@Order(2)
 @Configuration
 public class MybatiesConfig {
  
 	
 	@Bean("tech.codingless.core.plugs.mybaties3.conf.DataBaseConf")
 	public DataBaseConf initDataBaseConf() {
-		return new DataBaseConf();
+		return new DataBaseConf(); 
 	}
 	
 	

@@ -13,8 +13,8 @@ import tech.codingless.core.plugs.mybaties3.data.PageRollResult;
 
 public interface GenericQueryDao<T extends BaseDO> {
 
-
 	Object selectOneRow(String sqlId, Object param);
+
 	T selectOne(String sqlId, Object param);
 
 	List<T> selectList(String sqlId, Object param);
@@ -26,17 +26,16 @@ public interface GenericQueryDao<T extends BaseDO> {
 	List<T> list(Class<T> clazz);
 
 	List<T> list(Class<T> clazz, String companyId);
- 
+
 	List<T> findByExample(Class<T> clazz, ColumnSelector<T> columns, T example, String orderColumn, OrderTypeEnum orderType, Integer size, Integer offset);
 
 	PageRollResult<?> rollPage(String namespace, String sqlId, Map<String, Object> param, Integer size, Integer page);
 
-	<E> List<E> noShardingList(String statement, Object parameter);
-
 	List<T> findEntityList(Class<T> clazz, String companyId, Collection<String> idList);
+
 	List<T> findEntityList(Class<T> clazz, String companyId, Collection<String> idList, Collection<String> columns);
 
-	Map<String,Object> selectOneNative(String prepareSql, List<Object> param);
+	Map<String, Object> selectOneNative(String prepareSql, List<Object> param);
 
 	List<T> select(Class<? extends BaseDO> clazz, Collection<String> columns, Collection<QueryCondition> conditions, int offset, int limit);
 
@@ -44,11 +43,8 @@ public interface GenericQueryDao<T extends BaseDO> {
 
 	List<Map<String, ?>> select(String selectId, Map<String, Object> param, int offset, int limit);
 
-	List<T> select(Class<T> entityClass,ColumnSelector<T> columns, QueryConditionWrapper<T> wrapper, SerializableFunction<T, Object> sortColumn, OrderTypeEnum orderType, int offset, int limit);
+	List<T> select(Class<T> entityClass, ColumnSelector<T> columns, QueryConditionWrapper<T> wrapper, SerializableFunction<T, Object> sortColumn, OrderTypeEnum orderType, int offset, int limit);
 
 	long count(Class<T> entityClass, QueryConditionWrapper<T> wrapper);
-	
- 
- 
 
 }

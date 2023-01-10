@@ -25,13 +25,8 @@ public interface MyBatiesService {
 
 	<E> List<E> selectList(String statement);
 
-	 
-	<E> List<E> selectListNoSharding(String statement, Object parameter);
-
-	 
 	String init();
 
- 
 	int executeUpdateSql(String sql, List<Object> param);
 
 }

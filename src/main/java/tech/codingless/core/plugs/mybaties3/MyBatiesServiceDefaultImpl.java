@@ -8,27 +8,23 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 
 import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
+import tech.codingless.core.plugs.mybaties3.data.DataEnvProperties;
+import tech.codingless.core.plugs.mybaties3.enums.DataEnvEnums;
+import tech.codingless.core.plugs.mybaties3.helper.DataSourceHelper;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.core.plugs.mybaties3.strategy.DataSourceCreator;
-import tech.codingless.core.plugs.mybaties3.util.MybatiesAssertUtil;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesIntegerUtil;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 
@@ -38,14 +34,11 @@ import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
  * @author 王鸿雁
  * 
  */
-@Order(1)
+@Order(Ordered.HIGHEST_PRECEDENCE) // Ordered.LOWEST_PRECEDENCE
 @Service
 public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 	private static final Logger LOG = LoggerFactory.getLogger(GenericUpdateDAOImpl.class);
 
-	private SqlSessionTemplate noShardingSession;
-
-	private SqlSessionTemplate session;
 	@Autowired
 	ApplicationContext context;
 
@@ -73,38 +66,37 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 
 	@Override
 	public int update(String statement, Object parameter) {
-
-		return session.update(statement, parameter);
+		return DataSourceHelper.getSqlSessionTemplate().update(statement, parameter);
 	}
 
 	@Override
 	public int insert(String statement, Object parameter) {
-		return session.insert(statement, parameter);
+		return DataSourceHelper.getSqlSessionTemplate().insert(statement, parameter);
 	}
 
 	@Override
 	public int delete(String statement, Object parameter) {
-		return session.delete(statement, parameter);
+		return DataSourceHelper.getSqlSessionTemplate().delete(statement, parameter);
 	}
 
 	@Override
 	public Configuration getConfiguration() {
-		return session.getConfiguration();
+		return DataSourceHelper.getSqlSessionTemplate().getConfiguration();
 	}
 
 	@Override
 	public <T> T selectOne(String statement, Object parameter) {
-		return session.selectOne(statement, parameter);
+		return DataSourceHelper.getSqlSessionTemplate().selectOne(statement, parameter);
 	}
 
 	@Override
 	public <E> List<E> selectList(String statement, Object parameter) {
-		return session.selectList(statement, parameter);
+		return DataSourceHelper.getSqlSessionTemplate().selectList(statement, parameter);
 	}
 
 	@Override
 	public <E> List<E> selectList(String statement) {
-		return session.selectList(statement);
+		return DataSourceHelper.getSqlSessionTemplate().selectList(statement);
 	}
 
 	@Override
@@ -117,31 +109,34 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 		try {
 			LOG.info("尝试创建事务管理器!");
 
+			/**
+			 * 主线程，设置默认的系统级别的数据环境
+			 */
+			DataEnvProperties.setDataSource("default");
+			DataEnvProperties.setDatabase("test1");
+			DataEnvProperties.setCompanyId("sys");
+			DataEnvProperties.setOwnerId("sys");
+			DataEnvProperties.setOptUserId("sys");
+			DataEnvProperties.setEnv(DataEnvEnums.PRODUCT_EVN);
+			DataEnvProperties.setGroupId("sys");
+			DataEnvProperties.setDataLevel(99);
+			DataEnvProperties.setDel(false);
+
+			// 初始化默认数据库
 			DataSource dataSource = null;
-			if (dataSourceFactory != null) {
-				dataSource = dataSourceFactory.make();
-				LOG.info("通过[" + dataSourceFactory + "]创建数据源：" + dataSource);
-			}
-			if (dataSource == null) {
-
-				// 加载用户安装目录下数据库配置信息
-				if (conf != null && MybatiesStringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
-					BasicDataSource basicDataSource = new BasicDataSource();
-					basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-					basicDataSource.setUrl(conf.getUrl());
-					basicDataSource.setUsername(conf.getUsername());
-					basicDataSource.setPassword(conf.getPassword());
-					basicDataSource.setMaxIdle(MybatiesIntegerUtil.get(conf.getMaxIdle(),20)); 
-					basicDataSource.setMinIdle(MybatiesIntegerUtil.get(conf.getMinIdle(),3));
-					basicDataSource.setMaxTotal(MybatiesIntegerUtil.get(conf.getMaxTotal(),20));
-					basicDataSource.setMaxWaitMillis(MybatiesIntegerUtil.get(conf.getMaxWaitMillis(),10000));
-					basicDataSource.setInitialSize(MybatiesIntegerUtil.get(conf.getInitialSize(),3));
-					basicDataSource.setRemoveAbandonedOnBorrow(true);
-					basicDataSource.setRemoveAbandonedTimeout(MybatiesIntegerUtil.get(conf.getRemoveAbandonedTimeout(),180));
-					dataSource = basicDataSource;
-					LOG.info("创建数据源：" + dataSource);
-				}
-
+			if (conf != null && MybatiesStringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
+				DataSourceHelper.JdbcProperties jdbcProperties = new DataSourceHelper.JdbcProperties();
+				jdbcProperties.setUrl(conf.getUrl());
+				jdbcProperties.setUser(conf.getUsername());
+				jdbcProperties.setPassword(conf.getPassword());
+				jdbcProperties.setMaxIdle(MybatiesIntegerUtil.get(conf.getMaxIdle(), 20));
+				jdbcProperties.setMinIdle(MybatiesIntegerUtil.get(conf.getMinIdle(), 3));
+				jdbcProperties.setMaxTotal(MybatiesIntegerUtil.get(conf.getMaxTotal(), 20));
+				jdbcProperties.setMaxWaitMillis(MybatiesIntegerUtil.get(conf.getMaxWaitMillis(), 10000));
+				jdbcProperties.setInitialSize(MybatiesIntegerUtil.get(conf.getInitialSize(), 3));
+				jdbcProperties.setRemoveAbandonedOnBorrow(true);
+				DataSourceHelper.init("default", jdbcProperties);
+				dataSource = DataSourceHelper.getDataSource("default");
 			}
 
 			if (dataSource == null) {
@@ -152,17 +147,10 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 				return new MyEmptyDataSourceTransactionManager();
 			}
 
-			DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
-			session = null;
-			dataSourceTransactionManager.setDataSource(dataSource);
-
+			// 合并加载系统sqlmap及用户自定义sqlmap
 			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 			Resource[] xDefSqlMapper = sqlmapLoaderFactory != null ? sqlmapLoaderFactory.sqlMapperResource() : null;
 			List<Resource> mergeSqlMappers = new ArrayList<>();
-			// Resource[] resourcesList =
-			// resolver.getResources("classpath*:tech/codingless/biz/**/*Mapper.xml");
-			// mergeSqlMappers.addAll(Arrays.asList(resourcesList));
-
 			mergeSqlMappers.addAll(Arrays.asList(resolver.getResources("classpath*:tech/codingless/core/plugs/mybaties3/**/*Mapper.xml")));
 			if (MybatiesStringUtil.isNotEmpty(conf.getClasspathMapper())) {
 				List.of(conf.getClasspathMapper().split(",")).stream().filter(item -> MybatiesStringUtil.isNotEmpty(item)).forEach(item -> {
@@ -176,29 +164,25 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 
 			if (xDefSqlMapper != null) {
 				mergeSqlMappers.addAll(Arrays.asList(xDefSqlMapper));
-
 			}
-
 			Resource[] mergedResourceList = mergeSqlMappers.toArray(new Resource[0]);
-			SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-			sqlSessionFactoryBean.setDataSource(dataSource);
-			sqlSessionFactoryBean.setMapperLocations(mergedResourceList);
-			sqlSessionFactoryBean.setTransactionFactory(new SpringManagedTransactionFactory());
+			DataSourceHelper.setSqlmapResource(mergedResourceList);
+			// 自定义事务管理器
+			MyDataSourceTransactionManager dataSourceTransactionManager = new MyDataSourceTransactionManager();
+			dataSourceTransactionManager.setDataSource(dataSource);
 
-			FactoryBean<SqlSessionFactory> factoryBean = sqlSessionFactoryBean;
-			session = new SqlSessionTemplate(factoryBean.getObject());
-			LOG.info("初始化事务管理器(添加到Spring容器中)： " + dataSourceTransactionManager);
-
-			if (mybatiesDataSourceFactory != null) {
-				DataSource noShardingDatasource = mybatiesDataSourceFactory.make();
-				SqlSessionFactoryBean noShardingFb = new SqlSessionFactoryBean();
-				noShardingFb.setDataSource(noShardingDatasource);
-				noShardingFb.setMapperLocations(mergedResourceList);
-				noShardingFb.setTransactionFactory(new SpringManagedTransactionFactory());
-				FactoryBean<SqlSessionFactory> noShardingBean = noShardingFb;
-				noShardingSession = new SqlSessionTemplate(noShardingBean.getObject());
-				LOG.info("初始化 No-Sharding Session:" + noShardingSession);
-			}
+			/*
+			 * SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+			 * sqlSessionFactoryBean.setDataSource(dataSource);
+			 * sqlSessionFactoryBean.setMapperLocations(mergedResourceList);
+			 * sqlSessionFactoryBean.setTransactionFactory(new
+			 * SpringManagedTransactionFactory()); FactoryBean<SqlSessionFactory>
+			 * factoryBean = sqlSessionFactoryBean; session = new
+			 * SqlSessionTemplate(factoryBean.getObject());
+			 */
+			// =========
+			// DataSourceHelper.setSqlmapResource(mergedResourceList);
+			// DataSourceHelper.getSqlSessionTemplate("ds");
 
 			LOG.info("事务管理器:" + dataSourceTransactionManager);
 			return dataSourceTransactionManager;
@@ -211,26 +195,19 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 	@Override
 	public int executeUpdateSql(String sql, List<Object> param) {
 		try {
-			PreparedStatement ps = session.getConnection().prepareStatement(sql);
+			PreparedStatement ps = DataSourceHelper.getSqlSessionTemplate().getConnection().prepareStatement(sql);
 			PrepareParameterHelper.bindParam(ps, param);
 			return ps.executeUpdate();
 		} catch (SQLException e) {
 			LOG.error("执行SQL出错", e);
 			return 0;
 		} finally {
-
 			try {
-				session.getConnection().close();
+				DataSourceHelper.getSqlSessionTemplate().getConnection().close();
 			} catch (SQLException e) {
 				LOG.error("close Connection ", e);
 			}
 		}
-	}
-
-	@Override
-	public <E> List<E> selectListNoSharding(String statement, Object parameter) {
-		MybatiesAssertUtil.assertNotNull(noShardingSession, "NO-SHARDING-SESSION-NOT-EXIST:未分片数据源不存在");
-		return noShardingSession.selectList(statement, parameter);
 	}
 
 }

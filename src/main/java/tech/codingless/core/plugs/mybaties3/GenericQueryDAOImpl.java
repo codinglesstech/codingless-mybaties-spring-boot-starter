@@ -64,7 +64,7 @@ import tech.codingless.core.plugs.mybaties3.util.ReflectionUtil;
 @Component
 public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T> {
 	private static final String NAMESPACE = "AUTOSQL";
-	private static final Logger LOG = LoggerFactory.getLogger(GenericQueryDAOImpl.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(GenericQueryDAOImpl.class);
 	protected MyBatiesService myBatiesService;
 	protected BasicDataSource basicDataSource;
 
@@ -390,7 +390,7 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 		myBatiesService.getConfiguration().addMappedStatement(builder.build());
 
 	}
- 
+
 	@Override
 	public List<T> findByExample(Class<T> clazz, ColumnSelector<T> columns, T example, String orderColumn, OrderTypeEnum orderType, Integer limit, Integer offset) {
 		limit = limit == null ? 100 : limit;
@@ -454,11 +454,6 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 		result.setCurrentPage(page);
 		result.setTotalPage(result.getTotalCount() == 0 ? 0 : (int) Math.ceil(result.getTotalCount() * 1.0 / size));
 		return result;
-	}
-
-	@Override
-	public <E> List<E> noShardingList(String statement, Object parameter) {
-		return myBatiesService.selectListNoSharding(statement, parameter);
 	}
 
 	@Override
@@ -527,7 +522,8 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 					if (ConcurrentSqlCreatorLocker.notExist(sysSelectId)) {
 						String xml = null;
 
-						//String[] selectIdSplit = new StringBuilder(selectId).reverse().toString().split("[.]", 2);
+						// String[] selectIdSplit = new
+						// StringBuilder(selectId).reverse().toString().split("[.]", 2);
 						// String namespace = new StringBuilder(selectIdSplit[1]).reverse().toString();
 						// String id = new StringBuilder(selectIdSplit[0]).reverse().toString();
 
@@ -581,7 +577,7 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 
 		if (orderColumn != null && orderType != null) {
 			sql += " order by ${_order_column_} ${_order_type_} ";
-			Field filed = ReflectionUtil.findField(orderColumn); 
+			Field filed = ReflectionUtil.findField(orderColumn);
 			wrapper.getContext().put("_order_column_", CommonSQLHelper.change2dbFormat(filed.getName()));
 			wrapper.getContext().put("_order_type_", orderType.getCode());
 		}

@@ -19,6 +19,23 @@ public class DataEnvProperties {
 	private static ThreadLocal<Integer> DATA_LEVEL = new ThreadLocal<>();
 	private static ThreadLocal<Boolean> IS_DEL = new ThreadLocal<>();
 
+	private static ThreadLocal<String> DATA_SOURCE = new ThreadLocal<>();// 数据源
+	private static ThreadLocal<String> DATA_BASE = new ThreadLocal<>();// 数据库
+	private static String defaultDataSourceId = "default";
+	private static String defaultDataBaseName = "unibiz";
+
+	public static String getDefaultDataSourceId() {
+		return defaultDataSourceId;
+	}
+
+	public static void setDefaultDataBaseName(String defaultDataBaseName) {
+		DataEnvProperties.defaultDataBaseName = defaultDataBaseName;
+	}
+
+	public static String getDefaultDataBaseName() {
+		return defaultDataBaseName;
+	}
+
 	/**
 	 * 设置公司ID
 	 * 
@@ -55,9 +72,9 @@ public class DataEnvProperties {
 		OPT_USER_ID.set(optUserId);
 
 	}
-	
+
 	public static String getOptUserId() {
-		 return OPT_USER_ID.get();
+		return OPT_USER_ID.get();
 	}
 
 	public static void setOptUserName(String optUserName) {
@@ -128,6 +145,33 @@ public class DataEnvProperties {
 		GROUP_ID.remove();
 		DATA_LEVEL.remove();
 		IS_DEL.remove();
+		DATA_SOURCE.remove();
+		DATA_BASE.remove();
 	}
 
+	/**
+	 * 设置数据源
+	 * 
+	 * @param dataSource
+	 */
+	public static void setDataSource(String dataSource) {
+		DATA_SOURCE.set(dataSource);
+	}
+
+	public static String getDataSource() {
+		return DATA_SOURCE.get();
+	}
+
+	/**
+	 * 设置数据库
+	 * 
+	 * @param database
+	 */
+	public static void setDatabase(String database) {
+		DATA_BASE.set(database);
+	}
+
+	public static String getDatabase() {
+		return DATA_BASE.get();
+	}
 }
