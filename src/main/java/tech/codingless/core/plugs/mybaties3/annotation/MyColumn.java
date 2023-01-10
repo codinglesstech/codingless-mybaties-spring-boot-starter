@@ -53,27 +53,41 @@ public @interface MyColumn {
 	boolean autoIncrement() default false;
 
 	/**
-	 * 创建索引
+	 * 
+	 * instead with index()
 	 * 
 	 * <pre>
 	 * ALTER TABLE `table_name` ADD INDEX index_name ( `column` )
 	 * </pre>
 	 * 
-	 * @return
+	 * @return 创建索引
 	 *
 	 */
+	@Deprecated
 	boolean createIndex() default false;
 
 	/**
-	 * 创建唯一索引
+	 * 
+	 * 
+	 * <pre>
+	 * ALTER TABLE `table_name` ADD INDEX index_name ( `column` )
+	 * </pre>
+	 * 
+	 * @return 创建索引
+	 *
+	 */
+	boolean index() default false;
+
+	/**
+	 * 
 	 * 
 	 * <pre>
 	 * ALTER TABLE `table_name` ADD unique index_name ( `column` )
 	 * </pre>
 	 * 
-	 * @return
+	 * @return 创建唯一索引
 	 */
-	boolean createUniqueIndex() default false;
+	boolean uniqueIndex() default false;
 
 	/**
 	 * 

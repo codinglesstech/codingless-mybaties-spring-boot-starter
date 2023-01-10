@@ -279,7 +279,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 				if (myColumn.autoIncrement() || myColumn.createIndex()) {
 					autoIncrementSql += ", add  key(" + columnName + ")";
 				}
-				if (myColumn.createUniqueIndex()) {
+				if (myColumn.uniqueIndex()) {
 					autoIncrementSql += ", add  unique key(" + columnName + ")";
 				}
 			}
