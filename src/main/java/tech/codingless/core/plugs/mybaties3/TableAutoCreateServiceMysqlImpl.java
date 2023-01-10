@@ -70,9 +70,31 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 	}
 
 	@Override
+	public synchronized boolean create(DataSource dataSource, String db) {
+		try {
+			EXIST_TABLE_NAME.clear();
+			EXIST_COLUMN_NAME.clear();
+			conn = dataSource.getConnection();
+			dbName = db;
+			return create();
+		} catch (Exception e) {
+			LOG.error("Create Table Fail", e);
+		} finally {
+			conn = null;
+			dbName = null;
+		}
+		return false;
+
+	}
+
+	@Override
 	public boolean create() {
 		if (CollectionUtils.isEmpty(doList)) {
 			LOG.info("没有发现实体类，不用创建任何表格!");
+			return false;
+		}
+		if (MybatiesStringUtil.isEmpty(dbName)) {
+			LOG.info("Not Found DataBase Name");
 			return false;
 		}
 		// 这里是为了解析出dbName
@@ -106,14 +128,13 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		if (EXIST_TABLE_NAME.containsKey(tableName)) {
 			return;
 		}
-		
-		
+
 		MyTable myTable = obj.getClass().getAnnotation(MyTable.class);
-		String ddl=null;
-		if(myTable.useNumberId()) {
-			ddl = String.format("CREATE TABLE %s (id bigint PRIMARY KEY)", tableName);
-		}else {
-			ddl = String.format("CREATE TABLE %s (id VARCHAR(64) PRIMARY KEY)", tableName); 
+		String ddl = null;
+		if (myTable.useNumberId()) {
+			ddl = String.format("CREATE TABLE %s.%s (id bigint PRIMARY KEY)", dbName, tableName);
+		} else {
+			ddl = String.format("CREATE TABLE %s.%s (id VARCHAR(64) PRIMARY KEY)", dbName, tableName);
 		}
 		executeDDL(ddl);
 
@@ -189,10 +210,10 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		return list;
 	}
 
-	private String getTableName(Object obj) { 
+	private String getTableName(Object obj) {
 		return getTableName(obj.getClass());
 	}
-	
+
 	public static String getTableName(Class<?> clazz) {
 		MyTable myTable = clazz.getAnnotation(MyTable.class);
 		String tableName = MybatiesStringUtil.isEmpty(myTable.prefix()) ? TABLE_NAME : myTable.prefix().trim() + "_" + change2dbFormat(clazz.getSimpleName());
@@ -201,9 +222,8 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 	}
 
 	private void parserObject(Object obj) {
-		 
 
-		// 如果父类，非Object,非BaseDO的情况下，拿父类的属性 
+		// 如果父类，非Object,非BaseDO的情况下，拿父类的属性
 		Class<?> parentClazz = obj.getClass().getSuperclass();
 		if (!parentClazz.equals(Object.class) && !parentClazz.equals(BaseDO.class)) {
 			createColumn(obj, parentClazz.getDeclaredFields());
@@ -212,69 +232,68 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		createColumn(obj, obj.getClass().getDeclaredFields());
 
 	}
- 
+
 	/**
 	 * 通过属性创建字段
-	 * @param obj 实体类
+	 * 
+	 * @param obj    实体类
 	 * @param fields 字段
 	 */
 	private void createColumn(Object obj, Field[] fields) {
 		if (fields == null) {
 			return;
 		}
-		String tableName = getTableName(obj); 
+		String tableName = getTableName(obj);
 		StringBuilder ddls = new StringBuilder();
-		boolean needCreateColumn=false;
+		boolean needCreateColumn = false;
 		for (Field field : fields) {
 			String columnName = change2dbFormat(field.getName()).toLowerCase();
 			if (columnExist(tableName, columnName)) {
 				continue;
 			}
-			 
 
 			Class<?> typeClazz = field.getType();
 			MyColumn myColumn = field.getAnnotation(MyColumn.class);
-			MyComment myComment = field.getAnnotation(MyComment.class); 
-			String typeDef = detectedColumnTypeByClassType(typeClazz, columnName); 
-			if(myColumn!=null&&MybatiesStringUtil.isNotEmpty(myColumn.type())) {
+			MyComment myComment = field.getAnnotation(MyComment.class);
+			String typeDef = detectedColumnTypeByClassType(typeClazz, columnName);
+			if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.type())) {
 				typeDef = myColumn.type();
 			}
-			
-			
-			String defaultValue = myColumn!=null?myColumn.defaultValue():"";
-			
+
+			String defaultValue = myColumn != null ? myColumn.defaultValue() : "";
+
 			String commentSql = "";
-			if (myComment!=null&& MybatiesStringUtil.isNotEmpty(myComment.value())) { 
+			if (myComment != null && MybatiesStringUtil.isNotEmpty(myComment.value())) {
 				commentSql = "  COMMENT '" + myComment.value().replaceAll("'", "") + "'";
 
-			} 
+			}
 			// 自增
 			String autoIncrementSql = "";
-			if (myColumn!=null && myColumn.autoIncrement()) {
+			if (myColumn != null && myColumn.autoIncrement()) {
 				autoIncrementSql = "not null auto_increment ";
 			}
-			if (myColumn!=null) {
+			if (myColumn != null) {
 				if (myColumn.autoIncrement()) {
 					autoIncrementSql = "not null auto_increment ";
 				}
-				if(myColumn.autoIncrement()||myColumn.createIndex()) {
-					autoIncrementSql += ", add  key(" + columnName + ")"; 
+				if (myColumn.autoIncrement() || myColumn.createIndex()) {
+					autoIncrementSql += ", add  key(" + columnName + ")";
 				}
-			} 
-			
-			String ddl = String.format("ALTER table %s ADD COLUMN %s %s %s %s %s", tableName, columnName, typeDef, (MybatiesStringUtil.isNotEmpty(defaultValue) ? ("default " + defaultValue) : ""), commentSql,
-					autoIncrementSql);
+			}
+
+			String ddl = String.format("ALTER table %s.%s ADD COLUMN %s %s %s %s %s", dbName, tableName, columnName, typeDef,
+					(MybatiesStringUtil.isNotEmpty(defaultValue) ? ("default " + defaultValue) : ""), commentSql, autoIncrementSql);
 			LOG.info(ddl);
 			ddls.append(ddl).append(";");
-			needCreateColumn=true;
+			needCreateColumn = true;
 		}
-		
-		if(needCreateColumn) { 
+
+		if (needCreateColumn) {
 			executeDDL(ddls.toString());
 		}
 
 	}
- 
+
 	private String detectedColumnTypeByClassType(Class<?> typeClazz, String columnName) {
 		String typeName = typeClazz.getName();
 		String typeDef = null;
@@ -310,7 +329,7 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		case "java.lang.Float": {
 			typeDef = "float4";
 			break;
-		} 
+		}
 		case "boolean": {
 			typeDef = "bool";
 			break;
@@ -334,11 +353,10 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		default:
 			typeDef = "VARCHAR(1024)";
 
-		} 
+		}
 		return typeDef;
 	}
 
- 
 	public static String change2dbFormat(String prop) {
 		StringBuffer sb = new StringBuffer(prop);
 		int len = sb.length();
@@ -352,7 +370,6 @@ public class TableAutoCreateServiceMysqlImpl implements TableAutoCreateService {
 		}
 		return sb.toString();
 	}
- 
 
 	private boolean columnExist(String tableName, String columnName) {
 		// ID为主键，创建表的时候就生成了，所以不需要单独创建ID字段
