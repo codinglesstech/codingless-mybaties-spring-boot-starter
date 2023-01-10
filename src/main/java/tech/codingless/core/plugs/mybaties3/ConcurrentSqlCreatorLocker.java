@@ -1,8 +1,12 @@
 package tech.codingless.core.plugs.mybaties3;
 
 import java.util.concurrent.ConcurrentHashMap;
+
+import tech.codingless.core.plugs.mybaties3.data.DataEnvProperties;
+
 /**
  * 为了保证创建SQL语句的线程安全
+ * 
  * @author 王鸿雁
  *
  */
@@ -11,17 +15,18 @@ public class ConcurrentSqlCreatorLocker {
 	protected static final ConcurrentHashMap<String, Object> LOCKER_MAP = new ConcurrentHashMap<>();
 	private static final Object LOCKER = new Object();
 
-	 
- 
 	public static boolean isTheSqlExist(String key) {
+		key = DataEnvProperties.getDataSource() + "." + key;
 		return SQL_GEN_SUCCESS.containsKey(key);
 	}
-	
+
 	public static boolean notExist(String key) {
+		key = DataEnvProperties.getDataSource() + "." + key;
 		return !SQL_GEN_SUCCESS.containsKey(key);
 	}
-	 
+
 	public static void put(String key) {
+		key = DataEnvProperties.getDataSource() + "." + key;
 		SQL_GEN_SUCCESS.put(key, true);
 	}
 
@@ -31,7 +36,8 @@ public class ConcurrentSqlCreatorLocker {
 	 * @param key the locker
 	 * @return locked object
 	 */
-	public static Object getLocker(String key) { 
+	public static Object getLocker(String key) {
+		key = DataEnvProperties.getDataSource() + "." + key;
 		if (LOCKER_MAP.containsKey(key)) {
 			return LOCKER_MAP.get(key);
 		}
@@ -43,13 +49,13 @@ public class ConcurrentSqlCreatorLocker {
 
 		}
 		return LOCKER_MAP.get(key);
-	 
 
 	}
 
 	public static void remove(String key) {
+		key = DataEnvProperties.getDataSource() + "." + key;
 		SQL_GEN_SUCCESS.remove(key);
-		
+
 	}
 
 }
