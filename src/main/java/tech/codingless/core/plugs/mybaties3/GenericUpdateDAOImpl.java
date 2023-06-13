@@ -29,6 +29,7 @@ import tech.codingless.core.plugs.mybaties3.data.UpdateObject;
 import tech.codingless.core.plugs.mybaties3.helper.AutoCreateBatchHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoDeleteBatchHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoUpdateHelper;
+import tech.codingless.core.plugs.mybaties3.helper.AutoUpinsertBatchHelper;
 import tech.codingless.core.plugs.mybaties3.helper.CommonSQLHelper;
 import tech.codingless.core.plugs.mybaties3.helper.MyTypeHanderRegistHelper;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
@@ -121,6 +122,31 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 
 	}
 
+	
+	@Override
+	public int upinsert(List<T> entityList) {
+		String sqlKey = "AUTOSQL.UPINSERT_BATCH_" + CommonSQLHelper.getTableName(entityList.get(0));
+		try {
+			return myBatiesService.insert(sqlKey, entityList);
+		} catch (MyBatisSystemException e) {
+			
+			
+			
+			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
+					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
+						AutoUpinsertBatchHelper.genBatchCreateSql(myBatiesService.getConfiguration(), "AUTOSQL", sqlKey, entityList.get(0).getClass());
+						ConcurrentSqlCreatorLocker.put(sqlKey);  
+					} 
+				} 
+			} 
+			
+			
+			return myBatiesService.insert(sqlKey, entityList);
+		}
+	}
+	
+	
 	@Override
 	public int createEntityList(List<T> entityList) {
 		String sqlKey = "AUTOSQL.CREATE_BATCH_" + CommonSQLHelper.getTableName(entityList.get(0));

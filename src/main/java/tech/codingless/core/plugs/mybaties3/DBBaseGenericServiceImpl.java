@@ -99,6 +99,13 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 		return updateDao.createEntity(data) == 1;
 	}
 
+	
+	@Override
+	public boolean upinsert(List<T> list) { 
+		return updateDao.upinsert(list)>0;
+	}
+	
+	
 	@Transactional
 	@Override
 	public boolean create(String companyId, T obj) {

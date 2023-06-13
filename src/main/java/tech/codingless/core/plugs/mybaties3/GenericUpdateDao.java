@@ -48,6 +48,8 @@ public interface GenericUpdateDao<T> {
 
 	int updateSkipNullBatchExecute(List<UpdateObject> updateList);
 
+	int upinsert(List<T> entityList);
+
 
 
 

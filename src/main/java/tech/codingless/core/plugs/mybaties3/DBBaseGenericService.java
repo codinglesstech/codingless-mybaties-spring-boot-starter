@@ -27,6 +27,16 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	 * @return success if true
 	 */
 	boolean create(T data);
+	
+	
+	/**
+	 * 
+	 * execute insert if data id is null, otherwise execute insert when data id not exist, update when data id exist in database
+	 * 
+	 * @param list
+	 * @return success if true
+	 */
+	boolean upinsert(List<T> list);
 
 	/**
 	 * insert a new row with company id
