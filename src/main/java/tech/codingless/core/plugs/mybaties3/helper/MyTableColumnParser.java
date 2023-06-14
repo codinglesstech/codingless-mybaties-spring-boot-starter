@@ -1,7 +1,6 @@
 package tech.codingless.core.plugs.mybaties3.helper;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,33 +16,32 @@ import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 public class MyTableColumnParser {
 
-	//生成字段，更新，等需要跳过的属性
-	private final static ConcurrentHashMap<String,Boolean> SKIP_PROPS = new ConcurrentHashMap<>();
+	// 生成字段，更新，等需要跳过的属性
+	private final static ConcurrentHashMap<String, Boolean> SKIP_PROPS = new ConcurrentHashMap<>();
 	static {
 		SKIP_PROPS.put("id", true);
 		SKIP_PROPS.put("gmtCreate", true);
 		SKIP_PROPS.put("gmtWrite", true);
 		SKIP_PROPS.put("del", true);
-		SKIP_PROPS.put("ownerId", true); 
+		SKIP_PROPS.put("ownerId", true);
 		SKIP_PROPS.put("createUid", true);
 		SKIP_PROPS.put("companyId", true);
-		SKIP_PROPS.put("ver", true); 
+		SKIP_PROPS.put("ver", true);
 	}
-	
-	
+
 	@Data
 	public static class ColumnProp {
 		private String column;
 		private String prop;
-		private Class<?> javaTypeClass; 
-		private Class<?> typeHandler; 
+		private Class<?> javaTypeClass;
+		private Class<?> typeHandler;
 		private JdbcType jdbcType;
 		private Object val;
 		private String comment;
 		private boolean virturl;
 		private boolean readonly;
 	}
- 
+
 	public static List<ColumnProp> parse(Class<?> clazz) {
 		List<ColumnProp> list = new ArrayList<>();
 		for (Method method : clazz.getMethods()) {
@@ -66,34 +64,33 @@ public class MyTableColumnParser {
 			ColumnProp columnProp = new ColumnProp();
 			try {
 				Field filed = clazz.getDeclaredField(attrName);
-				
 
 				MyComment myComment = filed.getAnnotation(MyComment.class);
-				if(myComment!=null) {
+				if (myComment != null) {
 					columnProp.setComment(myComment.value());
 				}
-				
+
 				MyColumn myColumn = filed.getAnnotation(MyColumn.class);
-				if(myColumn!=null&&myColumn.virtual()) {
+				if (myColumn != null && myColumn.virtual()) {
 					continue;
-				} 
+				}
 				if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.name())) {
 					columnName = myColumn.name();
 				}
-				if(myColumn!=null) {
-					if(!StringTypeHandler.class.getName().equals(myColumn.typeHandler().getName())) {
+				if (myColumn != null) {
+					if (!StringTypeHandler.class.getName().equals(myColumn.typeHandler().getName())) {
 						columnProp.setTypeHandler(myColumn.typeHandler());
 					}
 					columnProp.setReadonly(myColumn.readonly());
-					columnProp.setVirturl(myColumn.virtual()); 
-					String type=myColumn.type().toUpperCase().trim();
-					if(type.startsWith("VARCHAR")) {
+					columnProp.setVirturl(myColumn.virtual());
+					String type = myColumn.type().toUpperCase().trim();
+					if (type.startsWith("VARCHAR")) {
 						columnProp.setJdbcType(JdbcType.VARCHAR);
-					}else if(type.startsWith("INT")) {
+					} else if (type.startsWith("INT")) {
 						columnProp.setJdbcType(JdbcType.INTEGER);
-					}else if(type.startsWith("DECIMAL")) {
+					} else if (type.startsWith("DECIMAL")) {
 						columnProp.setJdbcType(JdbcType.DECIMAL);
-					}else {
+					} else {
 						columnProp.setJdbcType(JdbcType.VARCHAR);
 					}
 				}
@@ -105,7 +102,7 @@ public class MyTableColumnParser {
 			}
 			columnProp.setColumn(columnName);
 			columnProp.setProp(attrName);
-			columnProp.setJavaTypeClass(method.getReturnType()); 
+			columnProp.setJavaTypeClass(method.getReturnType());
 			list.add(columnProp);
 
 		}
@@ -114,22 +111,23 @@ public class MyTableColumnParser {
 
 	/**
 	 * 是否默认支持的类型
+	 * 
 	 * @param clazz clazz
 	 * @return true 支持
 	 *
 	 */
 	public static boolean isDefaultSupportType(Class<?> clazz) {
-		if(clazz.getName().startsWith("java.")) {
+		if (clazz.getName().startsWith("java.")) {
 			return true;
 		}
-		if(clazz.getName().equalsIgnoreCase("boolean")) {
+		if (clazz.getName().equalsIgnoreCase("boolean")) {
 			return true;
-		} 
+		}
 		return false;
 	}
 
-	//解析字段，跳过空值属性，虚拟属性,只读属性
-	public static List<ColumnProp> parseSkipNull(Class<?> clazz,Object entity) throws Exception {
+	// 解析字段，跳过空值属性，虚拟属性,只读属性
+	public static List<ColumnProp> parseSkipNull(Class<?> clazz, Object entity) throws Exception {
 		List<ColumnProp> list = new ArrayList<>();
 		for (Method method : clazz.getMethods()) {
 			String methodName = method.getName();
@@ -149,38 +147,39 @@ public class MyTableColumnParser {
 			try {
 				Field filed = clazz.getDeclaredField(attrName);
 				MyColumn myColumn = filed.getAnnotation(MyColumn.class);
-				if (myColumn != null) { 
-					if(myColumn.readonly()) {
-						//只读字段不允许修改
+				if (myColumn != null) {
+					if (myColumn.readonly()) {
+						// 只读字段不允许修改
 						continue;
-					} 
+					}
 					columnName = MybatiesStringUtil.isNotEmpty(myColumn.name()) ? myColumn.name() : columnName;
 				}
 			} catch (Exception e) {
 
 			}
-			
+
 			ColumnProp columnProp = new ColumnProp();
 			if (MybatiesStringUtil.isEmpty(columnName)) {
 				columnName = CommonSQLHelper.change2dbFormat(attrName);
 			}
 			columnProp.setColumn(columnName);
 			columnProp.setProp(attrName);
-			columnProp.setJavaTypeClass(method.getReturnType()); 
+			columnProp.setJavaTypeClass(method.getReturnType());
 			columnProp.setVal(val);
 			list.add(columnProp);
-			
-			 
+
 		}
 		return list;
 	}
-	
+
 	public static boolean needSkipMethodName(String methodName) {
 		return methodName.equals("getClass") || (!methodName.startsWith("get") && !methodName.startsWith("is"));
 	}
-	public static boolean needSkipProperties(String propName) { 
-		return SKIP_PROPS.containsKey(propName); 
+
+	public static boolean needSkipProperties(String propName) {
+		return SKIP_PROPS.containsKey(propName);
 	}
+
 	public static String methodName2attrName(String methodName) {
 		String pName = new String();
 		if (methodName.startsWith("get")) {

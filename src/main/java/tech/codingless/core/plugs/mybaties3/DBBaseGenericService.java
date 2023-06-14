@@ -36,7 +36,7 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	 * @param list
 	 * @return success if true
 	 */
-	boolean upinsert(List<T> list);
+	int upinsert(List<T> list);
 
 	/**
 	 * insert a new row with company id

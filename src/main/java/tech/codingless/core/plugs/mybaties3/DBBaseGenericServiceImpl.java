@@ -27,6 +27,7 @@ import tech.codingless.core.plugs.mybaties3.util.DataEnvUtil;
 import tech.codingless.core.plugs.mybaties3.util.DataSessionEnv;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesAssertUtil;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
+import tech.codingless.core.plugs.mybaties3.util.ObjectUtil;
 import tech.codingless.core.plugs.mybaties3.util.SnowFlakeNumberUtil;
 
 public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGenericService<T> {
@@ -86,26 +87,31 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 		if (MybatiesStringUtil.isEmpty(data.getId())) {
 			generateId(data);
 		}
-		if (MybatiesStringUtil.isEmpty(data.getCreateUid())) {
-			data.setCreateUid(DataEnvProperties.getOwnerId());
-		}
-		if (MybatiesStringUtil.isEmpty(data.getOwnerId())) {
-			data.setOwnerId(DataEnvProperties.getOwnerId());
-		}
-		data.setGroupId(MybatiesStringUtil.isNotEmpty(data.getGroupId()) ? data.getGroupId() : DataEnvProperties.getGroupId());
-		data.setWriteUid(MybatiesStringUtil.isNotEmpty(data.getWriteUid()) ? data.getWriteUid() : DataEnvProperties.getOptUserId());
-		data.setCompanyId(MybatiesStringUtil.isNotEmpty(data.getCompanyId()) ? data.getCompanyId() : DataEnvProperties.getCompanyId());
+		 
+		  
+		data.setCreateUid(ObjectUtil.valid(data.getCreateUid(),DataEnvProperties.getOwnerId()));  
+		data.setOwnerId(ObjectUtil.valid(data.getOwnerId(),DataEnvProperties.getOwnerId()));  
+		data.setGroupId(ObjectUtil.valid(data.getGroupId(),DataEnvProperties.getGroupId())); 
+		data.setWriteUid(ObjectUtil.valid(data.getWriteUid(),DataEnvProperties.getOptUserId()));
+		data.setCompanyId(ObjectUtil.valid(data.getCompanyId(),DataEnvProperties.getCompanyId())); 
 		data.setVer(data.getVer() != null ? data.getVer() : 1L);
 		return updateDao.createEntity(data) == 1;
 	}
 
-	
+	@Transactional
 	@Override
-	public boolean upinsert(List<T> list) { 
-		return updateDao.upinsert(list)>0;
+	public int upinsert(List<T> list) {
+		if (list == null || list.isEmpty()) {
+			return 0;
+		}
+		list.forEach(item -> {
+			if (MybatiesStringUtil.isEmpty(item.getId())) {
+				generateId(item);
+			}
+		});
+		return updateDao.upinsert(list);
 	}
-	
-	
+
 	@Transactional
 	@Override
 	public boolean create(String companyId, T obj) {

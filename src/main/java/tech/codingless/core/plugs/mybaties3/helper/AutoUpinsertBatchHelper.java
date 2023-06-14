@@ -2,17 +2,12 @@ package tech.codingless.core.plugs.mybaties3.helper;
 
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.session.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import tech.codingless.core.plugs.mybaties3.annotation.MyColumn;
-import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 public class AutoUpinsertBatchHelper {
 	private static final Logger LOG = LoggerFactory.getLogger(AutoUpinsertBatchHelper.class);
@@ -28,42 +23,24 @@ public class AutoUpinsertBatchHelper {
 		StringBuffer valueBuilder = new StringBuffer();
 		StringBuffer batchSqlBuilder = new StringBuffer();
 		StringBuffer setBuilder = new StringBuffer();
-		for (Method method : clazz.getMethods()) {
-			String methodName = method.getName();
-			if (MyTableColumnParser.needSkipMethodName(methodName)) {
-				continue;
-			}
-			String attrName = MyTableColumnParser.methodName2attrName(methodName);
-			if ("gmtWrite".equals(attrName) || "gmtCreate".equals(attrName)) {
-				continue;
-			}
-			String columnName = null;
-			try {
-				Field filed = clazz.getDeclaredField(attrName);
-				MyColumn myColumn = filed.getAnnotation(MyColumn.class);
-				if (myColumn != null && myColumn.virtual()) {
-					continue;
-				}
-				if (myColumn != null && MybatiesStringUtil.isNotEmpty(myColumn.name())) {
-					columnName = myColumn.name();
-				}
-			} catch (Exception e1) {
-			}
-			if (MybatiesStringUtil.isEmpty(columnName)) {
-				columnName = CommonSQLHelper.change2dbFormat(attrName);
-			}
-			columnBuilder.append(columnName).append(",");
-			valueBuilder.append("#{item.").append(attrName).append("},");
 
-			if (!"id".equalsIgnoreCase(attrName) && !"ver".equalsIgnoreCase(attrName)) {
-				setBuilder.append("<if test=\"").append("item.").append(attrName).append(" != null\">").append(columnName).append("=#{item.").append(attrName).append("},");
-				setBuilder.append("</if>");
-			}
-		}
-		columnBuilder.append("gmt_Write").append(",");
-		columnBuilder.append("gmt_Create");
+		ColumnHelper.parse(clazz).eachInsertColumn(column -> {
+
+			columnBuilder.append(column.getColumnName()).append(",");
+			valueBuilder.append("#{item.").append(column.getAttrName()).append("},");
+		}).eachUpdateColumn(column -> {
+
+			setBuilder.append("<if test=\"").append("item.").append(column.getAttrName()).append(" != null\">").append(column.getColumnName()).append("=#{item.").append(column.getAttrName())
+					.append("},");
+			setBuilder.append("</if>");
+		});
+
+		columnBuilder.append("gmt_write").append(",");
+		columnBuilder.append("gmt_create").append(",");
+		columnBuilder.append("ver");
 		valueBuilder.append("UNIX_TIMESTAMP(),");
-		valueBuilder.append("UNIX_TIMESTAMP()");
+		valueBuilder.append("UNIX_TIMESTAMP(),");
+		valueBuilder.append("1");
 		setBuilder.append("gmt_write=UNIX_TIMESTAMP(),ver=ver+1");
 
 		batchSqlBuilder.append(XML_VERSION);

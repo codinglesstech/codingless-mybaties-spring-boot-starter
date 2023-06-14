@@ -152,10 +152,7 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		String sqlKey = "AUTOSQL.CREATE_BATCH_" + CommonSQLHelper.getTableName(entityList.get(0));
 		try {
 			return myBatiesService.insert(sqlKey, entityList);
-		} catch (MyBatisSystemException e) {
-			
-			
-			
+		} catch (MyBatisSystemException e) { 
 			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
 				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
 					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
@@ -163,9 +160,7 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 						ConcurrentSqlCreatorLocker.put(sqlKey);  
 					} 
 				} 
-			} 
-			
-			
+			}  
 			return myBatiesService.insert(sqlKey, entityList);
 		}
 	}
