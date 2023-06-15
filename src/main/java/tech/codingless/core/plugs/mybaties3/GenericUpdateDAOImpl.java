@@ -95,7 +95,7 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 			MappedStatement.Builder builder = new MappedStatement.Builder(myBatiesService.getConfiguration(), sqlKey, sqlSource, SqlCommandType.INSERT);
 			myBatiesService.getConfiguration().addMappedStatement(builder.build());
 			if(LOG.isDebugEnabled()) {
-				LOG.debug("gen script : " + CommonSQLHelper.getInsertSQL(entity));
+				//LOG.debug("gen script : " + CommonSQLHelper.getInsertSQL(entity));
 			}
 		} catch (Exception e) {
 			LOG.error("genAutoSqlForCreate",e); 
@@ -358,7 +358,7 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		MappedStatement.Builder builder = new MappedStatement.Builder(myBatiesService.getConfiguration(), sqlKey, sqlSource, SqlCommandType.UPDATE);
 		myBatiesService.getConfiguration().addMappedStatement(builder.build());
 		if(LOG.isDebugEnabled()) {
-			LOG.debug("[动态生成SQL语句] " + updateSQL); 
+			//LOG.debug("[动态生成SQL语句] " + updateSQL); 
 		}
 	}
 

@@ -32,7 +32,7 @@ public class MyTypeHanderRegistHelper {
 					if (registry.hasTypeHandler(columnProp.getTypeHandler())) {
 						return;
 					}
-					LOG.info("Regist Type Hander {}", columnProp.getTypeHandler());
+					LOG.info("Regist Type Hander:{} For ColumnType:{}, JavaType:{}", columnProp.getTypeHandler(),columnProp.getJdbcType(),columnProp.getJavaTypeClass());
 					configuration.getTypeHandlerRegistry().register(columnProp.getJavaTypeClass(), columnProp.getJdbcType(), columnProp.getTypeHandler());
 				}
 			} catch (Throwable e) {

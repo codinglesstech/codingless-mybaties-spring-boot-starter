@@ -12,7 +12,7 @@ import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 public class ColumnHelper {
 	private final static String REGEX = "^[a-zA-Z_0-9]+$";
-	private static List<String> COLUMN_SKIP_UPDATE = List.of("id", "ver", "gmt_create", "gmt_write");
+	private static List<String> COLUMN_SKIP_UPDATE = List.of("id", "ver", "gmt_create", "gmt_write","create_uid","owner_id","company_id","env","del","data_level");
 	private static List<String> COLUMN_SKIP_INSERT = List.of("gmt_write", "gmt_create", "ver");
 
 	public static boolean isIncorrectColumn(String column) {

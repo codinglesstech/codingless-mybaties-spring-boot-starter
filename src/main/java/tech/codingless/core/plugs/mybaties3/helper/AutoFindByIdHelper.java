@@ -49,7 +49,12 @@ public class AutoFindByIdHelper {
 		batchSqlBuilder.append("<select id=").append(QUOTATION).append(sqlKey).append(QUOTATION);
 		batchSqlBuilder.append(" resultMap=\"" + mapId + "\"  parameterType=\"map\" >");
 		batchSqlBuilder.append("select ").append(columnBuilder.toString()).append(" from ").append(CommonSQLHelper.getTableName(clazz));
-		batchSqlBuilder.append(" where  id=#{id} and company_id=#{companyId}  and not del and env=#{env} "); 
+		batchSqlBuilder.append(" <where> "); 
+		batchSqlBuilder.append("<if test=\"idList!=null\">  id in <foreach collection=\"idList\" separator=\",\" item=\"item\" open=\"(\"  close=\")\" >");
+		batchSqlBuilder.append("#{item}");
+		batchSqlBuilder.append("</foreach> </if>");  
+		batchSqlBuilder.append("<if test=\"id!=null\"> and  id=#{id} </if>  and company_id=#{companyId}  and not del and env=#{env} ");  
+		batchSqlBuilder.append("</where>");
 		batchSqlBuilder.append("</select>");
 		batchSqlBuilder.append("</mapper> ");
 		try {

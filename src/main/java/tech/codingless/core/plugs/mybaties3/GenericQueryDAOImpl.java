@@ -48,6 +48,7 @@ import tech.codingless.core.plugs.mybaties3.condition.QueryConditionWrapper;
 import tech.codingless.core.plugs.mybaties3.condition.QueryConditionWrapperParser;
 import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 import tech.codingless.core.plugs.mybaties3.data.BaseDO;
+import tech.codingless.core.plugs.mybaties3.data.DataEnvProperties;
 import tech.codingless.core.plugs.mybaties3.data.PageRollResult;
 import tech.codingless.core.plugs.mybaties3.helper.AutoFindByIdBatchHelper;
 import tech.codingless.core.plugs.mybaties3.helper.AutoFindByIdHelper;
@@ -108,6 +109,37 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 	}
 
 	@Override
+	public List<T> listV2(Class<T> clazz, Collection<String> idList, String companyId) {
+		String sqlKey = "AUTOSQL.GET_BYCOMPANYID_" + CommonSQLHelper.getTableName(clazz);
+		Map<String, Object> param = new HashMap<>();
+		param.put("idList", idList);
+		param.put("companyId", companyId);
+		param.put("env", DataEnvProperties.getEnv());
+
+		try {
+			return myBatiesService.selectList(sqlKey, param);
+		} catch (MyBatisSystemException e) {
+
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+						AutoFindByIdHelper.genGetSql(myBatiesService.getConfiguration(), "AUTOSQL", sqlKey, clazz);
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
+			}
+			return myBatiesService.selectList(sqlKey, param);
+		}
+	}
+
+	@Override
+	public T getEntityV2(Class<T> clazz, String id, String companyId) {
+		List<T> list = this.listV2(clazz, List.of(id), companyId);
+		return list.size() == 1 ? list.get(0) : null;
+	}
+
+	@Deprecated
+	@Override
 	public T getEntity(Class<T> clazz, String id) {
 		String sqlKey = "AUTOSQL.GET_" + CommonSQLHelper.getTableName(clazz);
 
@@ -133,28 +165,7 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 
 	@Override
 	public T getEntity(Class<T> clazz, String id, String companyId) {
-		String namespace = "AUTOSQL";
-		String sqlKey = "GET_BYCOMPANYID_" + CommonSQLHelper.getTableName(clazz);
-		String sqlFullKey = namespace + "." + sqlKey;
-		Map<String, Object> param = new HashMap<String, Object>(6);
-		param.put("id", id);
-		param.put("companyId", companyId);
-		param.put("env", DataEnvUtil.getEvn());
-		try {
-			return myBatiesService.selectOne(sqlFullKey, param);
-		} catch (MyBatisSystemException e) {
-
-			if (ConcurrentSqlCreatorLocker.notExist(sqlFullKey)) {
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlFullKey)) {
-					if (ConcurrentSqlCreatorLocker.notExist(sqlFullKey)) {
-						// AutoGetHelper.genAutoSqlForGet(clazz,false,myBatiesService.getConfiguration());
-						AutoFindByIdHelper.genGetSql(myBatiesService.getConfiguration(), namespace, sqlKey, clazz);
-						ConcurrentSqlCreatorLocker.put(sqlFullKey);
-					}
-				}
-			}
-			return myBatiesService.selectOne(sqlFullKey, param);
-		}
+		return getEntityV2(clazz, id, companyId);
 	}
 
 	@Override

@@ -81,21 +81,22 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Transactional
 	@Override
 	public boolean create(T data) {
+		bindEnvInfo(data);
+		return updateDao.createEntity(data) == 1;
+	}
 
+	void bindEnvInfo(T data) {
 		data.setDel(false);
 		data.setEnv(DataEnvUtil.getEvn());
 		if (MybatiesStringUtil.isEmpty(data.getId())) {
 			generateId(data);
 		}
-		 
-		  
-		data.setCreateUid(ObjectUtil.valid(data.getCreateUid(),DataEnvProperties.getOwnerId()));  
-		data.setOwnerId(ObjectUtil.valid(data.getOwnerId(),DataEnvProperties.getOwnerId()));  
-		data.setGroupId(ObjectUtil.valid(data.getGroupId(),DataEnvProperties.getGroupId())); 
-		data.setWriteUid(ObjectUtil.valid(data.getWriteUid(),DataEnvProperties.getOptUserId()));
-		data.setCompanyId(ObjectUtil.valid(data.getCompanyId(),DataEnvProperties.getCompanyId())); 
+		data.setCreateUid(ObjectUtil.valid(data.getCreateUid(), DataEnvProperties.getOwnerId()));
+		data.setOwnerId(ObjectUtil.valid(data.getOwnerId(), DataEnvProperties.getOwnerId()));
+		data.setGroupId(ObjectUtil.valid(data.getGroupId(), DataEnvProperties.getGroupId()));
+		data.setWriteUid(ObjectUtil.valid(data.getWriteUid(), DataEnvProperties.getOptUserId()));
+		data.setCompanyId(ObjectUtil.valid(data.getCompanyId(), DataEnvProperties.getCompanyId()));
 		data.setVer(data.getVer() != null ? data.getVer() : 1L);
-		return updateDao.createEntity(data) == 1;
 	}
 
 	@Transactional
@@ -105,9 +106,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 			return 0;
 		}
 		list.forEach(item -> {
-			if (MybatiesStringUtil.isEmpty(item.getId())) {
-				generateId(item);
-			}
+			bindEnvInfo(item);
 		});
 		return updateDao.upinsert(list);
 	}
@@ -211,7 +210,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	@Override
 	public T get(Class<T> clazz, String entityId) {
 		if (MybatiesStringUtil.isNotEmpty(DataEnvProperties.getCompanyId())) {
-			return queryDao.getEntity(clazz, entityId);
+			return queryDao.getEntityV2(clazz, entityId,DataEnvProperties.getCompanyId());
 		}
 		return queryDao.getEntity(clazz, entityId);
 	}
