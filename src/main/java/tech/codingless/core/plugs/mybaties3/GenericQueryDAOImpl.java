@@ -110,6 +110,9 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 
 	@Override
 	public List<T> listV2(Class<T> clazz, Collection<String> idList, String companyId) {
+		if (idList == null || idList.isEmpty()) {
+			return Collections.emptyList();
+		}
 		String sqlKey = "AUTOSQL.GET_BYCOMPANYID_" + CommonSQLHelper.getTableName(clazz);
 		Map<String, Object> param = new HashMap<>();
 		param.put("idList", idList);

@@ -21,14 +21,19 @@ public class AutoFindByIdHelper {
 
 	public static void genGetSql(Configuration configuration, String namespace, String sqlKey, Class<?> clazz, Collection<String> columns) {
 
-		String mapId = "GetByIdResultMap" + clazz.getSimpleName();
+		String mapId = "Sys_GetByIdResultMap" + clazz.getSimpleName();
 		StringBuffer resultMapSb = new StringBuffer();
 		resultMapSb.append("<resultMap type=\"").append(clazz.getTypeName()).append("\"");
 		resultMapSb.append(" id=\"" + mapId + "\" >");
 
 		// 设置返回值绑定
 		MyTableColumnParser.parse(clazz).forEach(columnProp -> {
-			resultMapSb.append("<result column=\"").append(columnProp.getColumn()).append("\" property=\"").append(columnProp.getProp()).append("\" />");
+			resultMapSb.append("<result column=\"").append(columnProp.getColumn()).append("\" property=\"").append(columnProp.getProp()).append("\" ");
+			if(columnProp.getTypeHandler()!=null) {
+				
+				resultMapSb.append("  typeHandler=\"").append(columnProp.getTypeHandler().getName()).append("\"");
+			}
+			resultMapSb.append(" />");
 		});
 		resultMapSb.append("</resultMap>");
 
@@ -53,12 +58,13 @@ public class AutoFindByIdHelper {
 		batchSqlBuilder.append("<if test=\"idList!=null\">  id in <foreach collection=\"idList\" separator=\",\" item=\"item\" open=\"(\"  close=\")\" >");
 		batchSqlBuilder.append("#{item}");
 		batchSqlBuilder.append("</foreach> </if>");  
-		batchSqlBuilder.append("<if test=\"id!=null\"> and  id=#{id} </if>  and company_id=#{companyId}  and not del and env=#{env} ");  
+		batchSqlBuilder.append("<if test=\"id!=null\"> and  id=#{id} </if>   ");  
+		batchSqlBuilder.append("<if test=\"companyId!=null\"> and company_id=#{companyId}  </if>   and not del and env=#{env} ");  
 		batchSqlBuilder.append("</where>");
 		batchSqlBuilder.append("</select>");
 		batchSqlBuilder.append("</mapper> ");
 		try {
-			 
+			System.out.println(batchSqlBuilder.toString()); 
 			XMLMapperBuilder selectMapperBuilder = new XMLMapperBuilder(new ByteArrayInputStream(batchSqlBuilder.toString().getBytes("utf-8")), configuration, sqlKey, new HashMap<>());
 			selectMapperBuilder.parse();
 		} catch (UnsupportedEncodingException e) {

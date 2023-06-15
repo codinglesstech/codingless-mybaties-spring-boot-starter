@@ -209,10 +209,7 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 
 	@Override
 	public T get(Class<T> clazz, String entityId) {
-		if (MybatiesStringUtil.isNotEmpty(DataEnvProperties.getCompanyId())) {
-			return queryDao.getEntityV2(clazz, entityId,DataEnvProperties.getCompanyId());
-		}
-		return queryDao.getEntity(clazz, entityId);
+		return queryDao.getEntityV2(clazz, entityId, DataEnvProperties.getCompanyId());
 	}
 
 	@Override

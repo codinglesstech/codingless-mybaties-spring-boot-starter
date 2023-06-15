@@ -19,6 +19,7 @@ public interface GenericQueryDao<T extends BaseDO> {
 
 	List<T> selectList(String sqlId, Object param);
 
+	@Deprecated
 	T getEntity(Class<T> clazz, String id);
 
 	T getEntity(Class<T> clazz, String id, String companyId);

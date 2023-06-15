@@ -53,9 +53,7 @@ public class AutoUpdateBatchHelper {
 		batchSqlBuilder.append("</foreach></update>");
 		batchSqlBuilder.append("</mapper> "); 
 		try { 
-			System.out.println("==============================");
-			System.out.println(batchSqlBuilder.toString());
-			
+		  
 			XMLMapperBuilder selectMapperBuilder = new XMLMapperBuilder(new ByteArrayInputStream(batchSqlBuilder.toString().getBytes("utf-8")), configuration, sqlKey, new HashMap<>());
 			selectMapperBuilder.parse();
 		} catch (UnsupportedEncodingException e) {
