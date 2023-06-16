@@ -91,7 +91,7 @@ public @interface MyColumn {
 
 	/**
 	 * 
-	 * @return 充许自定义Handler
+	 * @return 充许自定义Handler, 请注意: 同一个类型只能由一个Handler来处理
 	 *
 	 */
 	Class<?> typeHandler() default StringTypeHandler.class;
