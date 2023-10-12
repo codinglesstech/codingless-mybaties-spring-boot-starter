@@ -36,4 +36,6 @@ public interface MyBatiesService {
 
 	long execdelete(String xmlDeleteSql, Map<String, Object> param);
 
+	List<Map<String, Object>> execselect(String xmlSelectSql, Map<String, Object> param);
+
 }

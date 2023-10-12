@@ -117,6 +117,12 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 		return updateDao.execdelete(xmlDeleteSql, param);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Map<String, Object>> execselect(String xmlSelectSql, Map<String, Object> param) {
+		return queryGenericDao.execselect(xmlSelectSql, param);
+	}
+
 	@Transactional
 	@Override
 	public int upinsert(List<T> list) {

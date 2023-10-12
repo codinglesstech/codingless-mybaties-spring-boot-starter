@@ -109,6 +109,11 @@ public class GenericQueryDAOImpl<T extends BaseDO> implements GenericQueryDao<T>
 	}
 
 	@Override
+	public List<Map<String, Object>> execselect(String xmlSelectSql, Map<String, Object> param) {
+		return myBatiesService.execselect(xmlSelectSql, param);
+	}
+
+	@Override
 	public List<T> listV2(Class<T> clazz, Collection<String> idList, String companyId) {
 		if (idList == null || idList.isEmpty()) {
 			return Collections.emptyList();

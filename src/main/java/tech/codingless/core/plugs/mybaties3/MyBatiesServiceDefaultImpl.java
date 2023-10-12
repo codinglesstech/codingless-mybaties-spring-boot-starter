@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -245,6 +246,17 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 			MybatiesAssertUtil.assertFail("EXECUTE_DELETE_ERROR");
 		}
 		return -1;
+	}
+
+	@Override
+	public List<Map<String, Object>> execselect(String xmlSelectSql, Map<String, Object> param) {
+		try {
+			return MybatiesExecuteHelper.execselect(MybatiesSqlSourceUtil.exchangeSelectSqlSource(xmlSelectSql, param), param);
+		} catch (Exception e) {
+			LOG.error("EXECUTE_SELECT_ERROR", e);
+			MybatiesAssertUtil.assertFail("EXECUTE_SELECT_ERROR");
+		}
+		return Collections.emptyList();
 	}
 
 }

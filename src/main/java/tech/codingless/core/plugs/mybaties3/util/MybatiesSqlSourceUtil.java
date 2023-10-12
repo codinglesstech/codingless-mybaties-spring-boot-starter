@@ -84,4 +84,27 @@ public class MybatiesSqlSourceUtil {
 		return sql;
 	}
 
+	private static final String XML_SELECT_1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n"
+			+ "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\r\n" + "\r\n" + "<mapper namespace=\"TEST\"> \r\n"
+			+ "    <select id=\"test\" resultType=\"map\" parameterType=\"map\">";
+
+	private static final String XML_SELECT_2 = "    </select> \r\n" + "</mapper>";
+
+	public static SqlSource exchangeSelectSqlSource(String xmlSelectSql, Map<String, Object> param) throws Exception {
+		String key = MybatiesStringUtil.md5("SELECT:" + xmlSelectSql);
+		SqlSource sql = SQL_CACHE.get(key);
+		if (sql == null) {
+			Configuration config = new Configuration();
+			String xml = XML_SELECT_1 + xmlSelectSql + XML_SELECT_2;
+			Properties properties = new Properties();
+			XPathParser xpath = new XPathParser(new ByteArrayInputStream(xml.getBytes("utf-8")), true, properties, new XMLMapperEntityResolver());
+			List<XNode> selects = xpath.evalNode("/mapper").evalNodes("select");
+			XNode xnode = selects.get(0);
+			XMLScriptBuilder xmlscript = new XMLScriptBuilder(config, xnode);
+			sql = xmlscript.parseScriptNode();
+			SQL_CACHE.put(key, sql);
+		}
+		return sql;
+	}
+
 }

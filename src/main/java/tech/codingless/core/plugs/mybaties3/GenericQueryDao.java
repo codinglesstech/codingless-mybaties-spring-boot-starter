@@ -49,6 +49,9 @@ public interface GenericQueryDao<T extends BaseDO> {
 	long count(Class<T> entityClass, QueryConditionWrapper<T> wrapper);
 
 	T getEntityV2(Class<T> clazz, String id, String companyId);
+
 	List<T> listV2(Class<T> clazz, Collection<String> idList, String companyId);
+
+	List<Map<String, Object>> execselect(String xmlSelectSql, Map<String, Object> param);
 
 }

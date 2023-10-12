@@ -47,6 +47,15 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	public long execdelete(String xmlDeleteSql, Map<String, Object> param);
 
 	/**
+	 * execute select SQL with SQLMAP Syntax
+	 * 
+	 * @param xmlSelectSql
+	 * @param param
+	 * @return result
+	 */
+	public List<Map<String, Object>> execselect(String xmlSelectSql, Map<String, Object> param);;
+
+	/**
 	 * insert a new row, you can set your data id, system will auto create with
 	 * ObjectId if not. If the id exist in database, the method will throw Exception
 	 * 
