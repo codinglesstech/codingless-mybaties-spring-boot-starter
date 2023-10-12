@@ -225,4 +225,26 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 		return -1;
 	}
 
+	@Override
+	public long execupdate(String xmlUpdateSql, Map<String, Object> param) {
+		try {
+			return MybatiesExecuteHelper.execupdate(MybatiesSqlSourceUtil.exchangeUpdateSqlSource(xmlUpdateSql, param), param);
+		} catch (Exception e) {
+			LOG.error("EXECUTE_UPDATE_ERROR", e);
+			MybatiesAssertUtil.assertFail("EXECUTE_UPDATE_ERROR");
+		}
+		return -1;
+	}
+
+	@Override
+	public long execdelete(String xmlDeleteSql, Map<String, Object> param) {
+		try {
+			return MybatiesExecuteHelper.execdelete(MybatiesSqlSourceUtil.exchangeDeleteSqlSource(xmlDeleteSql, param), param);
+		} catch (Exception e) {
+			LOG.error("EXECUTE_DELETE_ERROR", e);
+			MybatiesAssertUtil.assertFail("EXECUTE_DELETE_ERROR");
+		}
+		return -1;
+	}
+
 }

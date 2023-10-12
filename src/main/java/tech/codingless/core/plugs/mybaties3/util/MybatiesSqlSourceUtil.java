@@ -44,7 +44,7 @@ public class MybatiesSqlSourceUtil {
 
 	private static final String XML_UPDATE_2 = "    </update> \r\n" + "</mapper>";
 
-	public SqlSource exchangeUpdateSqlSource(String xmlUpdateSql, Map<String, Object> param) throws Exception {
+	public static SqlSource exchangeUpdateSqlSource(String xmlUpdateSql, Map<String, Object> param) throws Exception {
 		String key = MybatiesStringUtil.md5("UDPATE:" + xmlUpdateSql);
 		SqlSource sql = SQL_CACHE.get(key);
 		if (sql == null) {
@@ -67,7 +67,7 @@ public class MybatiesSqlSourceUtil {
 
 	private static final String XML_DELETE_2 = "    </delete> \r\n" + "</mapper>";
 
-	public SqlSource exchangeDeleteSqlSource(String xmlDeleteSql, Map<String, Object> param) throws Exception {
+	public static SqlSource exchangeDeleteSqlSource(String xmlDeleteSql, Map<String, Object> param) throws Exception {
 		String key = MybatiesStringUtil.md5("DELETE:" + xmlDeleteSql);
 		SqlSource sql = SQL_CACHE.get(key);
 		if (sql == null) {

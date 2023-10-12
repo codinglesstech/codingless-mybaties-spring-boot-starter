@@ -147,6 +147,16 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 	}
 
 	@Override
+	public long execupdate(String xmlUpdateSql, Map<String, Object> param) {
+		return myBatiesService.execupdate(xmlUpdateSql, param);
+	}
+
+	@Override
+	public long execdelete(String xmlDeleteSql, Map<String, Object> param) {
+		return myBatiesService.execdelete(xmlDeleteSql, param);
+	}
+
+	@Override
 	public int createEntityList(List<T> entityList) {
 		String sqlKey = "AUTOSQL.CREATE_BATCH_" + CommonSQLHelper.getTableName(entityList.get(0));
 		try {

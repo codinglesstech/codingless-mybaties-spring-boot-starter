@@ -55,4 +55,8 @@ public interface GenericUpdateDao<T> {
 
 	long execinsert(String xmlInsertSql, Map<String, Object> param);
 
+	long execupdate(String xmlUpdateSql, Map<String, Object> param);
+
+	long execdelete(String xmlDeleteSql, Map<String, Object> param);
+
 }

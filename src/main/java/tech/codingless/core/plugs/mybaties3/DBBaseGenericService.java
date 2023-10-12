@@ -20,13 +20,31 @@ import tech.codingless.core.plugs.mybaties3.data.UpdateObject;
 public interface DBBaseGenericService<T extends BaseDO> {
 
 	/**
-	 * Execute Insert sql with mybaties syntax
+	 * Execute Insert SQL with SQLMAP syntax
 	 * 
 	 * @param xmlInsertSql
 	 * @param param
 	 * @return effect rows
 	 */
 	public long execinsert(String xmlInsertSql, Map<String, Object> param);
+
+	/**
+	 * execute update SQL with SQLMAP Syntax
+	 * 
+	 * @param xmlUpdateSql
+	 * @param param
+	 * @return effect rows
+	 */
+	public long execupdate(String xmlUpdateSql, Map<String, Object> param);
+
+	/**
+	 * execute delete SQL with SQLMAP Syntax
+	 * 
+	 * @param xmlDeleteSql
+	 * @param param
+	 * @return effect rows
+	 */
+	public long execdelete(String xmlDeleteSql, Map<String, Object> param);
 
 	/**
 	 * insert a new row, you can set your data id, system will auto create with
