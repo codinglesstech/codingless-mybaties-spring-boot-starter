@@ -60,6 +60,10 @@ public class AutoUpinsertBatchHelper {
 		batchSqlBuilder.append("</foreach></insert>");
 		batchSqlBuilder.append("</mapper> ");
 		try {
+			System.out.println(batchSqlBuilder.toString());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(batchSqlBuilder.toString());
+			}
 			XMLMapperBuilder selectMapperBuilder = new XMLMapperBuilder(new ByteArrayInputStream(batchSqlBuilder.toString().getBytes("utf-8")), configuration, sqlKey, new HashMap<>());
 			selectMapperBuilder.parse();
 		} catch (UnsupportedEncodingException e) {

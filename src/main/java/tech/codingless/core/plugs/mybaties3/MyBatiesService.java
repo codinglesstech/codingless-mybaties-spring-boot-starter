@@ -1,6 +1,7 @@
 package tech.codingless.core.plugs.mybaties3;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.Configuration;
 
@@ -28,5 +29,7 @@ public interface MyBatiesService {
 	String init();
 
 	int executeUpdateSql(String sql, List<Object> param);
+
+	long execinsert(String xmlInsertSql, Map<String, Object> param);
 
 }

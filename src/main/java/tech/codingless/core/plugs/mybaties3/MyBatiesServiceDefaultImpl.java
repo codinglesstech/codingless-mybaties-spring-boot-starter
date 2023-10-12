@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -23,9 +24,12 @@ import tech.codingless.core.plugs.mybaties3.conf.DataBaseConf;
 import tech.codingless.core.plugs.mybaties3.data.DataEnvProperties;
 import tech.codingless.core.plugs.mybaties3.enums.DataEnvEnums;
 import tech.codingless.core.plugs.mybaties3.helper.DataSourceHelper;
+import tech.codingless.core.plugs.mybaties3.helper.MybatiesExecuteHelper;
 import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.core.plugs.mybaties3.strategy.DataSourceCreator;
+import tech.codingless.core.plugs.mybaties3.util.MybatiesAssertUtil;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesIntegerUtil;
+import tech.codingless.core.plugs.mybaties3.util.MybatiesSqlSourceUtil;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
 
 /**
@@ -208,6 +212,17 @@ public final class MyBatiesServiceDefaultImpl implements MyBatiesService {
 				LOG.error("close Connection ", e);
 			}
 		}
+	}
+
+	@Override
+	public long execinsert(String xmlInsertSql, Map<String, Object> param) {
+		try {
+			return MybatiesExecuteHelper.execinsert(MybatiesSqlSourceUtil.exchangeInsertSqlSource(xmlInsertSql, param), param);
+		} catch (Exception e) {
+			LOG.error("EXECUTE_INSERT_ERROR", e);
+			MybatiesAssertUtil.assertFail("EXECUTE_INSERT_ERROR");
+		}
+		return -1;
 	}
 
 }

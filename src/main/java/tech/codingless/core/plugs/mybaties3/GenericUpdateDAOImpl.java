@@ -36,24 +36,23 @@ import tech.codingless.core.plugs.mybaties3.helper.PrepareParameterHelper;
 import tech.codingless.core.plugs.mybaties3.helper.UpdateSkipNullBatchAppendHelper;
 import tech.codingless.core.plugs.mybaties3.util.DataSessionEnv;
 import tech.codingless.core.plugs.mybaties3.util.MybatiesStringUtil;
- 
 
 @Component
 public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<T> {
-	private static final String NAMESPACE="AUTOSQL";
-	private static final Logger LOG = LoggerFactory.getLogger(GenericUpdateDAOImpl.class); 
-	protected MyBatiesService myBatiesService; 
-	
+	private static final String NAMESPACE = "AUTOSQL";
+	private static final Logger LOG = LoggerFactory.getLogger(GenericUpdateDAOImpl.class);
+	protected MyBatiesService myBatiesService;
+
 	protected BasicDataSource basicDataSource;
-	
+
 	@Autowired(required = false)
 	private DataBaseConf conf;
-	
+
 	@Autowired
 	protected void setMyBatiesService(MyBatiesService myBatiesService) {
-		LOG.info("Jnjection Data Access Service: {}" , myBatiesService);
-		this.myBatiesService = myBatiesService;  
-		if(conf!=null&&MybatiesStringUtil.isNotEmpty(conf.getUrl(),conf.getUsername(),conf.getPassword())) { 
+		LOG.info("Jnjection Data Access Service: {}", myBatiesService);
+		this.myBatiesService = myBatiesService;
+		if (conf != null && MybatiesStringUtil.isNotEmpty(conf.getUrl(), conf.getUsername(), conf.getPassword())) {
 			basicDataSource = new BasicDataSource();
 			basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 			basicDataSource.setUrl(conf.getUrl());
@@ -65,7 +64,7 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 			basicDataSource.setMaxWaitMillis(10000);
 			basicDataSource.setInitialSize(3);
 			basicDataSource.setRemoveAbandonedOnBorrow(true);
-			basicDataSource.setRemoveAbandonedTimeout(180);  
+			basicDataSource.setRemoveAbandonedTimeout(180);
 			LOG.info("Create BasicDataSource : {}", basicDataSource);
 		}
 	}
@@ -87,18 +86,18 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 
 	public void genAutoSqlForCreate(Object entity) {
 		try {
-			
-			MyTypeHanderRegistHelper.regist(myBatiesService.getConfiguration(), entity.getClass()); 
+
+			MyTypeHanderRegistHelper.regist(myBatiesService.getConfiguration(), entity.getClass());
 			String sqlKey = "AUTOSQL.CREATE_" + CommonSQLHelper.getTableName(entity);
 			SqlSourceBuilder sqlSourceBuilder = new SqlSourceBuilder(myBatiesService.getConfiguration());
 			SqlSource sqlSource = sqlSourceBuilder.parse(CommonSQLHelper.getInsertSQL(entity), entity.getClass(), null);
 			MappedStatement.Builder builder = new MappedStatement.Builder(myBatiesService.getConfiguration(), sqlKey, sqlSource, SqlCommandType.INSERT);
 			myBatiesService.getConfiguration().addMappedStatement(builder.build());
-			if(LOG.isDebugEnabled()) {
-				//LOG.debug("gen script : " + CommonSQLHelper.getInsertSQL(entity));
+			if (LOG.isDebugEnabled()) {
+				// LOG.debug("gen script : " + CommonSQLHelper.getInsertSQL(entity));
 			}
 		} catch (Exception e) {
-			LOG.error("genAutoSqlForCreate",e); 
+			LOG.error("genAutoSqlForCreate", e);
 		}
 	}
 
@@ -107,60 +106,60 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		String sqlKey = "AUTOSQL.CREATE_" + CommonSQLHelper.getTableName(entity);
 		try {
 			return myBatiesService.insert(sqlKey, entity);
-		} catch (MyBatisSystemException e) {  
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
-						genAutoSqlForCreate(entity); 
-						ConcurrentSqlCreatorLocker.put(sqlKey);  
-					} 
-				} 
-			} 
-			 
+		} catch (MyBatisSystemException e) {
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+						genAutoSqlForCreate(entity);
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
+			}
+
 			return myBatiesService.insert(sqlKey, entity);
 		}
 
 	}
 
-	
 	@Override
 	public int upinsert(List<T> entityList) {
 		String sqlKey = "AUTOSQL.UPINSERT_BATCH_" + CommonSQLHelper.getTableName(entityList.get(0));
 		try {
 			return myBatiesService.insert(sqlKey, entityList);
 		} catch (MyBatisSystemException e) {
-			
-			
-			
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
+
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 						AutoUpinsertBatchHelper.genBatchCreateSql(myBatiesService.getConfiguration(), "AUTOSQL", sqlKey, entityList.get(0).getClass());
-						ConcurrentSqlCreatorLocker.put(sqlKey);  
-					} 
-				} 
-			} 
-			
-			
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
+			}
+
 			return myBatiesService.insert(sqlKey, entityList);
 		}
 	}
-	
-	
+
+	@Override
+	public long execinsert(String xmlInsertSql, Map<String, Object> param) {
+		return myBatiesService.execinsert(xmlInsertSql, param);
+	}
+
 	@Override
 	public int createEntityList(List<T> entityList) {
 		String sqlKey = "AUTOSQL.CREATE_BATCH_" + CommonSQLHelper.getTableName(entityList.get(0));
 		try {
 			return myBatiesService.insert(sqlKey, entityList);
-		} catch (MyBatisSystemException e) { 
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
+		} catch (MyBatisSystemException e) {
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 						AutoCreateBatchHelper.genBatchCreateSql(myBatiesService.getConfiguration(), "AUTOSQL", sqlKey, entityList.get(0).getClass());
-						ConcurrentSqlCreatorLocker.put(sqlKey);  
-					} 
-				} 
-			}  
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
+			}
 			return myBatiesService.insert(sqlKey, entityList);
 		}
 	}
@@ -177,22 +176,20 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		try {
 			return myBatiesService.delete(sqlKey, p);
 		} catch (MyBatisSystemException e) {
-			
-			
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
+
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 						SqlSourceBuilder sqlSourceBuilder = new SqlSourceBuilder(myBatiesService.getConfiguration());
 						String deleteSQL = CommonSQLHelper.getDeleteSQL(clazz);
 						LOG.info("[动态生成SQL语句] " + deleteSQL);
 						SqlSource sqlSource = sqlSourceBuilder.parse(deleteSQL, Map.class, null);
 						MappedStatement.Builder builder = new MappedStatement.Builder(myBatiesService.getConfiguration(), sqlKey, sqlSource, SqlCommandType.DELETE);
 						myBatiesService.getConfiguration().addMappedStatement(builder.build());
-						ConcurrentSqlCreatorLocker.put(sqlKey);  
-					} 
-				} 
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
 			}
-			 
 
 			return myBatiesService.delete(sqlKey, p);
 		}
@@ -207,20 +204,20 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		try {
 			return myBatiesService.delete(sqlKey, p);
 		} catch (MyBatisSystemException e) {
-			 
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
+
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 						SqlSourceBuilder sqlSourceBuilder = new SqlSourceBuilder(myBatiesService.getConfiguration());
 						String deleteSQL = CommonSQLHelper.getDeleteWithCompanyIdSQL(clazz);
 						LOG.info("[动态生成SQL语句] " + deleteSQL);
 						SqlSource sqlSource = sqlSourceBuilder.parse(deleteSQL, Map.class, null);
 						MappedStatement.Builder builder = new MappedStatement.Builder(myBatiesService.getConfiguration(), sqlKey, sqlSource, SqlCommandType.DELETE);
 						myBatiesService.getConfiguration().addMappedStatement(builder.build());
-						ConcurrentSqlCreatorLocker.put(sqlKey);  
-					} 
-				} 
-			} 
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
+			}
 			return myBatiesService.delete(sqlKey, p);
 		}
 	}
@@ -234,30 +231,28 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		try {
 			return myBatiesService.update(sqlKey, p);
 		} catch (MyBatisSystemException e) {
-			 
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
+
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 						SqlSourceBuilder sqlSourceBuilder = new SqlSourceBuilder(myBatiesService.getConfiguration());
 						String deleteSQL = CommonSQLHelper.getDeleteLogicalWithCompanyIdSQL(clazz);
 						LOG.info("[动态生成SQL语句] " + deleteSQL);
 						SqlSource sqlSource = sqlSourceBuilder.parse(deleteSQL, Map.class, null);
 						MappedStatement.Builder builder = new MappedStatement.Builder(myBatiesService.getConfiguration(), sqlKey, sqlSource, SqlCommandType.DELETE);
 						myBatiesService.getConfiguration().addMappedStatement(builder.build());
-						ConcurrentSqlCreatorLocker.put(sqlKey);  
-					} 
-				} 
-			}  
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
+			}
 			return myBatiesService.update(sqlKey, p);
 		}
 	}
-	
+
 	@Override
-	public int deleteLogicalWithCompanyId(Class<T> clazz, Collection<String> idList, String companyId) { 
-		return AutoDeleteBatchHelper.deleteLogical(myBatiesService,clazz,idList,companyId);
+	public int deleteLogicalWithCompanyId(Class<T> clazz, Collection<String> idList, String companyId) {
+		return AutoDeleteBatchHelper.deleteLogical(myBatiesService, clazz, idList, companyId);
 	}
-	
-	
 
 	@Override
 	public int updateEntity(BaseDO entiry) {
@@ -265,17 +260,15 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		try {
 			return myBatiesService.update(sqlKey, entiry);
 		} catch (MyBatisSystemException e) {
-			
-			
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
+
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 						genAutoSqlForUpdate(entiry);
-						ConcurrentSqlCreatorLocker.put(sqlKey);  
-					} 
-				} 
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
 			}
-			
 
 			return myBatiesService.update(sqlKey, entiry);
 		}
@@ -288,68 +281,62 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		try {
 			return myBatiesService.update(sqlKey, entiry);
 		} catch (MyBatisSystemException e) {
-			
-			
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) { 
+
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
 						SqlSourceBuilder sqlSourceBuilder = new SqlSourceBuilder(myBatiesService.getConfiguration());
 						String updateSQL = CommonSQLHelper.getUpdateSQLWithCompanyId(entiry.getClass());
 						SqlSource sqlSource = sqlSourceBuilder.parse(updateSQL, entiry.getClass(), null);
 						MappedStatement.Builder builder = new MappedStatement.Builder(myBatiesService.getConfiguration(), sqlKey, sqlSource, SqlCommandType.UPDATE);
 						myBatiesService.getConfiguration().addMappedStatement(builder.build());
-						if(LOG.isDebugEnabled()) {
+						if (LOG.isDebugEnabled()) {
 							LOG.info("[动态生成SQL语句] " + updateSQL);
 						}
-						ConcurrentSqlCreatorLocker.put(sqlKey);  
-					} 
-				} 
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
 			}
-			
-			
 
 			return myBatiesService.update(sqlKey, entiry);
 		}
 	}
 
- 
- 
 	@Override
-	public int updateNotNull(T data, Long ver) { 
-		String sqlId = "UPDATE_SKIP_NULLV2_" + CommonSQLHelper.getTableName(data); 
+	public int updateNotNull(T data, Long ver) {
+		String sqlId = "UPDATE_SKIP_NULLV2_" + CommonSQLHelper.getTableName(data);
 		String sqlKey = NAMESPACE.concat(".").concat(sqlId);
 		try {
 			data.setVer(ver);
 			return myBatiesService.update(sqlKey, data);
-		} catch (MyBatisSystemException e) { 
-			if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {  
-					if(ConcurrentSqlCreatorLocker.notExist(sqlKey)) {  
-						AutoUpdateHelper.genUpdateSkipNullSql(this.myBatiesService.getConfiguration(), NAMESPACE, sqlId, data.getClass()); 
-						ConcurrentSqlCreatorLocker.put(sqlKey);  
-					} 
-				} 
-			} 
+		} catch (MyBatisSystemException e) {
+			if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+				synchronized (ConcurrentSqlCreatorLocker.getLocker(sqlKey)) {
+					if (ConcurrentSqlCreatorLocker.notExist(sqlKey)) {
+						AutoUpdateHelper.genUpdateSkipNullSql(this.myBatiesService.getConfiguration(), NAMESPACE, sqlId, data.getClass());
+						ConcurrentSqlCreatorLocker.put(sqlKey);
+					}
+				}
+			}
 			return myBatiesService.update(sqlKey, data);
-		}  
+		}
 	}
-	
-  
+
 	@Override
-	public int updateSkipNullBatchAppend(String companyId, T data, Long ver, int batchSize) { 
-		return UpdateSkipNullBatchAppendHelper.updateSkipNullBatchAppend(myBatiesService,companyId,data,ver,batchSize);
+	public int updateSkipNullBatchAppend(String companyId, T data, Long ver, int batchSize) {
+		return UpdateSkipNullBatchAppendHelper.updateSkipNullBatchAppend(myBatiesService, companyId, data, ver, batchSize);
 	}
+
 	@Override
 	public int updateSkipNullBatchExecute(Class<T> clazz) {
-		return UpdateSkipNullBatchAppendHelper.updateSkipNullBatchExecute(myBatiesService,clazz);
+		return UpdateSkipNullBatchAppendHelper.updateSkipNullBatchExecute(myBatiesService, clazz);
 	}
-	
+
 	@Override
-	public int updateSkipNullBatchExecute(List<UpdateObject> updateList) { 
+	public int updateSkipNullBatchExecute(List<UpdateObject> updateList) {
 		return UpdateSkipNullBatchAppendHelper.updateSkipNullBatchExecute(myBatiesService, updateList);
 	}
-	
-	
+
 	public void genAutoSqlForUpdate(BaseDO entiry) {
 		String sqlKey = "AUTOSQL.UPDATE_" + CommonSQLHelper.getTableName(entiry);
 		SqlSourceBuilder sqlSourceBuilder = new SqlSourceBuilder(myBatiesService.getConfiguration());
@@ -357,38 +344,38 @@ public class GenericUpdateDAOImpl<T extends BaseDO> implements GenericUpdateDao<
 		SqlSource sqlSource = sqlSourceBuilder.parse(updateSQL, entiry.getClass(), null);
 		MappedStatement.Builder builder = new MappedStatement.Builder(myBatiesService.getConfiguration(), sqlKey, sqlSource, SqlCommandType.UPDATE);
 		myBatiesService.getConfiguration().addMappedStatement(builder.build());
-		if(LOG.isDebugEnabled()) {
-			//LOG.debug("[动态生成SQL语句] " + updateSQL); 
+		if (LOG.isDebugEnabled()) {
+			// LOG.debug("[动态生成SQL语句] " + updateSQL);
 		}
 	}
 
 	@Override
 	public int insertNative(String sql, List<Object> params) {
-		try (Connection conn = basicDataSource.getConnection()) {  
-			PreparedStatement pstmt = conn.prepareStatement(sql); 
-			PrepareParameterHelper.bindParam(pstmt,params); 
-			pstmt.execute(); 
-			if(LOG.isDebugEnabled()) {
-				LOG.info("insertNative:{},PARAM:{}",sql,!CollectionUtils.isEmpty(params)?JSON.toJSONString(params):"NONE");
-			}  
+		try (Connection conn = basicDataSource.getConnection()) {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			PrepareParameterHelper.bindParam(pstmt, params);
+			pstmt.execute();
+			if (LOG.isDebugEnabled()) {
+				LOG.info("insertNative:{},PARAM:{}", sql, !CollectionUtils.isEmpty(params) ? JSON.toJSONString(params) : "NONE");
+			}
 		} catch (SQLException e) {
-			LOG.error("insertNative",e); 
+			LOG.error("insertNative", e);
 		}
 		return 1;
 	}
-	
+
 	@Override
 	public int updateNative(String prepareSql, List<Object> params) {
-		try (Connection conn = basicDataSource.getConnection()) {  
-			PreparedStatement pstmt = conn.prepareStatement(prepareSql); 
-			PrepareParameterHelper.bindParam(pstmt,params); 
-			int effect =  pstmt.executeUpdate(); 
-			if(LOG.isDebugEnabled()) {
-				LOG.info("updateNative:{},PARAM:{}",prepareSql,!CollectionUtils.isEmpty(params)?JSON.toJSONString(params):"NONE");
-			} 
+		try (Connection conn = basicDataSource.getConnection()) {
+			PreparedStatement pstmt = conn.prepareStatement(prepareSql);
+			PrepareParameterHelper.bindParam(pstmt, params);
+			int effect = pstmt.executeUpdate();
+			if (LOG.isDebugEnabled()) {
+				LOG.info("updateNative:{},PARAM:{}", prepareSql, !CollectionUtils.isEmpty(params) ? JSON.toJSONString(params) : "NONE");
+			}
 			return effect;
 		} catch (SQLException e) {
-			LOG.error("updateNative",e); 
+			LOG.error("updateNative", e);
 		}
 		return 0;
 	}

@@ -20,6 +20,15 @@ import tech.codingless.core.plugs.mybaties3.data.UpdateObject;
 public interface DBBaseGenericService<T extends BaseDO> {
 
 	/**
+	 * Execute Insert sql with mybaties syntax
+	 * 
+	 * @param xmlInsertSql
+	 * @param param
+	 * @return effect rows
+	 */
+	public long execinsert(String xmlInsertSql, Map<String, Object> param);
+
+	/**
 	 * insert a new row, you can set your data id, system will auto create with
 	 * ObjectId if not. If the id exist in database, the method will throw Exception
 	 * 
@@ -27,11 +36,11 @@ public interface DBBaseGenericService<T extends BaseDO> {
 	 * @return success if true
 	 */
 	boolean create(T data);
-	
-	
+
 	/**
 	 * 
-	 * execute insert if data id is null, otherwise execute insert when data id not exist, update when data id exist in database
+	 * execute insert if data id is null, otherwise execute insert when data id not
+	 * exist, update when data id exist in database
 	 * 
 	 * @param list
 	 * @return success if true

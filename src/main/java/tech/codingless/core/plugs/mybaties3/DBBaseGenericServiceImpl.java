@@ -101,6 +101,12 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 
 	@Transactional
 	@Override
+	public long execinsert(String xmlInsertSql, Map<String, Object> param) {
+		return updateDao.execinsert(xmlInsertSql, param);
+	}
+
+	@Transactional
+	@Override
 	public int upinsert(List<T> list) {
 		if (list == null || list.isEmpty()) {
 			return 0;
