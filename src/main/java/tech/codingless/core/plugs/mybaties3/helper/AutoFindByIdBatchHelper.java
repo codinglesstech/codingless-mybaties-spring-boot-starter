@@ -9,7 +9,6 @@ import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.session.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
- 
 
 public class AutoFindByIdBatchHelper {
 	private static final Logger LOG = LoggerFactory.getLogger(AutoFindByIdBatchHelper.class);
@@ -30,15 +29,12 @@ public class AutoFindByIdBatchHelper {
 		});
 		resultMapSb.append("</resultMap>");
 
-		
 		StringBuilder columnBuilder = new StringBuilder();
-		
-		//以支持动态列 
+
+		// 以支持动态列
 		columnBuilder.append("<if test=\"columns==null or columns.size()==0\"> * </if>");
 		columnBuilder.append("<if test=\"columns!=null and columns.size()>0\"> <foreach item=\"column\" collection=\"columns\" index=\"index\"    separator=\",\" > ${column} </foreach> </if>");
-		
-		
-		
+
 		StringBuffer batchSqlBuilder = new StringBuffer();
 		batchSqlBuilder.append(XML_VERSION);
 		batchSqlBuilder.append(XML_DOCTYPE);
@@ -47,13 +43,13 @@ public class AutoFindByIdBatchHelper {
 		batchSqlBuilder.append("<select id=").append(QUOTATION).append(sqlKey).append(QUOTATION);
 		batchSqlBuilder.append(" resultMap=\"" + mapId + "\"  parameterType=\"map\" >");
 		batchSqlBuilder.append("select ").append(columnBuilder.toString()).append(" from ").append(CommonSQLHelper.getTableName(clazz));
-		batchSqlBuilder.append(" where company_id=#{companyId} and id in ");
+		batchSqlBuilder.append(" <where>  <if test=\"companyId!=null and companyId!='' \"> company_id=#{companyId} </if>  and id in ");
 		batchSqlBuilder.append("<foreach  item=\"id\" collection=\"idList\" index=\"index\"  open=\"(\" separator=\",\" close=\")\">");
 		batchSqlBuilder.append("#{id}");
-		batchSqlBuilder.append("</foreach></select>");
+		batchSqlBuilder.append("</foreach> </where> </select>");
 		batchSqlBuilder.append("</mapper> ");
 		try {
-			 
+
 			XMLMapperBuilder selectMapperBuilder = new XMLMapperBuilder(new ByteArrayInputStream(batchSqlBuilder.toString().getBytes("utf-8")), configuration, sqlKey, new HashMap<>());
 			selectMapperBuilder.parse();
 		} catch (UnsupportedEncodingException e) {
@@ -62,8 +58,8 @@ public class AutoFindByIdBatchHelper {
 	}
 
 	public static void genBatchGetSql(Configuration configuration, String namespace, String sqlKey, Class<?> clazz) {
-		   genBatchGetSql(configuration,namespace,sqlKey,clazz,null);
-		
+		genBatchGetSql(configuration, namespace, sqlKey, clazz, null);
+
 	}
 
 }

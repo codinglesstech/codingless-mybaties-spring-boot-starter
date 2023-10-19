@@ -195,6 +195,8 @@ public interface DBBaseGenericService<T extends BaseDO> {
 
 	List<T> get(String companyId, Collection<String> idList);
 
+	List<T> get(Collection<String> idList);
+
 	List<T> get(Class<T> clazz, String companyId, Collection<String> idList, Collection<String> columns);
 
 	List<T> get(String companyId, Collection<String> idList, Collection<String> columns);

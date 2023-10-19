@@ -367,6 +367,11 @@ public class DBBaseGenericServiceImpl<T extends BaseDO> implements DBBaseGeneric
 	}
 
 	@Override
+	public List<T> get(Collection<String> idList) {
+		return this.get(getEntityClass(), null, idList);
+	}
+
+	@Override
 	public List<T> get(String companyId, Collection<String> idList) {
 		return this.get(getEntityClass(), companyId, idList);
 	}
