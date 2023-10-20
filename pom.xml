@@ -31,6 +31,7 @@
 		</license>
 	</licenses>
 
+	<!-- 
 	<scm>
 		<connection>scm:git:git@github.com:codinglesstech/codingless-mybaties-spring-boot-starter.git</connection>
 		<developerConnection>scm:git:git@github.com:codinglesstech/codingless-mybaties-spring-boot-starter.git</developerConnection>
@@ -44,7 +45,7 @@
 			<email>258156979@qq.com</email>
 		</developer>
 	</developers>
-
+ -->
 	<distributionManagement>
 		<repository>
 			<id>sonatype-releases</id>
