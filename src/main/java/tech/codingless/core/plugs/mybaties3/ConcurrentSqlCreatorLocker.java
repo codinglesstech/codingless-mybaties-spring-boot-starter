@@ -2,6 +2,7 @@ package tech.codingless.core.plugs.mybaties3;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.extern.slf4j.Slf4j;
 import tech.codingless.core.plugs.mybaties3.data.DataEnvProperties;
 
 /**
@@ -10,6 +11,7 @@ import tech.codingless.core.plugs.mybaties3.data.DataEnvProperties;
  * @author 王鸿雁
  *
  */
+@Slf4j
 public class ConcurrentSqlCreatorLocker {
 	protected static final ConcurrentHashMap<String, Boolean> SQL_GEN_SUCCESS = new ConcurrentHashMap<>();
 	protected static final ConcurrentHashMap<String, Object> LOCKER_MAP = new ConcurrentHashMap<>();
@@ -22,6 +24,7 @@ public class ConcurrentSqlCreatorLocker {
 
 	public static boolean notExist(String key) {
 		key = DataEnvProperties.getDataSource() + "." + key;
+		log.info("check sql_key exist:{}", key);
 		return !SQL_GEN_SUCCESS.containsKey(key);
 	}
 
