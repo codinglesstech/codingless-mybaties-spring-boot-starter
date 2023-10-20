@@ -1,5 +1,8 @@
 package tech.codingless.core.plugs.mybaties3;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +20,26 @@ public class ConcurrentSqlCreatorLocker {
 	protected static final ConcurrentHashMap<String, Object> LOCKER_MAP = new ConcurrentHashMap<>();
 	private static final Object LOCKER = new Object();
 
+	public static int clearDatabaseLocker(String databaseId) {
+
+		List<String> keys = new ArrayList<>();
+		String prefix = databaseId + ".";
+
+		Iterator<String> it = SQL_GEN_SUCCESS.keys().asIterator();
+		while (it.hasNext()) {
+			String key = it.next();
+			if (key.startsWith(prefix)) {
+				keys.add(key);
+			}
+		}
+
+		keys.forEach(key -> {
+			SQL_GEN_SUCCESS.remove(key);
+		});
+		log.info("Removed Sql Locker:{}, databaseId:{}", keys.size(), databaseId);
+		return keys.size();
+	}
+
 	public static boolean isTheSqlExist(String key) {
 		key = DataEnvProperties.getDataSource() + "." + key;
 		return SQL_GEN_SUCCESS.containsKey(key);
@@ -24,7 +47,6 @@ public class ConcurrentSqlCreatorLocker {
 
 	public static boolean notExist(String key) {
 		key = DataEnvProperties.getDataSource() + "." + key;
-		log.info("check sql_key exist:{}", key);
 		return !SQL_GEN_SUCCESS.containsKey(key);
 	}
 

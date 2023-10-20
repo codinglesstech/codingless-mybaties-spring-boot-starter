@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import tech.codingless.core.plugs.mybaties3.ConcurrentSqlCreatorLocker;
 import tech.codingless.core.plugs.mybaties3.data.DataEnvProperties;
 import tech.codingless.core.plugs.mybaties3.exception.DataSourceNotExistException;
 import tech.codingless.core.plugs.mybaties3.util.LockerUtil;
@@ -97,6 +98,8 @@ public class DataSourceHelper {
 		dataSourceId = dataSourceId.toLowerCase();
 		SqlSessionTemplate session = SQL_SESSION_CACHE.get(dataSourceId);
 		if (session != null) {
+			// log.debug("datasource-session dataSourceId:{}, session:{}", dataSourceId,
+			// session);
 			return session;
 		}
 
@@ -134,6 +137,12 @@ public class DataSourceHelper {
 	}
 
 	public static void init(String dataSourceId, JdbcProperties jdbcProperties) {
+
+		/**
+		 * BUGFIX: 非常重要,当初始化同ID的数据源时，会移除之前的数据源，这个时候需要同步移除对应的SQL锁
+		 * 以便新的数据源可以重新创建相应的SQLMAP，不然会报 找不到SQL语句
+		 */
+		ConcurrentSqlCreatorLocker.clearDatabaseLocker(dataSourceId);
 		dataSourceId = dataSourceId.toLowerCase();
 		JDBC_SETTING.remove(dataSourceId);
 		DATA_SOURCE_CACHE.remove(dataSourceId);
