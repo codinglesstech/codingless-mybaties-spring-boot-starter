@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>tech.codingless</groupId>
 	<artifactId>codingless-mybaties-spring-boot-starter</artifactId>
-	<version>0.0.17</version>
+	<version>0.1.0</version>
 	<name>codingless-mybaties</name>
 	<url>https://github.com/codinglesstech/codingless-mybaties-spring-boot-starter</url>
 
@@ -203,6 +203,8 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<!--  
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
@@ -217,6 +219,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
