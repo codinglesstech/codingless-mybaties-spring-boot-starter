@@ -164,6 +164,7 @@
 					<target>11</target>
 				</configuration>
 			</plugin>
+			<!--  如下设置用于上传中央库
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -204,7 +205,6 @@
 				</executions>
 			</plugin>
 			
-			<!--  如下设置用于上传中央库
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
