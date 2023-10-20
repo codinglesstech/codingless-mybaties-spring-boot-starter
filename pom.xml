@@ -45,7 +45,7 @@
 			<email>258156979@qq.com</email>
 		</developer>
 	</developers>
- -->
+
 	<distributionManagement>
 		<repository>
 			<id>sonatype-releases</id>
@@ -56,7 +56,7 @@
 			<url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-
+ -->
 
 	<dependencyManagement>
 		<dependencies>
